@@ -29,6 +29,7 @@ public:
                 cout << "case Unknown";
         }
     }
+
     static int createAdjacencyList(string path, string method, adjListCollection &adjListCollection) {
         if (method == "file") {
             fileReader::readFile(std::move(path), adjListCollection);
@@ -63,6 +64,14 @@ public:
             }
         }
         return 0;
+    }
+
+    static void printVec(vector<long long int>const &input){
+        cout << "[";
+        for (long long i : input) {
+            cout << i << ' ';
+        }
+        cout << "]";
     }
 };
 #endif //SHORTESTPATH

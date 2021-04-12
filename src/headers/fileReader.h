@@ -37,7 +37,7 @@ public:
                 int source;
                 int dest;
                 double weight;
-                double euclidDist;
+                double heuristicDist;
                 for(auto& value: lineAsTokens){
                     char firstChar = value[0];
                     if(firstChar == '#'){
@@ -45,8 +45,8 @@ public:
                         source = listMutator.insertInMaps(adjListCollection, sourceID);
                         //cout << source << '\n';
                     }else if (firstChar == '*'){
-                        euclidDist = stod(value.substr(1,value.size()-1));
-                        listMutator.addEucildDist(adjListCollection, source, euclidDist);
+                        heuristicDist = stod(value.substr(1, value.size() - 1));
+                        listMutator.addHeuristicDist(adjListCollection, source, heuristicDist);
                     }else if (firstChar == ';'){
                         long long int destID = stoll(value.substr(1,value.size()-1));
                         dest = listMutator.insertInMaps(adjListCollection, destID);

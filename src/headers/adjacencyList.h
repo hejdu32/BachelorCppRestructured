@@ -17,7 +17,9 @@ using namespace std;
         std::map<long long int, int> longIdToIntID{};
         std::map<int, long long int> intIdToLongID{};
         std::vector<std::vector<std::pair<int, double>>> adjlst{};
-        std::map<int, double> euclidDistance;
+        std::map<int, double> heuristicDistance;
+        std::vector<double> xCoord;
+        std::vector<double> yCoord;
     };
 
     class adjacencyList {
@@ -56,8 +58,8 @@ using namespace std;
             }
         }
 
-// Print adjacency list representaion ot graph
-//this has partly been yoinked
+        // Print adjacency list representaion ot graph
+        //this has partly been yoinked
         static void printGraph(adjListCollection &collection) {
             cout << "size of adjlist " << collection.adjlst.size() << endl;
             for (int s = 0; s < collection.adjlst.size(); s++) {
@@ -77,9 +79,32 @@ using namespace std;
             return vectorWLongs;
         }
 
-        static void addEucildDist(adjListCollection &collection, int source, double euclidDist) {
-            collection.euclidDistance.insert(make_pair(source, euclidDist));
+        static void addHeuristicDist(adjListCollection &collection, int source, double HeuristicDist) {
+            collection.heuristicDistance.insert(make_pair(source, HeuristicDist));
         }
+        void addxCoord(adjListCollection &collection, int node, double xCoord) {
+            if (node+1 > collection.xCoord.size()){
+                collection.xCoord.resize(node+1);
+            }
+            collection.xCoord[node] = xCoord;
+        }
+
+        void addyCoord(adjListCollection &collection, int node, double yCoord){
+            if (node+1 > collection.yCoord.size()){
+                collection.yCoord.resize(node+1);
+            }
+            collection.yCoord[node] = yCoord;
+        }
+
+        double distanceCalc(double srcX, double srcY, double destX, double destY){
+            return double(sqrt(pow(srcX-destX,2.0)+pow(srcY-destY,2.0)));
+        }
+        double distanceCalc(double srcX, double srcY, double destX, double destY, int maxSpeed){
+            return double(sqrt(pow(srcX - destX,2.0)+pow(srcY - destY,2.0)) / maxSpeed);
+        }
+
+        double getxCoord(adjListCollection &collection, int value){return collection.xCoord[value];}
+        double getyCoord(adjListCollection &collection, int value){return collection.yCoord[value];}
 
         static int getIntID(adjListCollection &collection, long long int value) {
             return collection.longIdToIntID.find(value)->second;

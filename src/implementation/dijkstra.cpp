@@ -48,7 +48,7 @@ void printRoute(vector<int> const &prevPath, int source, int dest){
 vector<int> createSPList(vector<int> prevNode, int source, int destination){
     int temdest = destination;
     vector<int> shortestPath;
-    while (temdest != source && temdest > 0){
+    while (temdest != source && prevNode[temdest] != -1){
         shortestPath.push_back(temdest);
         temdest = prevNode[temdest];
     }

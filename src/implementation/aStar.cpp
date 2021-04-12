@@ -23,7 +23,7 @@ struct comparator{
 vector<int> createList(vector<int> prevNode, int source, int destination){
     int temdest = destination;
     vector<int> shortestPath;
-    while (temdest != source){
+    while (temdest != source && prevNode[temdest] != -1){
         shortestPath.push_back(temdest);
         temdest = prevNode[temdest];
     }
@@ -48,7 +48,7 @@ tuple<double, vector<int>> aStar::aStarShortestPath(int source, int dest, adjLis
     //prevNode[source] = -1;
     //heap of nodes to evaluate
     priority_queue<pair<int,double>, vector<pair<int,double>>, comparator> minHeap;
-    double sourceHeuristic = adjListCollection.euclidDistance.find(source)->second;
+    double sourceHeuristic = adjListCollection.heuristicDistance.find(source)->second;
     minHeap.push(make_pair(source,0.0+sourceHeuristic));
 
     while (!minHeap.empty()){
@@ -66,7 +66,7 @@ tuple<double, vector<int>> aStar::aStarShortestPath(int source, int dest, adjLis
         for(auto i: adjListCollection.adjlst[headId]){
             int node = i.first;
             double weight = i.second;
-            double heuristicWeight = adjListCollection.euclidDistance.find(node)->second;
+            double heuristicWeight = adjListCollection.heuristicDistance.find(node)->second;
             //relaxation step, in astar we add the heuristic weight in to consideration
             if(!nodeSeen[node] && (distance[headId]+weight+heuristicWeight) < distance[node]){
                 //update the distance to the node and add it to the queue
