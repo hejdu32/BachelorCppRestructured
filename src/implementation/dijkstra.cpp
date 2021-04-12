@@ -1,15 +1,15 @@
 //
-// Created by simon on 12-04-2021.
+// Created by a on 31-03-2021.
 //
 
-#include "aStar.h"
-#include "adjacencyList.h"
+#include "../headers/dijkstra.h"
 #include <vector>
 #include <queue>
 #include <tuple>
 
 using namespace std;
 
+//this comparator ensures that the top most element of a queue has the lowest weight
 struct comparator{
     constexpr bool operator()(
             pair<int, double> const& a,
@@ -20,10 +20,35 @@ struct comparator{
     }
 };
 
-vector<int> createList(vector<int> prevNode, int source, int destination){
+void toyExampleConverter(vector<int> const &prevPath, int source, int dest){
+    if (dest < 0 ||dest == source){
+        if(source == 0){cout << "a ";}
+        else{cout <<  source << " ";}
+        return;
+    }
+    toyExampleConverter(prevPath, source, prevPath[dest]);
+    if (dest ==1){cout << "b ";
+    }else if(dest == 2){cout << "e ";}
+    else if(dest == 4){cout << "d ";}
+    else if(dest == 3){cout << "c ";}
+    else{cout << "??????";}
+    //cout << dest << " ";
+}
+
+void printRoute(vector<int> const &prevPath, int source, int dest){
+    if (dest < 0 ||dest == source){
+       cout <<  source << " ";
+        return;
+    }
+    printRoute(prevPath, source, prevPath[dest]);
+    cout << dest << " ";
+}
+
+
+vector<int> createSPList(vector<int> prevNode, int source, int destination){
     int temdest = destination;
     vector<int> shortestPath;
-    while (temdest != source){
+    while (temdest != source && temdest > 0){
         shortestPath.push_back(temdest);
         temdest = prevNode[temdest];
     }
@@ -33,7 +58,7 @@ vector<int> createList(vector<int> prevNode, int source, int destination){
 }
 
 
-tuple<double, vector<int>> aStar::aStarShortestPath(int source, int dest, adjListCollection &adjListCollection) {
+tuple<double, vector<int>> dijkstra::djikstraShortestPath(int source, int dest, adjListCollection &adjListCollection) {
     const double INF = 999999999999;
     int sizeOfGraph = adjListCollection.intIdToLongID.size();
     //initilaize distance from source to everything to infinity
@@ -46,40 +71,41 @@ tuple<double, vector<int>> aStar::aStarShortestPath(int source, int dest, adjLis
     //path from source to destination
     vector<int> prevNode(sizeOfGraph,-1);
     //prevNode[source] = -1;
+
     //heap of nodes to evaluate
     priority_queue<pair<int,double>, vector<pair<int,double>>, comparator> minHeap;
-    double sourceHeuristic = adjListCollection.euclidDistance.find(source)->second;
-    minHeap.push(make_pair(source,0.0+sourceHeuristic));
-
+    minHeap.push(make_pair(source,0.0));
     while (!minHeap.empty()){
         //pop the top element
         pair<int,double> head = minHeap.top();
         minHeap.pop();
         int headId = head.first;
+
         //Have we reached destination check
         if (head.first==dest){
             //we have arrived at destination and we are done
             //cout << "we have hit destination \n";
             break;
         }
+
         //add new nodes to queue
         for(auto i: adjListCollection.adjlst[headId]){
             int node = i.first;
             double weight = i.second;
-            double heuristicWeight = adjListCollection.euclidDistance.find(node)->second;
-            //relaxation step, in astar we add the heuristic weight in to consideration
-            if(!nodeSeen[node] && (distance[headId]+weight+heuristicWeight) < distance[node]){
+
+            //relaxation step
+            if(!nodeSeen[node] && (distance[headId]+weight) < distance[node]){
                 //update the distance to the node and add it to the queue
                 distance[node] = distance[headId]+weight;
                 prevNode[node] = headId; //remember the node before for finding the shortest path to destination
-                //add the heuristic to the weight so we sort based on it.
-                minHeap.push(make_pair(node,distance[node]+heuristicWeight));
+                minHeap.push(make_pair(node,distance[node]));
             }
         }
         //mark head as it has been seen and cant be considered again
         nodeSeen[headId] = true;
     }
-    vector<int> path = createList(prevNode,source,dest);
+
+    vector<int> path = createSPList(prevNode,source,dest);
+
     return make_tuple(distance[dest],path);
 }
-

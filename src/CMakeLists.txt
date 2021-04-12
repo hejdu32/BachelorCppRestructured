@@ -4,12 +4,12 @@ project(src)
 set(CMAKE_CXX_STANDARD 17)
 
 set(SOURCES main.cpp
-            adjacencyList.h
-            aStar.h
-            aStar.cpp
-            dijkstra.h
-            dijkstra.cpp
-            fileReader.h
-            shortestPath.h)
+        headers/adjacencyList.h
+        headers/aStar.h
+        implementation/aStar.cpp
+        headers/dijkstra.h
+        implementation/dijkstra.cpp
+        headers/fileReader.h
+        headers/shortestPath.h)
 
 add_executable(BachelorCppCmake ${SOURCES})

@@ -1,7 +1,7 @@
 #include <iostream>
-#include "adjacencyList.h"
-#include "aStar.h"
-#include "shortestPath.h"
+#include "headers/adjacencyList.h"
+#include "headers/aStar.h"
+#include "headers/shortestPath.h"
 #include <cassert>
 #include "headerLibs/json.hpp"
 
@@ -52,7 +52,7 @@ void testDijkstraToyExample() {
     cout << "Toy example Dijkstra test passed" << endl;
 }
 int main() {
-    //testDijkstraToyExample();
+    testDijkstraToyExample();
     nlohmann::json xd;
     xd["Name"] = "Svend";
     xd["Age"] = "23";
