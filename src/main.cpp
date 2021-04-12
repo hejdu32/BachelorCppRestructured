@@ -3,6 +3,7 @@
 #include "aStar.h"
 #include "shortestPath.h"
 #include <cassert>
+#include "headerLibs/json.hpp"
 
 using namespace std;
 void testDijkstraToyExample() {
@@ -51,6 +52,11 @@ void testDijkstraToyExample() {
     cout << "Toy example Dijkstra test passed" << endl;
 }
 int main() {
-    testDijkstraToyExample();
+    //testDijkstraToyExample();
+    nlohmann::json xd;
+    xd["Name"] = "Svend";
+    xd["Age"] = "23";
+    xd["Gender"] = "Unknown";
+    cout << xd;
     return 0;
 }
