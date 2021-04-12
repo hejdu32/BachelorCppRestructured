@@ -82,29 +82,29 @@ using namespace std;
         static void addHeuristicDist(adjListCollection &collection, int source, double HeuristicDist) {
             collection.heuristicDistance.insert(make_pair(source, HeuristicDist));
         }
-        void addxCoord(adjListCollection &collection, int node, double xCoord) {
+        static void addxCoord(adjListCollection &collection, int node, double xCoord) {
             if (node+1 > collection.xCoord.size()){
                 collection.xCoord.resize(node+1);
             }
             collection.xCoord[node] = xCoord;
         }
 
-        void addyCoord(adjListCollection &collection, int node, double yCoord){
+        static void addyCoord(adjListCollection &collection, int node, double yCoord){
             if (node+1 > collection.yCoord.size()){
                 collection.yCoord.resize(node+1);
             }
             collection.yCoord[node] = yCoord;
         }
 
-        double distanceCalc(double srcX, double srcY, double destX, double destY){
+        static double distanceCalc(double srcX, double srcY, double destX, double destY){
             return double(sqrt(pow(srcX-destX,2.0)+pow(srcY-destY,2.0)));
         }
-        double distanceCalc(double srcX, double srcY, double destX, double destY, int maxSpeed){
+        static double distanceCalc(double srcX, double srcY, double destX, double destY, int maxSpeed){
             return double(sqrt(pow(srcX - destX,2.0)+pow(srcY - destY,2.0)) / maxSpeed);
         }
 
-        double getxCoord(adjListCollection &collection, int value){return collection.xCoord[value];}
-        double getyCoord(adjListCollection &collection, int value){return collection.yCoord[value];}
+        static double getxCoord(adjListCollection &collection, int value){return collection.xCoord[value];}
+        static double getyCoord(adjListCollection &collection, int value){return collection.yCoord[value];}
 
         static int getIntID(adjListCollection &collection, long long int value) {
             return collection.longIdToIntID.find(value)->second;
