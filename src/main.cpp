@@ -145,10 +145,10 @@ void testDijkstraMaltaLarge(){
 
 
 int main() {
-    testDijkstraAdjlist();
-    testDijkstraToyExample();
-    testAStarToyExample();
-    testDijkstraMaltaSmall();
-    testDijkstraMaltaLarge();
+    //testDijkstraAdjlist();
+    //testDijkstraToyExample();
+    //testAStarToyExample();
+    //testDijkstraMaltaSmall();
+    //testDijkstraMaltaLarge();
     return 0;
 }
