@@ -36,30 +36,34 @@ public:
 
                 int source;
                 int dest;
-                double weight;
-                double heuristicDist;
+                double xCoord;
+                double yCoord;
                 for(auto& value: lineAsTokens){
+                    //cout << value << "\n";
                     char firstChar = value[0];
                     if(firstChar == '#'){
                         long long int sourceID = stoll(value.substr(1,value.size()-1));
                         source = listMutator.insertInMaps(adjListCollection, sourceID);
-                        //cout << source << '\n';
-                    }else if (firstChar == '*'){
-                        heuristicDist = stod(value.substr(1, value.size() - 1));
-                        listMutator.addHeuristicDist(adjListCollection, source, heuristicDist);
-                    }else if (firstChar == ';'){
-                        long long int destID = stoll(value.substr(1,value.size()-1));
-                        dest = listMutator.insertInMaps(adjListCollection, destID);
-                        //cout << dest << '\n';
-                    } else if (firstChar == ','){
-                        weight = stod(value.substr(1,value.size()-1));
-                        //cout << "adj pair: "<< source << "->" << dest << "," << weight << " \n";
-                        listMutator.addEdge(adjListCollection,source, dest,weight);
-                    }
-                    //cout << "outside of statements??" << "\n";
-                    //cout << value;
-                }
+                    } else if(firstChar == '^') {
+                        xCoord = stod(value.substr(1,value.size()-1));
+                        listMutator.addxCoord(adjListCollection, source, xCoord);
+                    } else if(firstChar == ','){
+                        yCoord = stod(value.substr(1,value.size()-1));
+                        listMutator.addyCoord(adjListCollection, source, yCoord);
+                    } else if(firstChar == ';'){
+                        string typeOfWay = value.substr(1,value.size()-1);
 
+
+                        long long destID = stoll(value.substr(1,value.size()-1));
+                        dest = listMutator.insertInMaps(adjListCollection,destID);
+                        //do math
+                        double srcX = listMutator.getxCoord(adjListCollection, source); double srcY = listMutator.getyCoord(adjListCollection, source);
+                        double destX = listMutator.getxCoord(adjListCollection,dest); double  destY = listMutator.getyCoord(adjListCollection,dest);
+
+                        double weight =listMutator.distanceCalc(srcX,srcY,destX,destY);
+                        listMutator.addEdge(adjListCollection,source,dest,weight);
+                    }
+                }
             }
             myfile.close();
         } else cout << "Error reading file\n";
