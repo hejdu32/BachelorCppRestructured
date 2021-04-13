@@ -52,8 +52,6 @@ public:
                         listMutator.addyCoord(adjListCollection, source, yCoord);
                     } else if(firstChar == ';'){
                         string typeOfWay = value.substr(1,value.size()-1);
-
-
                         long long destID = stoll(value.substr(1,value.size()-1));
                         dest = listMutator.insertInMaps(adjListCollection,destID);
                         //do math

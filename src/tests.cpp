@@ -173,8 +173,6 @@ void deserializeJsonFromFile(){
     cout << wrapperClass.toString() << endl;
     }
 
-
-
 int main(){
     deserializeJsonFromFile();
     return 0;
