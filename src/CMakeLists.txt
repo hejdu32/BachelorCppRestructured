@@ -10,7 +10,10 @@ set(SOURCES
         headers/dijkstra.h
         implementation/dijkstra.cpp
         headers/fileReader.h
-        headers/shortestPath.h)
+        headers/shortestPath.h
+        implementation/customNode.cpp
+        implementation/customWay.cpp
+        implementation/nodesAndWaysWrapper.cpp)
 
 add_executable(BachelorCppCmake main.cpp ${SOURCES})
 add_executable(Tests tests.cpp ${SOURCES})

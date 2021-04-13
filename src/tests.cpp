@@ -5,6 +5,7 @@
 #include "headers/aStar.h"
 #include "headers/shortestPath.h"
 #include "headerLibs/json.hpp"
+#include "implementation/nodesAndWaysWrapper.cpp"
 #include <iostream>
 #include <cassert>
 
@@ -161,7 +162,20 @@ void newTestInput(){
 
 }
 
+void deserializeJsonFromFile(){
+    using namespace nlohmann;
+    json j;
+    ifstream jsonFile;
+    //File path with appropriate json file created by java in graphBuilder writeToFileAsJsonMethod
+    jsonFile.open("C:/proj/test.json");
+    jsonFile >> j;
+    auto wrapperClass = j.get<nodesAndWaysWrapper>();
+    cout << wrapperClass.toString() << endl;
+    }
+
+
+
 int main(){
-    newTestInput();
+    deserializeJsonFromFile();
     return 0;
 }
