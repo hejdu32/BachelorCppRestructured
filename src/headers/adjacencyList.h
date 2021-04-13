@@ -17,7 +17,7 @@ using namespace std;
         std::map<long long int, int> longIdToIntID{};
         std::map<int, long long int> intIdToLongID{};
         std::vector<std::vector<std::pair<int, double>>> adjlst{};
-        std::map<int, double> heuristicDistance;
+        //std::map<int, double> heuristicDistance;
         std::vector<double> xCoord;
         std::vector<double> yCoord;
     };
@@ -79,9 +79,9 @@ using namespace std;
             return vectorWLongs;
         }
 
-        static void addHeuristicDist(adjListCollection &collection, int source, double HeuristicDist) {
-            collection.heuristicDistance.insert(make_pair(source, HeuristicDist));
-        }
+        //static void addHeuristicDist(adjListCollection &collection, int source, double HeuristicDist) {
+        //    collection.heuristicDistance.insert(make_pair(source, HeuristicDist));
+        //}
         static void addxCoord(adjListCollection &collection, int node, double xCoord) {
             if (node+1 > collection.xCoord.size()){
                 collection.xCoord.resize(node+1);
@@ -100,7 +100,8 @@ using namespace std;
             return double(sqrt(pow(srcX-destX,2.0)+pow(srcY-destY,2.0)));
         }
         static double distanceCalc(double srcX, double srcY, double destX, double destY, int maxSpeed){
-            return double(sqrt(pow(srcX - destX,2.0)+pow(srcY - destY,2.0)) / maxSpeed);
+            double dist = sqrt(pow(srcX - destX,2.0)+pow(srcY - destY,2.0));
+            return double(dist/maxSpeed);
         }
 
         static double getxCoord(adjListCollection &collection, int value){return collection.xCoord[value];}
