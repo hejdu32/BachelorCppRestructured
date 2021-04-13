@@ -147,6 +147,20 @@ void testDijkstraMaltaLarge(){
     cout << "\n";
 }
 
+void newTestInput(){
+    adjListCollection adjCol;
+    string maltaNew = "C:/Users/a/IdeaProjects/BachelorProject/app/malta";
+
+    shortestPath::createAdjacencyList(maltaNew, "file", adjCol);
+
+    int from = adjacencyList::getIntID(adjCol,146885871);
+    int to = adjacencyList::getIntID(adjCol,1498913919);
+
+    tuple<double,vector<int>> result; vector<long long int> idvec;
+    adjacencyList::printGraph(adjCol);
+
+}
+
 int main(){
     //communicateWithJava();
     //testDijkstraAdjlist();
