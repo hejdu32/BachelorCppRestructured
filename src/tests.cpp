@@ -162,12 +162,6 @@ void newTestInput(){
 }
 
 int main(){
-    //communicateWithJava();
-    //testDijkstraAdjlist();
-    //testDijkstraToyExample();
-    //testAStarToyExample();
-    //testDijkstraMaltaSmall();
-    //testDijkstraMaltaLarge();
     newTestInput();
     return 0;
 }
