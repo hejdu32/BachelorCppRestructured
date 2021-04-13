@@ -66,7 +66,7 @@ public:
         return 0;
     }
 
-    static void printVec(vector<long long int>const &input){
+    static void printVec(vector<long long>const &input){
         cout << "[";
         for (long long i : input) {
             cout << i << ' ';

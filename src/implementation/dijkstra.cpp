@@ -104,7 +104,6 @@ tuple<double, vector<int>> dijkstra::djikstraShortestPath(int source, int dest, 
         //mark head as it has been seen and cant be considered again
         nodeSeen[headId] = true;
     }
-
     vector<int> path = createSPList(prevNode,source,dest);
 
     return make_tuple(distance[dest],path);

@@ -32,6 +32,12 @@ vector<int> createList(vector<int> prevNode, int source, int destination){
     return shortestPath;
 }
 
+double calcHeuristicDistance(adjListCollection &adjListCollection, double fdestX, double fdestY, int fromNode){
+    double nodeX = adjacencyList::getxCoord(adjListCollection,fromNode);  double nodeY = adjacencyList::getyCoord(adjListCollection,fromNode);
+    return  adjacencyList::distanceCalc(fdestX,fdestY,nodeX,nodeY);
+
+}
+
 
 tuple<double, vector<int>> aStar::aStarShortestPath(int source, int dest, adjListCollection &adjListCollection) {
     const double INF = 999999999999;
@@ -48,8 +54,11 @@ tuple<double, vector<int>> aStar::aStarShortestPath(int source, int dest, adjLis
     //prevNode[source] = -1;
     //heap of nodes to evaluate
     priority_queue<pair<int,double>, vector<pair<int,double>>, comparator> minHeap;
-    double sourceHeuristic = adjListCollection.heuristicDistance.find(source)->second;
-    minHeap.push(make_pair(source,0.0+sourceHeuristic));
+    double fdestX = adjacencyList::getxCoord(adjListCollection,dest);
+    double fdestY = adjacencyList::getyCoord(adjListCollection,dest);
+
+    minHeap.push(make_pair(source,0.0+ calcHeuristicDistance(adjListCollection,fdestX,fdestY,source)));
+
 
     while (!minHeap.empty()){
         //pop the top element
@@ -66,7 +75,9 @@ tuple<double, vector<int>> aStar::aStarShortestPath(int source, int dest, adjLis
         for(auto i: adjListCollection.adjlst[headId]){
             int node = i.first;
             double weight = i.second;
-            double heuristicWeight = adjListCollection.heuristicDistance.find(node)->second;
+
+            double heuristicWeight = calcHeuristicDistance(adjListCollection,fdestX,fdestY,node);
+
             //relaxation step, in astar we add the heuristic weight in to consideration
             if(!nodeSeen[node] && (distance[headId]+weight+heuristicWeight) < distance[node]){
                 //update the distance to the node and add it to the queue
