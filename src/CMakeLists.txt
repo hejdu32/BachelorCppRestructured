@@ -3,7 +3,7 @@ project(src)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(SOURCES main.cpp
+set(SOURCES
         headers/adjacencyList.h
         headers/aStar.h
         implementation/aStar.cpp
@@ -12,4 +12,5 @@ set(SOURCES main.cpp
         headers/fileReader.h
         headers/shortestPath.h)
 
-add_executable(BachelorCppCmake ${SOURCES})
+add_executable(BachelorCppCmake main.cpp ${SOURCES})
+add_executable(Tests tests.cpp ${SOURCES})
