@@ -166,8 +166,8 @@ void testAStarToyExample(){
 
 adjListCollection setUpDatastructure(string country){
     adjListCollection adjCol;
-    string malta = "C:/Users/a/CLionProjects/BachelorCppRestructured/resources/malta";
-    string denmark = "C:/Users/a/CLionProjects/BachelorCppRestructured/resources/denmark2";
+    string malta = "C:/Users/a/IdeaProjects/BachelorProject/app/malta";
+    string denmark = "C:/Users/a/IdeaProjects/BachelorProject/app/denmark";
     if(country== "malta"){
 
         cout << "parsing started on " << country << endl;
@@ -384,6 +384,8 @@ void deserializeJsonFromFile(){
     cout << wrapperClass.toString() << endl;
     }
 
+
+
 int main(){
     //runMaltaTests();
     //runDenmarkTests();
@@ -399,6 +401,6 @@ int main(){
     //testAStarToyExample();
 
 
-    deserializeJsonFromFile();
+    //deserializeJsonFromFile();
     return 0;
 }
