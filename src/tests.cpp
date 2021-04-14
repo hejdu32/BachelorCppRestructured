@@ -387,7 +387,7 @@ void deserializeJsonFromFile(){
 
 
 int main(){
-    runMaltaTests();
+    //runMaltaTests();
     //runDenmarkTests();
 
     //_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
