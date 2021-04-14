@@ -128,11 +128,12 @@ using namespace std;
             return wrapperClass;
         }
         static void createAdjListCollection(nodesAndWaysWrapper wrapper, adjListCollection &adjListCollection){
-            for(customWay way: wrapper.getWays()){
+            auto ways = wrapper.getWays();
+            for(map<long, customWay>::iterator it = ways.begin(); it != ways.end(); it++){
                 long previousId = 0;
                 vector<long>::const_iterator itr;
-                vector<long> nodeIds = way.getNodeIdList();
-                vector<customNode> nodes = wrapper.getNodes();
+                vector<long> nodeIds = it->second.getNodeIdList();
+                auto nodes = wrapper.getNodes();
                 for(itr = nodeIds.cbegin(); itr < nodeIds.cend(); itr++){
                     if(*itr == nodeIds[0]){
                         previousId = *itr;
@@ -149,6 +150,8 @@ using namespace std;
                         double dist = distanceCalc(prevX, prevY, currX, currY);
                         addEdge(adjListCollection, previousId, *itr, dist);
                         addEdge(adjListCollection, *itr, previousId, dist);
+
+                        previousId = *itr;
                     }
                 }
             }
