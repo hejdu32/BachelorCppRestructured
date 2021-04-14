@@ -9,12 +9,12 @@ using namespace std;
 
 void communicateWithJava() {
     enum commands{
-        makeAdjecencyList,
+        makeAdjacencyList,
         runDijkstra
     };
     map<string, commands> mapStringToEnum =
             {
-                    {"makeAdjecencyList", makeAdjecencyList},
+                    {"makeAdjacencyList", makeAdjacencyList},
                     {"runDijkstra", runDijkstra}
             };
     string line;
@@ -22,8 +22,11 @@ void communicateWithJava() {
     while(getline(cin, line)) {
         commands switchType = mapStringToEnum[line];
         switch (switchType) {
-            case makeAdjecencyList: {
-                shortestPath::createAdjacencyList("", "java", adjCol);
+            case makeAdjacencyList: {
+                //shortestPath::createAdjacencyList("", "java", adjCol);
+                nodesAndWaysWrapper wrapper = adjacencyList::deserializeFromJson("C:/proj/BachelorCppCmake/resources/malta.json");
+                adjacencyList::createAdjListCollection(wrapper, adjCol);
+                cout << "Finished making adjacency list" << endl;
                 break;
             }
             case runDijkstra: {

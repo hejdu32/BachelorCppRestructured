@@ -2,13 +2,16 @@
 // Created by simon on 12-04-2021.
 //
 
-#ifndef ADJANCENCYLIST
-#define ADJANCENCYLIST
+#ifndef ADJACENCYLIST
+#define ADJACENCYLIST
 
+#include "../implementation/nodesAndWaysWrapper.cpp"
 #include <vector>
 #include <map>
 #include <utility>
 #include <iostream>
+#include <fstream>
+
 
 using namespace std;
 
@@ -114,5 +117,41 @@ using namespace std;
         static long long int getLongID(adjListCollection &collection, int value) {
             return collection.intIdToLongID.find(value)->second;
         }
+        static nodesAndWaysWrapper deserializeFromJson(string filePath){
+            using namespace nlohmann;
+            json j;
+            ifstream jsonFile;
+            //File path with appropriate json file created by java in graphBuilder writeToFileAsJsonMethod
+            jsonFile.open(filePath);
+            jsonFile >> j;
+            auto wrapperClass = j.get<nodesAndWaysWrapper>();
+            return wrapperClass;
+        }
+        static void createAdjListCollection(nodesAndWaysWrapper wrapper, adjListCollection &adjListCollection){
+            for(customWay way: wrapper.getWays()){
+                long previousId = 0;
+                vector<long>::const_iterator itr;
+                vector<long> nodeIds = way.getNodeIdList();
+                vector<customNode> nodes = wrapper.getNodes();
+                for(itr = nodeIds.cbegin(); itr < nodeIds.cend(); itr++){
+                    if(*itr == nodeIds[0]){
+                        previousId = *itr;
+                    }
+                    else{
+                        customNode previousNode = nodes[previousId];
+                        double prevX = previousNode.getLatitudeAsXCoord();
+                        double prevY = previousNode.getLongtitudeAsYCoord();
+
+                        customNode currentNode = nodes[*itr];
+                        double currX = currentNode.getLatitudeAsXCoord();
+                        double currY = currentNode.getLongtitudeAsYCoord();
+
+                        double dist = distanceCalc(prevX, prevY, currX, currY);
+                        addEdge(adjListCollection, previousId, *itr, dist);
+                        addEdge(adjListCollection, *itr, previousId, dist);
+                    }
+                }
+            }
+        }
     };
-#endif //ADJANCENCYLIST
+#endif //ADJACENCYLIST
