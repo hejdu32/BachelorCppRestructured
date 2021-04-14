@@ -9,20 +9,21 @@ using namespace std;
 
 void communicateWithJava() {
     enum commands{
-        makeAdjecencyList,
+        makeAdjacencyList,
         runDijkstra
     };
     map<string, commands> mapStringToEnum =
             {
-                    {"makeAdjecencyList", makeAdjecencyList},
+                    {"makeAdjacencyList", makeAdjacencyList},
                     {"runDijkstra", runDijkstra}
             };
     string line;
     adjListCollection adjCol;
     while(getline(cin, line)) {
         commands switchType = mapStringToEnum[line];
+        cout << switchType << endl;
         switch (switchType) {
-            case makeAdjecencyList: {
+            case makeAdjacencyList: {
                 shortestPath::createAdjacencyList("", "java", adjCol);
                 break;
             }
@@ -44,6 +45,7 @@ void communicateWithJava() {
                 break;
             }
         }
+        cout << "out of switch" << endl;
     }
     cout << "OutOfLoop error" << endl;
     //BachelorCpp::createAdjList listMaker;
