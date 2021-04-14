@@ -59,7 +59,6 @@ private:
             //true if the road is a two way road
             if(true){
                 adjacencyList::addEdge(collection,source,dest,weight);
-
                 adjacencyList::addEdge(collection,dest,source,weight);
             } else {
             adjacencyList::addEdge(collection,source,dest,weight);}
@@ -79,8 +78,13 @@ public:
     static int readFile(string path, adjListCollection &adjListCollection) {
         string line;
         ifstream myfile(path);
+        int counter = 0;
         if (myfile.is_open()) {
             while (getline(myfile, line)) {
+                counter++;
+                if (counter % 100000 == 0){
+                    cout<< "counter: " << counter <<endl;
+                }
                 if(line =="!"){
                     //cout << "eof";
                     myfile.close();
@@ -107,7 +111,7 @@ public:
                         yCoord = stod(value.substr(1,value.size()-1));
                         adjacencyList::addyCoord(adjListCollection, source, yCoord);
                     } else if(firstChar == ';'){
-                        string typeOfWay = value.substr(1,value.size()-1);
+                        //string typeOfWay = value.substr(1,value.size()-1);
                         //printStrVec(lineAsTokens);
                         //loop over actual way values, first element isnt a way id
                         handleWays(lineAsTokens, adjListCollection);
