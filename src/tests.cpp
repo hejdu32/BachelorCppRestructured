@@ -390,6 +390,7 @@ int main(){
     runMaltaTests();
     //runDenmarkTests();
 
+
     //_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
     //_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
     //_CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_FILE | _CRTDBG_MODE_WNDW );
