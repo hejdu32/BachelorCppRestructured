@@ -164,34 +164,6 @@ void testAStarToyExample(){
 }
 
 
-adjListCollection setUpDatastructure(string country){
-    adjListCollection adjCol;
-    string malta = "C:/Users/a/IdeaProjects/BachelorProject/app/malta";
-    string denmark = "C:/Users/a/IdeaProjects/BachelorProject/app/denmark";
-    if(country== "malta"){
-
-        cout << "parsing started on " << country << endl;
-        auto t1 = high_resolution_clock::now();
-        shortestPath::createAdjacencyList(malta, "file", adjCol);
-        auto t2 = high_resolution_clock::now();
-        duration<double, milli> ms_double = t2 - t1;
-        cout << "time to parse malta: "<< (ms_double.count()/1000) << "seconds"<<endl;
-    }else if(country=="denmark"){
-        cout << "parsing started on " << country << endl;
-        //fixed size vector
-        //adjCol.adjlst.resize(3976155, vector<pair<int, double>>(15));
-        auto t1 = high_resolution_clock::now();
-        shortestPath::createAdjacencyList(denmark, "file", adjCol);
-        auto t2 = high_resolution_clock::now();
-        duration<double, milli> ms_double = t2 - t1;
-        cout << "time to parse denmark: "<< (ms_double.count()/1000) << "seconds"<<endl;
-    }else {
-        cout << country << " not found";
-    }
-    cout << "finsihed parsing " << country << endl;
-    return adjCol;
-}
-
 void testDijkstraMaltaSmall(adjListCollection &adjCol){
     //short area in malta
     int from = adjacencyList::getIntID(adjCol,146885871);
@@ -204,8 +176,8 @@ void testDijkstraMaltaSmall(adjListCollection &adjCol){
     duration<double, milli> ms_double = t2 - t1;
     idvec = adjacencyList::spVectorToLongId(adjCol, get<1>(result));
     cout << "dijkstra from: 146885871, to: 1498913919 (short distance malta) \n" ;
-    cout << "distance: " << get<0>(result) << endl;
-    cout << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
+    cout << "distance: " << get<0>(result) << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
+    cout << "nodes in path: "<< idvec.size() << endl;
     cout << "path: ";
     shortestPath::printVec(idvec);
     cout << endl;
@@ -222,8 +194,8 @@ void testAStarMaltaSmall(adjListCollection &adjCol){
     duration<double, milli> ms_double = t2 - t1;
     idvec = adjacencyList::spVectorToLongId(adjCol, get<1>(result));
     cout << "astar from: 146885871, to: 1498913919 (short distance malta) \n" ;
-    cout << "distance: " << get<0>(result) << endl;
-    cout << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
+    cout << "distance: " << get<0>(result) << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
+    cout << "nodes in path: "<< idvec.size() << endl;
     cout << "path: ";
     shortestPath::printVec(idvec);
     cout << endl;
@@ -240,13 +212,12 @@ void testDijkstraMaltaLarge(adjListCollection &adjCol){
     duration<double, milli> ms_double = t2 - t1;
     idvec = adjacencyList::spVectorToLongId(adjCol, get<1>(result));
     cout << "dijkstra from: 3593516725, to: 5037683804 (long distance malta) \n" ;
-    cout << "distance: " << get<0>(result) << endl;
-    cout << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
+    cout << "distance: " << get<0>(result) << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
     cout << "nodes in path: "<< idvec.size() << endl;
+    cout << endl;
     //cout << "path: ";
     //shortestPath::printVec(idvec);
     //cout << endl;
-    cout << endl;
 }
 void testAStarMaltaLarge(adjListCollection &adjCol){
     //long area in malta
@@ -260,13 +231,12 @@ void testAStarMaltaLarge(adjListCollection &adjCol){
     duration<double, milli> ms_double = t2 - t1;
     idvec = adjacencyList::spVectorToLongId(adjCol, get<1>(result));
     cout << "astar from: 3593516725, to: 5037683804 (long distance malta) \n" ;
-    cout << "distance: " << get<0>(result) << endl;
-    cout << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
+    cout << "distance: " << get<0>(result) << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
     cout << "nodes in path: "<< idvec.size() << endl;
+    cout << endl;
     //cout << "path: ";
     //shortestPath::printVec(idvec);
     //cout << endl;
-    cout << endl;
 }
 
 void testAArhusToAArhus(adjListCollection &adjCol){
@@ -357,6 +327,33 @@ void testAArhusToCopenhagen(adjListCollection &adjCol){
     cout << endl;
 }
 
+adjListCollection setUpDatastructure(string country){
+    adjListCollection adjCol;
+    string malta = "C:/Users/a/IdeaProjects/BachelorProject/app/malta";
+    string denmark = "C:/Users/a/IdeaProjects/BachelorProject/app/denmark";
+    if(country== "malta"){
+
+        cout << "parsing started on " << country << endl;
+        auto t1 = high_resolution_clock::now();
+        shortestPath::createAdjacencyList(malta, "file", adjCol);
+        auto t2 = high_resolution_clock::now();
+        duration<double, milli> ms_double = t2 - t1;
+        cout << "time to parse malta: "<< (ms_double.count()/1000) << "seconds"<<endl;
+    }else if(country=="denmark"){
+        cout << "parsing started on " << country << endl;
+        //fixed size vector
+        //adjCol.adjlst.resize(3976155, vector<pair<int, double>>(15));
+        auto t1 = high_resolution_clock::now();
+        shortestPath::createAdjacencyList(denmark, "file", adjCol);
+        auto t2 = high_resolution_clock::now();
+        duration<double, milli> ms_double = t2 - t1;
+        cout << "time to parse denmark: "<< (ms_double.count()/1000) << "seconds"<<endl;
+    }else {
+        cout << country << " not found";
+    }
+    cout << "finsihed parsing " << country << endl;
+    return adjCol;
+}
 void runMaltaTests(){
     adjListCollection malta = setUpDatastructure("malta");
     testDijkstraMaltaLarge(malta);
@@ -381,10 +378,8 @@ void deserializeJsonFromFile(){
     jsonFile.open("C:/proj/test.json");
     jsonFile >> j;
     auto wrapperClass = j.get<nodesAndWaysWrapper>();
-    cout << wrapperClass.toString() << endl;
-    }
-
-
+    //cout << wrapperClass.toString() << endl;
+}
 
 int main(){
     runMaltaTests();

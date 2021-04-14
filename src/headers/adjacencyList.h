@@ -68,7 +68,7 @@ using namespace std;
             for (int s = 0; s < collection.adjlst.size(); s++) {
                 cout << "Node " << s << endl;
                 for (auto &pair: collection.adjlst[s]) {
-                    cout << " dest: " << pair.first << " weight: " << pair.second << endl;
+                    cout << "dest: " << pair.first << " weight: " << pair.second << endl;
                 }
             }
         }
@@ -82,9 +82,6 @@ using namespace std;
             return vectorWLongs;
         }
 
-        //static void addHeuristicDist(adjListCollection &collection, int source, double HeuristicDist) {
-        //    collection.heuristicDistance.insert(make_pair(source, HeuristicDist));
-        //}
         static void addxCoord(adjListCollection &collection, int node, double xCoord) {
             if (node+1 > collection.xCoord.size()){
                 collection.xCoord.resize(node+1);
@@ -98,10 +95,18 @@ using namespace std;
             }
             collection.yCoord[node] = yCoord;
         }
-
-        static double distanceCalc(double srcX, double srcY, double destX, double destY){
+        //astar heuristic algorithms
+        static double euclidDistance(double srcX, double srcY, double destX, double destY){
             return double(sqrt(pow(srcX-destX,2.0)+pow(srcY-destY,2.0)));
         }
+        static double manhatDistance(double srcX, double srcY, double destX, double destY){
+            return double(abs(srcX-destX)+abs(srcY-destY));
+        }
+        static double chebyDistance(double srcX, double srcY, double destX, double destY){
+            return double(max(abs(srcX-destX),abs(srcY-destY)));
+        }
+        //astar heurisctic algorithms
+
         static double distanceCalc(double srcX, double srcY, double destX, double destY, int maxSpeed){
             double dist = sqrt(pow(srcX - destX,2.0)+pow(srcY - destY,2.0));
             return double(dist/maxSpeed);
@@ -147,7 +152,7 @@ using namespace std;
                         double currX = currentNode.getLatitudeAsXCoord();
                         double currY = currentNode.getLongtitudeAsYCoord();
 
-                        double dist = distanceCalc(prevX, prevY, currX, currY);
+                        double dist = euclidDistance(prevX, prevY, currX, currY);
                         addEdge(adjListCollection, previousId, *itr, dist);
                         addEdge(adjListCollection, *itr, previousId, dist);
 

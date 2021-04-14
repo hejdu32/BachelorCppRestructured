@@ -34,7 +34,7 @@ vector<int> createList(vector<int> prevNode, int source, int destination){
 
 double calcHeuristicDistance(adjListCollection &adjListCollection, double fdestX, double fdestY, int fromNode){
     double nodeX = adjacencyList::getxCoord(adjListCollection,fromNode);  double nodeY = adjacencyList::getyCoord(adjListCollection,fromNode);
-    return  adjacencyList::distanceCalc(fdestX,fdestY,nodeX,nodeY);
+    return adjacencyList::euclidDistance(fdestX, fdestY, nodeX, nodeY);
 
 }
 
