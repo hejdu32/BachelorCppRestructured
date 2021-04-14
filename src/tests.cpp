@@ -386,7 +386,7 @@ void deserializeJsonFromFile(){
 
 int main(){
     //runMaltaTests();
-    runDenmarkTests();
+    //runDenmarkTests();
 
     //_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
     //_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
@@ -399,6 +399,6 @@ int main(){
     //testAStarToyExample();
 
 
-    //deserializeJsonFromFile();
+    deserializeJsonFromFile();
     return 0;
 }

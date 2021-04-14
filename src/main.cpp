@@ -21,10 +21,12 @@ void communicateWithJava() {
     adjListCollection adjCol;
     while(getline(cin, line)) {
         commands switchType = mapStringToEnum[line];
-        cout << switchType << endl;
         switch (switchType) {
             case makeAdjacencyList: {
-                shortestPath::createAdjacencyList("", "java", adjCol);
+                //shortestPath::createAdjacencyList("", "java", adjCol);
+                nodesAndWaysWrapper wrapper = adjacencyList::deserializeFromJson("C:/proj/BachelorCppCmake/resources/malta.json");
+                adjacencyList::createAdjListCollection(wrapper, adjCol);
+                cout << "Finished making adjacency list" << endl;
                 break;
             }
             case runDijkstra: {
@@ -45,7 +47,6 @@ void communicateWithJava() {
                 break;
             }
         }
-        cout << "out of switch" << endl;
     }
     cout << "OutOfLoop error" << endl;
     //BachelorCpp::createAdjList listMaker;
