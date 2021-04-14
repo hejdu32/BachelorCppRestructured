@@ -20,26 +20,8 @@ using namespace std;
 class fileReader{
 private:
     static void handleWays(vector<string> &lineAsTokens, adjListCollection &collection) {
-        map<string, int> wayTypeToMaxSpeed ={
-                {"unclassified", 1},
-                {"tertiary_link", 1},
-                {"primary_link", 1},
-                {"tertiary", 1},
-                {"living_street", 1},
-                {"motorway_link", 1},
-                {"trunk", 1},
-                {"motorway", 1},
-                {"secondary", 1},
-                {"residential", 1},
-                {"service", 1},
-                {"track", 1},
-                {"secondary_link", 1},
-                {"trunk_link", 1},
-                {"primary", 1},
-                {"testroad", 1}
-        };
         string typeOfWay = lineAsTokens[0].substr(1,lineAsTokens[0].size()-1);
-        int maxSpeed = wayTypeToMaxSpeed[typeOfWay];
+        int maxSpeed = stoi(typeOfWay);
         long long srcID;
         long long destID;
         int source;
@@ -77,25 +59,6 @@ private:
 
 public:
     static int readFile(string path, adjListCollection &adjListCollection) {
-        map<string, int> wayTypeToMaxSpeed ={
-                {"unclassified", 1},
-                {"tertiary_link", 1},
-                {"primary_link", 1},
-                {"tertiary", 1},
-                {"living_street", 1},
-                {"motorway_link", 1},
-                {"trunk", 1},
-                {"motorway", 1},
-                {"secondary", 1},
-                {"residential", 1},
-                {"service", 1},
-                {"track", 1},
-                {"secondary_link", 1},
-                {"trunk_link", 1},
-                {"primary", 1},
-                {"testroad", 1}
-        };
-
         string line;
         ifstream myfile(path);
 
@@ -106,7 +69,7 @@ public:
         int counter = 0;
         while (getline(myfile, line)) {
             counter++;
-            if (counter % 100000 == 0){
+            if (counter % 500000 == 0){
                 cout<< "counter: " << counter <<endl;
             }
             istringstream buf(line);
@@ -129,7 +92,7 @@ public:
             } else if(lineAsTokens[0][0]==';'){
                 //handleWays(lineAsTokens, adjListCollection);
                 string typeOfWay = lineAsTokens[0].substr(1,lineAsTokens[0].size()-1);
-                int maxSpeed = wayTypeToMaxSpeed[typeOfWay];
+                int maxSpeed = stoi(typeOfWay);
                 long long srcID;
                 long long destID;
                 int source;
