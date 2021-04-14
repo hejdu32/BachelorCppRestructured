@@ -33,6 +33,7 @@ public:
     static int createAdjacencyList(string path, string method, adjListCollection &adjListCollection) {
         if (method == "file") {
             fileReader::readFile(std::move(path), adjListCollection);
+            //fileReader::readFile2(std::move(path), adjListCollection);
         } else if (method == "java") {
             string line;
             bool reading = true;

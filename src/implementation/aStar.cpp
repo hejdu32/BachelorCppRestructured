@@ -59,7 +59,6 @@ tuple<double, vector<int>> aStar::aStarShortestPath(int source, int dest, adjLis
 
     minHeap.push(make_pair(source,0.0+ calcHeuristicDistance(adjListCollection,fdestX,fdestY,source)));
 
-
     while (!minHeap.empty()){
         //pop the top element
         pair<int,double> head = minHeap.top();
@@ -75,11 +74,9 @@ tuple<double, vector<int>> aStar::aStarShortestPath(int source, int dest, adjLis
         for(auto i: adjListCollection.adjlst[headId]){
             int node = i.first;
             double weight = i.second;
-
             double heuristicWeight = calcHeuristicDistance(adjListCollection,fdestX,fdestY,node);
-
             //relaxation step, in astar we add the heuristic weight in to consideration
-            if(!nodeSeen[node] && (distance[headId]+weight+heuristicWeight) < distance[node]){
+            if(!nodeSeen[node] && (distance[headId]+weight) < distance[node]){ //+heuristicWeight
                 //update the distance to the node and add it to the queue
                 distance[node] = distance[headId]+weight;
                 prevNode[node] = headId; //remember the node before for finding the shortest path to destination
