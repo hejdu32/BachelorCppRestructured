@@ -196,7 +196,7 @@ public:
         stringstream data(dataInBuffer);
         int loopcounter = 0;
         while(data){
-            loopcounter++;
+            //loopcounter++;
             string line;
             getline(data,line,'\n');
             istringstream buf(line);
