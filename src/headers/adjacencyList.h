@@ -13,13 +13,13 @@
 using namespace std;
 
     struct adjListCollection {
-        int idSoFar = 0;
-        std::map<long long int, int> longIdToIntID{};
-        std::map<int, long long int> intIdToLongID{};
         std::vector<std::vector<std::pair<int, double>>> adjlst{};
+        std::map<long long, int> longIdToIntID{};
+        std::map<int, long long> intIdToLongID{};
         //std::map<int, double> heuristicDistance;
         std::vector<double> xCoord;
         std::vector<double> yCoord;
+        int idSoFar = 0;
     };
 
     class adjacencyList {
@@ -52,7 +52,7 @@ using namespace std;
                     collection.adjlst[source] = secondVector;
                     //cout << "first elem of vec is " << dest << "\n";
                 } else {
-                    collection.adjlst[source].push_back(make_pair(dest, weight));
+                    collection.adjlst[source].emplace_back(dest, weight);
                     //cout << "new edge " << dest << "\n";
                 }
             }

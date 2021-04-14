@@ -59,7 +59,6 @@ tuple<double, vector<int>> aStar::aStarShortestPath(int source, int dest, adjLis
 
     minHeap.push(make_pair(source,0.0+ calcHeuristicDistance(adjListCollection,fdestX,fdestY,source)));
 
-
     while (!minHeap.empty()){
         //pop the top element
         pair<int,double> head = minHeap.top();
