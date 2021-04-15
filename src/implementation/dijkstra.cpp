@@ -57,10 +57,17 @@ vector<int> createSPList(vector<int> prevNode, int source, int destination){
     return shortestPath;
 }
 
+int nodesConsidered2(vector<bool> nodesSeen){
+    int nodes = 0;
+    for (auto b:nodesSeen) {
+        if(b){nodes++;}
+    }
+    return nodes;
+}
 
-tuple<double, vector<int>> dijkstra::djikstraShortestPath(int source, int dest, adjListCollection &adjListCollection) {
+tuple<double, vector<int>> dijkstra::djikstraShortestPath(int source, int dest, adjListCollection &adjCol) {
     const double INF = 999999999999;
-    int sizeOfGraph = adjListCollection.intIdToLongID.size();
+    int sizeOfGraph = adjCol.idSoFar;
     //initilaize distance from source to everything to infinity
     //distance from source to source to 0
     vector<double> distance(sizeOfGraph,INF);
@@ -71,9 +78,9 @@ tuple<double, vector<int>> dijkstra::djikstraShortestPath(int source, int dest, 
     //path from source to destination
     vector<int> prevNode(sizeOfGraph,-1);
     //prevNode[source] = -1;
-
     //heap of nodes to evaluate
     priority_queue<pair<int,double>, vector<pair<int,double>>, comparator> minHeap;
+
     minHeap.push(make_pair(source,0.0));
     while (!minHeap.empty()){
         //pop the top element
@@ -82,14 +89,14 @@ tuple<double, vector<int>> dijkstra::djikstraShortestPath(int source, int dest, 
         int headId = head.first;
 
         //Have we reached destination check
-        if (head.first==dest){
+        if (headId==dest){
             //we have arrived at destination and we are done
             //cout << "we have hit destination \n";
             break;
         }
 
         //add new nodes to queue
-        for(auto i: adjListCollection.adjlst[headId]){
+        for(auto i: adjCol.adjlst[headId]){
             int node = i.first;
             double weight = i.second;
 

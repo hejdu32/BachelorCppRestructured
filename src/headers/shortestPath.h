@@ -49,10 +49,10 @@ public:
                 for (auto &value: lineAsTokens) {
                     char firstChar = value[0];
                     if (firstChar == '#') {
-                        long long int sourceID = stoll(value.substr(1, value.size() - 1));
+                        long long sourceID = stoll(value.substr(1, value.size() - 1));
                         source = adjacencyList::insertInMaps(adjListCollection, sourceID);
                     } else if (firstChar == ';') {
-                        long long int destID = stoll(value.substr(1, value.size() - 1));
+                        long long destID = stoll(value.substr(1, value.size() - 1));
                         dest = adjacencyList::insertInMaps(adjListCollection, destID);
                     } else if (firstChar == ',') {
                         weight = stod(value.substr(1, value.size() - 1));

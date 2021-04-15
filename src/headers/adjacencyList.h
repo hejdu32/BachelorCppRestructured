@@ -19,7 +19,6 @@ using namespace std;
         std::vector<std::vector<std::pair<int, double>>> adjlst{};
         std::map<long long, int> longIdToIntID{};
         std::map<int, long long> intIdToLongID{};
-        //std::map<int, double> heuristicDistance;
         std::vector<double> xCoord;
         std::vector<double> yCoord;
         int idSoFar = 0;
@@ -27,7 +26,7 @@ using namespace std;
 
     class adjacencyList {
     public:
-        static int insertInMaps(adjListCollection &collection, long long int id) {
+        static int insertInMaps(adjListCollection &collection, long long id) {
             //if the key doesnt already exsist
             int newId;
             if (collection.longIdToIntID.count(id) == 0) {
@@ -73,10 +72,10 @@ using namespace std;
             }
         }
 
-        static vector<long long int> spVectorToLongId(adjListCollection &collection, vector<int> spList) {
-            vector<long long int> vectorWLongs;
+        static vector<long long> spVectorToLongId(adjListCollection &collection, vector<int> spList) {
+            vector<long long> vectorWLongs;
             for (auto id: spList) {
-                long long int newid = collection.intIdToLongID.find(id)->second;
+                long long newid = collection.intIdToLongID.find(id)->second;
                 vectorWLongs.push_back(newid);
             }
             return vectorWLongs;
@@ -95,6 +94,7 @@ using namespace std;
             }
             collection.yCoord[node] = yCoord;
         }
+
         //astar heuristic algorithms
         static double euclidDistance(double srcX, double srcY, double destX, double destY){
             return double(sqrt(pow(srcX-destX,2.0)+pow(srcY-destY,2.0)));
@@ -115,11 +115,11 @@ using namespace std;
         static double getxCoord(adjListCollection &collection, int value){return collection.xCoord[value];}
         static double getyCoord(adjListCollection &collection, int value){return collection.yCoord[value];}
 
-        static int getIntID(adjListCollection &collection, long long int value) {
+        static int getIntID(adjListCollection &collection, long long value) {
             return collection.longIdToIntID.find(value)->second;
         }
 
-        static long long int getLongID(adjListCollection &collection, int value) {
+        static long long getLongID(adjListCollection &collection, int value) {
             return collection.intIdToLongID.find(value)->second;
         }
         static nodesAndWaysWrapper deserializeFromJson(string filePath){

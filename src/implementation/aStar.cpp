@@ -10,6 +10,7 @@
 
 using namespace std;
 
+
 struct comparator{
     constexpr bool operator()(
             pair<int, double> const& a,
@@ -20,7 +21,7 @@ struct comparator{
     }
 };
 
-vector<int> createList(vector<int> prevNode, int source, int destination){
+vector<int> findPath(vector<int> prevNode, int source, int destination){
     int temdest = destination;
     vector<int> shortestPath;
     while (temdest != source && prevNode[temdest] != -1){
@@ -32,16 +33,24 @@ vector<int> createList(vector<int> prevNode, int source, int destination){
     return shortestPath;
 }
 
-double calcHeuristicDistance(adjListCollection &adjListCollection, double fdestX, double fdestY, int fromNode){
-    double nodeX = adjacencyList::getxCoord(adjListCollection,fromNode);  double nodeY = adjacencyList::getyCoord(adjListCollection,fromNode);
-    return adjacencyList::euclidDistance(fdestX, fdestY, nodeX, nodeY);
-
+int nodesConsidered(vector<bool> &nodesSeen){
+    int nodes = 0;
+    for (auto b:nodesSeen) {
+        if(b){nodes++;}
+    }
+    return nodes;
 }
 
 
-tuple<double, vector<int>> aStar::aStarShortestPath(int source, int dest, adjListCollection &adjListCollection) {
+
+double calcHeuristicDistance(double fdestX, double fdestY, double nodeX, double nodeY){
+    return adjacencyList::euclidDistance(fdestX, fdestY, nodeX, nodeY);
+}
+
+
+tuple<double, vector<int>> aStar::aStarShortestPath(int source, int dest, adjListCollection &adjCol) {
     const double INF = 999999999999;
-    int sizeOfGraph = adjListCollection.intIdToLongID.size();
+    int sizeOfGraph = adjCol.idSoFar;
     //initilaize distance from source to everything to infinity
     //distance from source to source to 0
     vector<double> distance(sizeOfGraph,INF);
@@ -54,27 +63,29 @@ tuple<double, vector<int>> aStar::aStarShortestPath(int source, int dest, adjLis
     //prevNode[source] = -1;
     //heap of nodes to evaluate
     priority_queue<pair<int,double>, vector<pair<int,double>>, comparator> minHeap;
-    double fdestX = adjacencyList::getxCoord(adjListCollection,dest);
-    double fdestY = adjacencyList::getyCoord(adjListCollection,dest);
 
-    minHeap.push(make_pair(source,0.0+ calcHeuristicDistance(adjListCollection,fdestX,fdestY,source)));
+    double fdestX = adjacencyList::getxCoord(adjCol, dest);
+    double fdestY = adjacencyList::getyCoord(adjCol, dest);
 
+
+    minHeap.push(make_pair(source,0.0+ calcHeuristicDistance(fdestX, fdestY, adjacencyList::getxCoord(adjCol, source), adjacencyList::getyCoord(adjCol, source))));
     while (!minHeap.empty()){
         //pop the top element
         pair<int,double> head = minHeap.top();
         minHeap.pop();
         int headId = head.first;
         //Have we reached destination check
-        if (head.first==dest){
+        if (headId==dest){
             //we have arrived at destination and we are done
             //cout << "we have hit destination \n";
             break;
         }
         //add new nodes to queue
-        for(auto i: adjListCollection.adjlst[headId]){
+        for(auto i: adjCol.adjlst[headId]){
             int node = i.first;
             double weight = i.second;
-            double heuristicWeight = calcHeuristicDistance(adjListCollection,fdestX,fdestY,node);
+            double nodeX = adjacencyList::getxCoord(adjCol, node);  double nodeY = adjacencyList::getyCoord(adjCol, node);
+            double heuristicWeight = calcHeuristicDistance(fdestX, fdestY, nodeX, nodeY);
             //relaxation step, in astar we add the heuristic weight in to consideration
             if(!nodeSeen[node] && (distance[headId]+weight) < distance[node]){ //+heuristicWeight
                 //update the distance to the node and add it to the queue
@@ -87,7 +98,9 @@ tuple<double, vector<int>> aStar::aStarShortestPath(int source, int dest, adjLis
         //mark head as it has been seen and cant be considered again
         nodeSeen[headId] = true;
     }
-    vector<int> path = createList(prevNode,source,dest);
+    //cout << "astar nodes considered: " << nodesConsidered(nodeSeen) << endl;
+
+    vector<int> path = findPath(prevNode,source,dest);
     return make_tuple(distance[dest],path);
 }
 
