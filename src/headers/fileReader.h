@@ -90,13 +90,15 @@ public:
 
     //OLD METHOD NOT USED
     static int readAdjFile(string path, adjListCollection &adjCol) {
+        ios_base::sync_with_stdio(false);
+        cin.tie(NULL);
         string line;
         ifstream myfile(path);
+
         getline(myfile,line);
-        int nodes = stoi(line);
+        int nodes= stoi(line);
         getline(myfile,line);
         int ways = stoi(line);
-
         for (int i = 0; i < nodes; ++i) {
             getline(myfile, line);
             long long sourceID = stoll(line);
@@ -119,7 +121,7 @@ public:
                 double srcY = adjacencyList::getyCoord(adjCol, firstNode);
                 double destX = adjacencyList::getxCoord(adjCol, secondNode);
                 double destY = adjacencyList::getyCoord(adjCol, secondNode);
-                double weight = adjacencyList::euclidDistance(srcX, srcY, destX, destY);
+                double weight = adjacencyList::distanceCalc(srcX, srcY, destX, destY,maxSpeed);
                 adjacencyList::addEdge(adjCol, firstNode, secondNode, weight);
                 adjacencyList::addEdge(adjCol, secondNode, firstNode, weight);
             }

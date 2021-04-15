@@ -329,27 +329,28 @@ adjListCollection setUpDatastructure(string country){
 
     if(country== "malta"){
         adjCol.adjlst.resize(106762,vector<pair<int,double>>(14));
-        cout << "parsing started on " << country << endl;
+        cout << "###parsing " << country;
         auto t1 = high_resolution_clock::now();
         shortestPath::createAdjacencyList(malta, "file", adjCol);
         auto t2 = high_resolution_clock::now();
         duration<double, milli> ms_double = t2 - t1;
-        cout << "time to parse malta: "<< (ms_double.count()/1000) << "seconds"<<endl;
+        cout << " time: "<< (ms_double.count()/1000) << "seconds###"<<endl;
     }else if(country=="denmark"){
         //adjCol.xCoord.resize(3976155);
         //adjCol.yCoord.resize(3976155);
         //cout<<"xd"<<endl;
         //adjCol.adjlst.resize(2500000,vector<pair<int,double>>(15));
-        cout << "parsing started on " << country << endl;
+        cout << "###parsing " << country;
         auto t1 = high_resolution_clock::now();
         shortestPath::createAdjacencyList(denmark, "file", adjCol);
         auto t2 = high_resolution_clock::now();
         duration<double, milli> ms_double = t2 - t1;
-        cout << "time to parse denmark: "<< (ms_double.count()/1000) << "seconds"<<endl;
+        cout << " time: "<< (ms_double.count()/1000) << "seconds###"<<endl;
     }else {
         cout << country << " not found";
     }
     //cout << "finsihed parsing " << country << endl;
+    cout << "\n";
     return adjCol;
 }
 void runMaltaTests(){

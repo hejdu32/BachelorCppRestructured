@@ -43,14 +43,15 @@ int nodesConsidered(vector<bool> &nodesSeen){
 
 
 
-double calcHeuristicDistance(double fdestX, double fdestY, double nodeX, double nodeY){
-    return adjacencyList::euclidDistance(fdestX, fdestY, nodeX, nodeY);
+double calcHeuristicDistance(double fdestX, double fdestY, double nodeX, double nodeY, int meanSpeed){
+    return adjacencyList::distanceCalc(fdestX, fdestY, nodeX, nodeY,meanSpeed);
 }
 
 
 tuple<double, vector<int>> aStar::aStarShortestPath(int source, int dest, adjListCollection &adjCol) {
     const double INF = 999999999999;
     int sizeOfGraph = adjCol.idSoFar;
+    int meanSpeed =130;
     //initilaize distance from source to everything to infinity
     //distance from source to source to 0
     vector<double> distance(sizeOfGraph,INF);
@@ -68,7 +69,7 @@ tuple<double, vector<int>> aStar::aStarShortestPath(int source, int dest, adjLis
     double fdestY = adjacencyList::getyCoord(adjCol, dest);
 
 
-    minHeap.push(make_pair(source,0.0+ calcHeuristicDistance(fdestX, fdestY, adjacencyList::getxCoord(adjCol, source), adjacencyList::getyCoord(adjCol, source))));
+    minHeap.push(make_pair(source,0.0+ calcHeuristicDistance(fdestX, fdestY, adjacencyList::getxCoord(adjCol, source), adjacencyList::getyCoord(adjCol, source),meanSpeed)));
     while (!minHeap.empty()){
         //pop the top element
         pair<int,double> head = minHeap.top();
@@ -80,19 +81,29 @@ tuple<double, vector<int>> aStar::aStarShortestPath(int source, int dest, adjLis
             //cout << "we have hit destination \n";
             break;
         }
+
+        //double aX = adjacencyList::getxCoord(adjCol, headId);  double aY = adjacencyList::getyCoord(adjCol, headId);
+        //double heuristHead = calcHeuristicDistance(fdestX, fdestY, aX, aY, meanSpeed);
+
         //add new nodes to queue
         for(auto i: adjCol.adjlst[headId]){
             int node = i.first;
             double weight = i.second;
             double nodeX = adjacencyList::getxCoord(adjCol, node);  double nodeY = adjacencyList::getyCoord(adjCol, node);
-            double heuristicWeight = calcHeuristicDistance(fdestX, fdestY, nodeX, nodeY);
+            double heuristIntermediate = calcHeuristicDistance(fdestX, fdestY, nodeX, nodeY, meanSpeed);
             //relaxation step, in astar we add the heuristic weight in to consideration
-            if(!nodeSeen[node] && (distance[headId]+weight) < distance[node]){ //+heuristicWeight
+            if(!nodeSeen[node] && (distance[headId]+weight) < distance[node]){
                 //update the distance to the node and add it to the queue
                 distance[node] = distance[headId]+weight;
                 prevNode[node] = headId; //remember the node before for finding the shortest path to destination
                 //add the heuristic to the weight so we sort based on it.
-                minHeap.push(make_pair(node,distance[node]+heuristicWeight));
+                double queueVal = distance[node] + heuristIntermediate; //
+                if (queueVal <= 0.0){
+                    cout << "negVal: " << queueVal << "\n";
+                    cout << "nodeA: " << adjCol.intIdToLongID.find(headId)->second << " nodeB: " <<  adjCol.intIdToLongID.find(node)->second << endl;
+                }
+
+                minHeap.push(make_pair(node, distance[node] + heuristIntermediate));//
             }
         }
         //mark head as it has been seen and cant be considered again
@@ -103,4 +114,13 @@ tuple<double, vector<int>> aStar::aStarShortestPath(int source, int dest, adjLis
     vector<int> path = findPath(prevNode,source,dest);
     return make_tuple(distance[dest],path);
 }
+
+
+
+
+
+
+
+
+
 
