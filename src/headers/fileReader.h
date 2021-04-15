@@ -90,18 +90,14 @@ public:
 
     //OLD METHOD NOT USED
     static int readAdjFile(string path, adjListCollection &adjCol) {
-
         string line;
         ifstream myfile(path);
-
         getline(myfile,line);
         int nodes = stoi(line);
         getline(myfile,line);
         int ways = stoi(line);
-        //int counter = 2;
-        for (int i = 0; i < nodes; ++i) {
-            //counter +=3;
 
+        for (int i = 0; i < nodes; ++i) {
             getline(myfile, line);
             long long sourceID = stoll(line);
             int source = adjacencyList::insertInMaps(adjCol, sourceID);
@@ -110,24 +106,11 @@ public:
             getline(myfile, line);
             adjacencyList::addyCoord(adjCol, source, stod(line));
         }
-        //cout<< "we at line " <<counter <<endl;
         for (int i = 0; i < ways; ++i) {
-            //counter++;
-            //if(counter > 12124671 && counter % 10000==0){
-            //    cout << "at line:" << counter <<endl;
-            //}
-
             getline(myfile,line);
-
             istringstream buf(line);
             istream_iterator<string> beg(buf), end;
             vector<string> lineAsTokens(beg, end);
-
-            //stringstream ss(line);
-            //istream_iterator<string> begin(ss);
-            //istream_iterator<string> end;
-            //vector<string> lineAsTokens(begin, end);
-
             int maxSpeed = stoi(lineAsTokens[0]);
             for (int j = 1; j < lineAsTokens.size()-1; ++j) {
                 int firstNode = adjacencyList::getIntID(adjCol, stoll(lineAsTokens[j]));
@@ -139,7 +122,6 @@ public:
                 double weight = adjacencyList::euclidDistance(srcX, srcY, destX, destY);
                 adjacencyList::addEdge(adjCol, firstNode, secondNode, weight);
                 adjacencyList::addEdge(adjCol, secondNode, firstNode, weight);
-
             }
         }
         myfile.close();

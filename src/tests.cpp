@@ -4,19 +4,11 @@
 #include "headers/adjacencyList.h"
 #include "headers/aStar.h"
 #include "headers/shortestPath.h"
-#include "headerLibs/json.hpp"
-#include "implementation/nodesAndWaysWrapper.cpp"
 #include <iostream>
 #include <cassert>
 #include <chrono>
 
 
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <sstream>
-#include <iterator>
 
 using namespace std;
 
@@ -151,11 +143,6 @@ void testAStarToyExample(){
         eNode = 4
     };
     //test that the euclidDist has been written correct
-    //assert(adjCol.heuristicDistance.find(aNode)->second == 5.0);
-    //assert(adjCol.heuristicDistance.find(bNode)->second == 9.0);
-    //assert(adjCol.heuristicDistance.find(cNode)->second == 0.0);
-    //assert(adjCol.heuristicDistance.find(dNode)->second == 3.0);
-    //assert(adjCol.heuristicDistance.find(eNode)->second == 4.0);
 
     tuple<double,vector<int>> result; vector<long long> idvec;
 
@@ -341,7 +328,7 @@ adjListCollection setUpDatastructure(string country){
     string denmark = "C:/Users/a/IdeaProjects/BachelorProject/app/denmark";
 
     if(country== "malta"){
-        //adjCol.adjlst.resize(106762,vector<pair<int,double>>(14));
+        adjCol.adjlst.resize(106762,vector<pair<int,double>>(14));
         cout << "parsing started on " << country << endl;
         auto t1 = high_resolution_clock::now();
         shortestPath::createAdjacencyList(malta, "file", adjCol);
@@ -352,7 +339,7 @@ adjListCollection setUpDatastructure(string country){
         //adjCol.xCoord.resize(3976155);
         //adjCol.yCoord.resize(3976155);
         //cout<<"xd"<<endl;
-        //adjCol.adjlst.resize(2500000,vector<pair<int,double>>(14));
+        //adjCol.adjlst.resize(2500000,vector<pair<int,double>>(15));
         cout << "parsing started on " << country << endl;
         auto t1 = high_resolution_clock::now();
         shortestPath::createAdjacencyList(denmark, "file", adjCol);
@@ -397,8 +384,7 @@ void deserializeJsonFromFile(){
 
 int main(){
     runMaltaTests();
-    //runDenmarkTests();
-
+    runDenmarkTests();
 
     //_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
     //_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
