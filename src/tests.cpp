@@ -10,6 +10,14 @@
 #include <cassert>
 #include <chrono>
 
+
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <sstream>
+#include <iterator>
+
 using namespace std;
 
 using std::chrono::high_resolution_clock;
@@ -331,8 +339,9 @@ adjListCollection setUpDatastructure(string country){
     adjListCollection adjCol;
     string malta = "C:/Users/a/IdeaProjects/BachelorProject/app/malta";
     string denmark = "C:/Users/a/IdeaProjects/BachelorProject/app/denmark";
-    if(country== "malta"){
 
+    if(country== "malta"){
+        //adjCol.adjlst.resize(106762,vector<pair<int,double>>(14));
         cout << "parsing started on " << country << endl;
         auto t1 = high_resolution_clock::now();
         shortestPath::createAdjacencyList(malta, "file", adjCol);
@@ -340,9 +349,11 @@ adjListCollection setUpDatastructure(string country){
         duration<double, milli> ms_double = t2 - t1;
         cout << "time to parse malta: "<< (ms_double.count()/1000) << "seconds"<<endl;
     }else if(country=="denmark"){
+        //adjCol.xCoord.resize(3976155);
+        //adjCol.yCoord.resize(3976155);
+        //cout<<"xd"<<endl;
+        //adjCol.adjlst.resize(2500000,vector<pair<int,double>>(14));
         cout << "parsing started on " << country << endl;
-        //fixed size vector
-        //adjCol.adjlst.resize(3976155, vector<pair<int, double>>(15));
         auto t1 = high_resolution_clock::now();
         shortestPath::createAdjacencyList(denmark, "file", adjCol);
         auto t2 = high_resolution_clock::now();
@@ -381,9 +392,12 @@ void deserializeJsonFromFile(){
     //cout << wrapperClass.toString() << endl;
 }
 
+
+
+
 int main(){
     runMaltaTests();
-    runDenmarkTests();
+    //runDenmarkTests();
 
 
     //_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);

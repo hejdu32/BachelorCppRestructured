@@ -30,10 +30,10 @@ public:
         }
     }
 
-    static int createAdjacencyList(string path, string method, adjListCollection &adjListCollection) {
+    static int createAdjacencyList(string path, string method, adjListCollection &adjCol) {
         if (method == "file") {
-            //fileReader::readAdjFile(std::move(path), adjListCollection);
-            fileReader::readFile(std::move(path), adjListCollection);
+            //fileReader::readAdjFile(std::move(path), adjCol);
+            fileReader::readAdjFile(std::move(path), adjCol);
         } else if (method == "java") {
             string line;
             bool reading = true;
@@ -50,13 +50,13 @@ public:
                     char firstChar = value[0];
                     if (firstChar == '#') {
                         long long sourceID = stoll(value.substr(1, value.size() - 1));
-                        source = adjacencyList::insertInMaps(adjListCollection, sourceID);
+                        source = adjacencyList::insertInMaps(adjCol, sourceID);
                     } else if (firstChar == ';') {
                         long long destID = stoll(value.substr(1, value.size() - 1));
-                        dest = adjacencyList::insertInMaps(adjListCollection, destID);
+                        dest = adjacencyList::insertInMaps(adjCol, destID);
                     } else if (firstChar == ',') {
                         weight = stod(value.substr(1, value.size() - 1));
-                        adjacencyList::addEdge(adjListCollection, source, dest, weight);
+                        adjacencyList::addEdge(adjCol, source, dest, weight);
                     } else if (firstChar == '!') {
                         cout << "Finished making adjencency list in cpp" << endl;
                         reading = false;

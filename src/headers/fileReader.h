@@ -29,7 +29,7 @@ private:
     }
 
 public:
-    static int readFile(string path, adjListCollection &adjListCollection) {
+    static int readFile(string path, adjListCollection &adjCol) {
         double inf = std::numeric_limits<double>::infinity();
         string line;
         ifstream myfile(path);
@@ -45,13 +45,13 @@ public:
 
             if (lineAsTokens[0][0]=='#'){
                 long long sourceID = stoll(lineAsTokens[0].substr(1,lineAsTokens[0].size()-1));
-                int src = adjacencyList::insertInMaps(adjListCollection, sourceID);
+                int src = adjacencyList::insertInMaps(adjCol, sourceID);
 
                 double xCoord = stod(lineAsTokens[1]);
-                adjacencyList::addxCoord(adjListCollection, src, xCoord);
+                adjacencyList::addxCoord(adjCol, src, xCoord);
 
                 double yCoord = stod(lineAsTokens[2]);
-                adjacencyList::addyCoord(adjListCollection, src, yCoord);
+                adjacencyList::addyCoord(adjCol, src, yCoord);
             } else if(lineAsTokens[0][0]==';'){
                 string typeOfWay = lineAsTokens[0].substr(1,lineAsTokens[0].size()-1);
                 int maxSpeed = stoi(typeOfWay);
@@ -60,10 +60,10 @@ public:
                 for(int i=1; i < loopMax; i++){
                     long long srcID = stoll(lineAsTokens[i]);
                     long long destID = stoll(lineAsTokens[i+1]);
-                    int source = adjacencyList::getIntID(adjListCollection,srcID);
-                    int dest = adjacencyList::getIntID(adjListCollection,destID);
-                    double srcX = adjacencyList::getxCoord(adjListCollection, source); double srcY =  adjacencyList::getyCoord(adjListCollection, source);
-                    double destX =  adjacencyList::getxCoord(adjListCollection,dest); double  destY =  adjacencyList::getyCoord(adjListCollection,dest);
+                    int source = adjacencyList::getIntID(adjCol, srcID);
+                    int dest = adjacencyList::getIntID(adjCol, destID);
+                    double srcX = adjacencyList::getxCoord(adjCol, source); double srcY =  adjacencyList::getyCoord(adjCol, source);
+                    double destX =  adjacencyList::getxCoord(adjCol, dest); double  destY =  adjacencyList::getyCoord(adjCol, dest);
 
                     //double weight = adjacencyList::distanceCalc(srcX,srcY,destX,destY,maxSpeed);
                     double weight = adjacencyList::euclidDistance(srcX,srcY,destX,destY);
@@ -72,12 +72,9 @@ public:
                         cout<< "srcID: " << srcID << " x: " << srcX << " y: " << srcY << endl;
                         cout<< "destID:" << destID << " x: " << destX << " y: " << destY << endl;
                     }
-
                     //needs implementation for oneway roads
-                    adjacencyList::addEdge(adjListCollection,source,dest,weight);
-                    adjacencyList::addEdge(adjListCollection,dest,source,weight);
-
-
+                    adjacencyList::addEdge(adjCol, source, dest, weight);
+                    adjacencyList::addEdge(adjCol, dest, source, weight);
                 }
 
             } else if (lineAsTokens[0][0] == '!'){
@@ -92,58 +89,57 @@ public:
 
 
     //OLD METHOD NOT USED
-    static int readAdjFile(string path, adjListCollection &adjListCollection) {
+    static int readAdjFile(string path, adjListCollection &adjCol) {
+
         string line;
         ifstream myfile(path);
 
-        if (myfile.fail()) {
-            throw runtime_error("Could not open file");
+        getline(myfile,line);
+        int nodes = stoi(line);
+        getline(myfile,line);
+        int ways = stoi(line);
+        //int counter = 2;
+        for (int i = 0; i < nodes; ++i) {
+            //counter +=3;
+
+            getline(myfile, line);
+            long long sourceID = stoll(line);
+            int source = adjacencyList::insertInMaps(adjCol, sourceID);
+            getline(myfile, line);
+            adjacencyList::addxCoord(adjCol, source, stod(line));
+            getline(myfile, line);
+            adjacencyList::addyCoord(adjCol, source, stod(line));
         }
-        int counter = 0;
-        while (getline(myfile, line)) {
-            counter++;
-            if (counter % 1000000 == 0) {
-                cout << "counter: " << counter << endl;
-            }
+        //cout<< "we at line " <<counter <<endl;
+        for (int i = 0; i < ways; ++i) {
+            //counter++;
+            //if(counter > 12124671 && counter % 10000==0){
+            //    cout << "at line:" << counter <<endl;
+            //}
+
+            getline(myfile,line);
+
             istringstream buf(line);
             istream_iterator<string> beg(buf), end;
             vector<string> lineAsTokens(beg, end);
 
-            int source;
-            int dest;
-            double xCoord;
-            double yCoord;
-            long long sourceID;
-            long long destID;
-            for (auto &value: lineAsTokens) {
-                char firstChar = value[0];
-                if (firstChar == '#') {
-                    sourceID = stoll(value.substr(1, value.size() - 1));
-                    source = adjacencyList::insertInMaps(adjListCollection, sourceID);
-                } else if (firstChar == '^') {
-                    xCoord = stod(value.substr(1, value.size() - 1));
-                    adjacencyList::addxCoord(adjListCollection, source, xCoord);
-                } else if (firstChar == ',') {
-                    yCoord = stod(value.substr(1, value.size() - 1));
-                    adjacencyList::addyCoord(adjListCollection, source, yCoord);
-                } else if (firstChar == ';') {
-                    destID = stoll(value.substr(1, value.size() - 1));
-                    source = adjacencyList::getIntID(adjListCollection, destID);
-                    dest = adjacencyList::getIntID(adjListCollection, destID);
-                    double srcX = adjacencyList::getxCoord(adjListCollection, source);
-                    double srcY = adjacencyList::getyCoord(adjListCollection, source);
-                    double destX = adjacencyList::getxCoord(adjListCollection, dest);
-                    double destY = adjacencyList::getyCoord(adjListCollection, dest);
+            //stringstream ss(line);
+            //istream_iterator<string> begin(ss);
+            //istream_iterator<string> end;
+            //vector<string> lineAsTokens(begin, end);
 
-                    double weight = adjacencyList::euclidDistance(srcX, srcY, destX, destY);
-                    adjacencyList::addEdge(adjListCollection, source, dest, weight);
-                } else if (firstChar == '%') {
-                    //cout<<"we here" << endl;
-                    break;
-                }else if (firstChar == '!') {
-                    myfile.close();
-                    return 0;
-                }
+            int maxSpeed = stoi(lineAsTokens[0]);
+            for (int j = 1; j < lineAsTokens.size()-1; ++j) {
+                int firstNode = adjacencyList::getIntID(adjCol, stoll(lineAsTokens[j]));
+                int secondNode = adjacencyList::getIntID(adjCol, stoll(lineAsTokens[j+1]));
+                double srcX = adjacencyList::getxCoord(adjCol, firstNode);
+                double srcY = adjacencyList::getyCoord(adjCol, firstNode);
+                double destX = adjacencyList::getxCoord(adjCol, secondNode);
+                double destY = adjacencyList::getyCoord(adjCol, secondNode);
+                double weight = adjacencyList::euclidDistance(srcX, srcY, destX, destY);
+                adjacencyList::addEdge(adjCol, firstNode, secondNode, weight);
+                adjacencyList::addEdge(adjCol, secondNode, firstNode, weight);
+
             }
         }
         myfile.close();
