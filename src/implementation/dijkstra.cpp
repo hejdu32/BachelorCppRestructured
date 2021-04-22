@@ -65,7 +65,7 @@ int nodesConsidered2(vector<bool> nodesSeen){
     return nodes;
 }
 
-tuple<double, vector<int>> dijkstra::djikstraShortestPath(int source, int dest, adjListCollection &adjCol) {
+tuple<double, vector<int>,vector<double>> dijkstra::djikstraShortestPath(int source, int dest, adjListCollection &adjCol) {
     const double INF = 999999999999;
     int sizeOfGraph = adjCol.idSoFar;
     //initilaize distance from source to everything to infinity
@@ -111,7 +111,7 @@ tuple<double, vector<int>> dijkstra::djikstraShortestPath(int source, int dest, 
         //mark head as it has been seen and cant be considered again
         nodeSeen[headId] = true;
     }
-    vector<int> path = createSPList(prevNode,source,dest);
+    //vector<int> path = createSPList(prevNode,source,dest);
 
-    return make_tuple(distance[dest],path);
+    return make_tuple(distance[dest],prevNode,distance);
 }

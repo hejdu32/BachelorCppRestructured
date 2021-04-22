@@ -3,7 +3,7 @@ project(BachelorCppCmake)
 
 set(CMAKE_CXX_STANDARD 17)
 
-#SET(CMAKE_CXX_FLAGS "-O2")
-#SET(CMAKE_C_FLAGS "-O2")
+SET(CMAKE_CXX_FLAGS "-O2")
+SET(CMAKE_C_FLAGS "-O2")
 
 add_subdirectory(src)

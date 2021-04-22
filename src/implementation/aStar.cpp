@@ -21,18 +21,6 @@ struct comparator{
     }
 };
 
-vector<int> findPath(vector<int> prevNode, int source, int destination){
-    int temdest = destination;
-    vector<int> shortestPath;
-    while (temdest != source && prevNode[temdest] != -1){
-        shortestPath.push_back(temdest);
-        temdest = prevNode[temdest];
-    }
-    shortestPath.push_back(source);
-    reverse(shortestPath.begin(),shortestPath.end());
-    return shortestPath;
-}
-
 int nodesConsidered(vector<bool> &nodesSeen){
     int nodes = 0;
     for (auto b:nodesSeen) {
@@ -48,7 +36,7 @@ double calcHeuristicDistance(double fdestX, double fdestY, double nodeX, double 
 }
 
 
-tuple<double, vector<int>> aStar::aStarShortestPath(int source, int dest, adjListCollection &adjCol) {
+tuple<double, vector<int>,vector<double>> aStar::aStarShortestPath(int source, int dest, adjListCollection &adjCol) {
     const double INF = 999999999999;
     int sizeOfGraph = adjCol.idSoFar;
     int meanSpeed =130;
@@ -111,8 +99,7 @@ tuple<double, vector<int>> aStar::aStarShortestPath(int source, int dest, adjLis
     }
     //cout << "astar nodes considered: " << nodesConsidered(nodeSeen) << endl;
 
-    vector<int> path = findPath(prevNode,source,dest);
-    return make_tuple(distance[dest],path);
+    return make_tuple(distance[dest],prevNode,distance);
 }
 
 

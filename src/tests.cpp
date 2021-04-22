@@ -22,12 +22,12 @@ void testDijkstraAdjlist(){
     adjListCollection adjCol;
     shortestPath::createAdjacencyList("C:/Users/a/CLionProjects/BachelorCppRestructured/resources/adjlist","file",adjCol);
 
-    tuple<double,vector<int>> result; vector<long long> idvec;
+    tuple<double,vector<int>,vector<double>> result; vector<long long> idvec;
     int start = adjacencyList::getIntID(adjCol,1);
     int end = adjacencyList::getIntID(adjCol,5);
 
     result = shortestPath::chooseAlgo(dijkstra,start,end,adjCol);
-    idvec = adjacencyList::spVectorToLongId(adjCol,get<1>(result));
+    idvec = adjacencyList::spVectorToLongId(adjCol,shortestPath::findPath(get<1>(result),start,end));
     adjacencyList::printGraph(adjCol);
 
     assert(idvec[0]==1);
@@ -96,11 +96,11 @@ void testDijkstraToyExample() {
         dNode = 3,
         eNode = 4
     };
-    tuple<double, vector<int>> result;
+    tuple<double, vector<int>,vector<double>> result;
     vector<long long> idvec;
 
     result = shortestPath::chooseAlgo(dijkstra, aNode, bNode, adjCol);
-    idvec = adjacencyList::spVectorToLongId(adjCol, get<1>(result));
+    idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(get<1>(result),aNode,bNode));
     //testing a->b gives path a,e,b with distance 4
     assert(idvec[0] == aNode);
     assert(idvec[1] == eNode);
@@ -108,13 +108,13 @@ void testDijkstraToyExample() {
     assert(get<0>(result) == 4);
 
     result = shortestPath::chooseAlgo(dijkstra, aNode, eNode, adjCol);
-    idvec = adjacencyList::spVectorToLongId(adjCol, get<1>(result));
+    idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(get<1>(result),aNode,eNode));
     assert(idvec[0] == 0);
     assert(idvec[1] == 4);
     assert(get<0>(result) == 3);
 
     result = shortestPath::chooseAlgo(dijkstra, aNode, cNode, adjCol);
-    idvec = adjacencyList::spVectorToLongId(adjCol, get<1>(result));
+    idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(get<1>(result),aNode,cNode));
     assert(idvec[0] == 0);
     assert(idvec[1] == 4);
     assert(idvec[2] == 1);
@@ -122,14 +122,14 @@ void testDijkstraToyExample() {
     assert(get<0>(result) == 6);
 
     result = shortestPath::chooseAlgo(dijkstra, aNode, dNode, adjCol);
-    idvec = adjacencyList::spVectorToLongId(adjCol, get<1>(result));
+    idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(get<1>(result),aNode,dNode));
     assert(idvec[0] == 0);
     assert(idvec[1] == 4);
     assert(idvec[2] == 3);
     assert(get<0>(result) == 5);
     cout << "Toy example Dijkstra test passed" << endl;
 }
-
+//dep doesnt work with actual weights
 void testAStarToyExample(){
     adjListCollection adjCol;
     createToyExample(adjCol);
@@ -144,7 +144,7 @@ void testAStarToyExample(){
     };
     //test that the euclidDist has been written correct
 
-    tuple<double,vector<int>> result; vector<long long> idvec;
+    tuple<double,vector<int>,vector<double>> result; vector<long long> idvec;
 
     result = shortestPath::chooseAlgo(astar,aNode,cNode,adjCol);
     idvec = adjacencyList::spVectorToLongId(adjCol, get<1>(result));
@@ -153,188 +153,28 @@ void testAStarToyExample(){
     assert(idvec[1]==4);
     assert(idvec[2]==2);
     assert(get<0>(result) == 11);
-
-    //shortestPath.printVec(idvec);
     cout << "Toy Example aStar test passed" << endl;
 }
+void deserializeJsonFromFile(){
+    using namespace nlohmann;
+    json j;
+    ifstream jsonFile;
+    //File path with appropriate json file created by java in graphBuilder writeToFileAsJsonMethod
+    jsonFile.open("C:/proj/test.json");
+    jsonFile >> j;
+    auto wrapperClass = j.get<nodesAndWaysWrapper>();
+    //cout << wrapperClass.toString() << endl;
+}
 
-
-void testDistance(string method, long long source, long long target, adjListCollection &adjCol){
+void testDistancePrints(string method, long long source, long long target, adjListCollection &adjCol){
     int from = adjacencyList::getIntID(adjCol,source);
     int to = adjacencyList::getIntID(adjCol,target);
     auto t1 = high_resolution_clock::now();
-    ///tuple<double,vector<int>> result = shortestPath::chooseAlgo(shortestPath::spmap.find(method)->second, from ,to,adjCol);
+    tuple<double,vector<int>,vector<double>> result = shortestPath::chooseAlgo(spmap[method], from ,to,adjCol);
     auto t2 = high_resolution_clock::now();
     duration<double, milli> ms_double = t2 - t1;
-    //vector<long long> idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(result.prevNode,from,to));
+    vector<long long> idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(get<1>(result),from,to));
     cout << method <<" from: "<< source <<" to: " << target <<"\n" ;
-    //cout << "distance: " << result.distanceToDest << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
-    //cout << "nodes in path: "<< idvec.size() << endl;
-    //cout << "path: ";
-    //shortestPath::printVec(idvec);
-    cout << endl;
-
-}
-
-
-void testDijkstraMaltaSmall(adjListCollection &adjCol){
-    //short area in malta
-    int from = adjacencyList::getIntID(adjCol,146885871);
-    int to = adjacencyList::getIntID(adjCol,1498913919);
-
-    tuple<double,vector<int>> result; vector<long long> idvec;
-    auto t1 = high_resolution_clock::now();
-    result = shortestPath::chooseAlgo(dijkstra, from ,to,adjCol);
-    auto t2 = high_resolution_clock::now();
-    duration<double, milli> ms_double = t2 - t1;
-    idvec = adjacencyList::spVectorToLongId(adjCol, get<1>(result));
-    cout << "dijkstra from: 146885871, to: 1498913919 (short distance malta) \n" ;
-    cout << "distance: " << get<0>(result) << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
-    cout << "nodes in path: "<< idvec.size() << endl;
-    //cout << "path: ";
-    //shortestPath::printVec(idvec);
-    cout << endl;
-}
-void testAStarMaltaSmall(adjListCollection &adjCol){
-    //short area in malta
-    int from = adjacencyList::getIntID(adjCol,146885871);
-    int to = adjacencyList::getIntID(adjCol,1498913919);
-
-    tuple<double,vector<int>> result; vector<long long> idvec;
-    auto t1 = high_resolution_clock::now();
-    result = shortestPath::chooseAlgo(astar, from ,to,adjCol);
-    auto t2 = high_resolution_clock::now();
-    duration<double, milli> ms_double = t2 - t1;
-    idvec = adjacencyList::spVectorToLongId(adjCol, get<1>(result));
-    cout << "astar from: 146885871, to: 1498913919 (short distance malta) \n" ;
-    cout << "distance: " << get<0>(result) << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
-    cout << "nodes in path: "<< idvec.size() << endl;
-    //cout << "path: ";
-    //shortestPath::printVec(idvec);
-    cout << endl;
-}
-void testDijkstraMaltaLarge(adjListCollection &adjCol){
-    //long area in malta
-    int maltaNorth = adjacencyList::getIntID(adjCol,3593516725);
-    int maltaSouth = adjacencyList::getIntID(adjCol,5037683804);
-
-    tuple<double,vector<int>> result; vector<long long> idvec;
-    auto t1 = high_resolution_clock::now();
-    result = shortestPath::chooseAlgo(dijkstra, maltaNorth, maltaSouth,adjCol);
-    auto t2 = high_resolution_clock::now();
-    duration<double, milli> ms_double = t2 - t1;
-    idvec = adjacencyList::spVectorToLongId(adjCol, get<1>(result));
-    cout << "dijkstra from: 3593516725, to: 5037683804 (long distance malta) \n" ;
-    cout << "distance: " << get<0>(result) << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
-    cout << "nodes in path: "<< idvec.size() << endl;
-    cout << endl;
-    //cout << "path: ";
-    //shortestPath::printVec(idvec);
-    //cout << endl;
-}
-void testAStarMaltaLarge(adjListCollection &adjCol){
-    //long area in malta
-    int maltaNorth = adjacencyList::getIntID(adjCol,3593516725);
-    int maltaSouth = adjacencyList::getIntID(adjCol,5037683804);
-
-    tuple<double,vector<int>> result; vector<long long> idvec;
-    auto t1 = high_resolution_clock::now();
-    result = shortestPath::chooseAlgo(astar, maltaNorth, maltaSouth,adjCol);
-    auto t2 = high_resolution_clock::now();
-    duration<double, milli> ms_double = t2 - t1;
-    idvec = adjacencyList::spVectorToLongId(adjCol, get<1>(result));
-    cout << "astar from: 3593516725, to: 5037683804 (long distance malta) \n" ;
-    cout << "distance: " << get<0>(result) << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
-    cout << "nodes in path: "<< idvec.size() << endl;
-    cout << endl;
-    //cout << "path: ";
-    //shortestPath::printVec(idvec);
-    //cout << endl;
-}
-
-void testAArhusToAArhus(adjListCollection &adjCol){
-    //århus itbyen 957178678
-    //århus børglum 860574684
-
-    int from = adjacencyList::getIntID(adjCol,957178678);
-    int to = adjacencyList::getIntID(adjCol,860574684);
-
-    //dijkstra
-    tuple<double,vector<int>> result; vector<long long> idvec;
-    auto t1 = high_resolution_clock::now();
-    result = shortestPath::chooseAlgo(dijkstra, from, to,adjCol);
-    auto t2 = high_resolution_clock::now();
-    duration<double, milli> ms_double = t2 - t1;
-    idvec = adjacencyList::spVectorToLongId(adjCol, get<1>(result));
-    cout << "dijkstra from: 957178678, to: 860574684 (itbyen to børglum) \n" ;
-    cout << "distance: " << get<0>(result) << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
-    cout << "nodes in path: "<< idvec.size() << endl;
-    cout << endl;
-    //astar
-    t1 = high_resolution_clock::now();
-    result = shortestPath::chooseAlgo(astar, from, to,adjCol);
-    t2 = high_resolution_clock::now();
-    ms_double = t2 - t1;
-    idvec = adjacencyList::spVectorToLongId(adjCol, get<1>(result));
-    cout << "astar from: 957178678, to: 860574684 (itbyen to børglum) \n" ;
-    cout << "distance: " << get<0>(result) << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
-    cout << "nodes in path: "<< idvec.size() << endl;
-    cout << endl;
-}
-
-void testAArhusToRanders(adjListCollection &adjCol){
-    //århus itbyen 957178678
-    //randers regions hospital 696724340
-    int from = adjacencyList::getIntID(adjCol,957178678);
-    int to = adjacencyList::getIntID(adjCol,696724340);
-
-    //dijkstra
-    tuple<double,vector<int>> result; vector<long long> idvec;
-    auto t1 = high_resolution_clock::now();
-    result = shortestPath::chooseAlgo(dijkstra, from, to,adjCol);
-    auto t2 = high_resolution_clock::now();
-    duration<double, milli> ms_double = t2 - t1;
-    idvec = adjacencyList::spVectorToLongId(adjCol, get<1>(result));
-    cout << "dijkstra from: 957178678, to: 696724340 (itbyen to randers hospital) \n" ;
-    cout << "distance: " << get<0>(result) << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
-    cout << "nodes in path: "<< idvec.size() << endl;
-    cout << endl;
-    //astar
-    t1 = high_resolution_clock::now();
-    result = shortestPath::chooseAlgo(astar, from, to,adjCol);
-    t2 = high_resolution_clock::now();
-    ms_double = t2 - t1;
-    idvec = adjacencyList::spVectorToLongId(adjCol, get<1>(result));
-    cout << "astar from: 957178678, to: 696724340 (itbyen to randers hospital) \n" ;
-    cout << "distance: " << get<0>(result) << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
-    cout << "nodes in path: "<< idvec.size() << endl;
-    cout << endl;
-}
-void testAArhusToCopenhagen(adjListCollection &adjCol){
-    //århus itbyen 957178678
-    //tivoli københavn 3207955227
-    int from = adjacencyList::getIntID(adjCol,957178678);
-    int to = adjacencyList::getIntID(adjCol,3207955227);
-
-    //dijkstra
-    tuple<double,vector<int>> result; vector<long long> idvec;
-    auto t1 = high_resolution_clock::now();
-    result = shortestPath::chooseAlgo(dijkstra, from, to,adjCol);
-    auto t2 = high_resolution_clock::now();
-    duration<double, milli> ms_double = t2 - t1;
-    idvec = adjacencyList::spVectorToLongId(adjCol, get<1>(result));
-    cout << "dijkstra from: 957178678, to: 3207955227 (itbyen to copenhagen) \n" ;
-    cout << "distance: " << get<0>(result) << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
-    cout << "nodes in path: "<< idvec.size() << endl;
-    cout << endl;
-
-    //astar
-    t1 = high_resolution_clock::now();
-    result = shortestPath::chooseAlgo(astar, from, to,adjCol);
-    t2 = high_resolution_clock::now();
-    ms_double = t2 - t1;
-    idvec = adjacencyList::spVectorToLongId(adjCol, get<1>(result));
-    cout << "astar from: 957178678, to: 3207955227 (itbyen to copenhagen) \n" ;
     cout << "distance: " << get<0>(result) << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
     cout << "nodes in path: "<< idvec.size() << endl;
     cout << endl;
@@ -342,11 +182,11 @@ void testAArhusToCopenhagen(adjListCollection &adjCol){
 
 adjListCollection setUpDatastructure(string country){
     adjListCollection adjCol;
-    string malta = "C:/Users/a/IdeaProjects/BachelorProject/app/malta";
-    string denmark = "C:/Users/a/IdeaProjects/BachelorProject/app/denmark";
+    string malta = "/home/a/CLionProjects/BachelorCppRestructured/src/resources/malta";
+    string denmark = "/home/a/CLionProjects/BachelorCppRestructured/src/resources/denmark";
 
     if(country== "malta"){
-        adjCol.adjlst.resize(106762,vector<pair<int,double>>(14));
+        //adjCol.adjlst.resize(106762,vector<pair<int,double>>(14));
         cout << "###parsing " << country;
         auto t1 = high_resolution_clock::now();
         shortestPath::createAdjacencyList(malta, "file", adjCol);
@@ -356,7 +196,6 @@ adjListCollection setUpDatastructure(string country){
     }else if(country=="denmark"){
         //adjCol.xCoord.resize(3976155);
         //adjCol.yCoord.resize(3976155);
-        //cout<<"xd"<<endl;
         //adjCol.adjlst.resize(2500000,vector<pair<int,double>>(15));
         cout << "###parsing " << country;
         auto t1 = high_resolution_clock::now();
@@ -373,48 +212,38 @@ adjListCollection setUpDatastructure(string country){
 }
 void runMaltaTests(){
     adjListCollection malta = setUpDatastructure("malta");
-    testDijkstraMaltaLarge(malta);
-    testAStarMaltaLarge(malta);
-    testDijkstraMaltaSmall(malta);
-    testAStarMaltaSmall(malta);
-    //delete &malta;
+    //short distance downtown malta
+    testDistancePrints("dijkstra",146885871, 1498913919,malta);
+    testDistancePrints("astar",146885871, 1498913919,malta);
+    //long distance arcoss malt island
+    testDistancePrints("dijkstra",3593516725, 5037683804,malta);
+    testDistancePrints("astar",3593516725, 5037683804,malta);
 }
 void runDenmarkTests(){
     adjListCollection denmark = setUpDatastructure("denmark");
-    testAArhusToAArhus(denmark);
-    testAArhusToRanders(denmark);
-    testAArhusToCopenhagen(denmark);
-    //delete &denmark;
+    long long itbyen = 957178678;
+    long long borglum = 860574684;
+    long long RandersHospital = 696724340;
+    long long tivoliKobenhavn = 3207955227;
+
+    testDistancePrints("dijkstra",itbyen, borglum,denmark);
+    testDistancePrints("astar",itbyen, borglum,denmark);
+    testDistancePrints("dijkstra",itbyen,RandersHospital,denmark);
+    testDistancePrints("astar",itbyen,RandersHospital,denmark);
+    testDistancePrints("dijkstra",itbyen,tivoliKobenhavn,denmark);
+    testDistancePrints("astar",itbyen,tivoliKobenhavn,denmark);
 }
-
-void deserializeJsonFromFile(){
-    using namespace nlohmann;
-    json j;
-    ifstream jsonFile;
-    //File path with appropriate json file created by java in graphBuilder writeToFileAsJsonMethod
-    jsonFile.open("C:/proj/test.json");
-    jsonFile >> j;
-    auto wrapperClass = j.get<nodesAndWaysWrapper>();
-    //cout << wrapperClass.toString() << endl;
-}
-
-
-
-
 int main(){
+    //TODO FIX SMALL TESTS FOR DIJKSTRA
+    //testDijkstraAdjlist();
+    //testToyExampleDatastructure();
+    //testDijkstraToyExample();
     runMaltaTests();
     runDenmarkTests();
-
     //_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
     //_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
     //_CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_FILE | _CRTDBG_MODE_WNDW );
     //_CrtSetReportFile( _CRT_ASSERT, _CRTDBG_FILE_STDERR );
-
-    //testDijkstraAdjlist();
-    //testToyExampleDatastructure();
-    //testDijkstraToyExample();
-    //testAStarToyExample();
-
 
     //deserializeJsonFromFile();
     return 0;

@@ -14,11 +14,11 @@ enum shortestPathMethods{
     dijkstra = 0,
     astar = 1
 };
+static std::map<std::string, int> spmap={{"dijkstra", 0},{"astar", 1},{"landmarks", 2}};
 
 class shortestPath {
-
 public:
-    static tuple<double, vector<int>> chooseAlgo(int method, int source, int dest, adjListCollection &adjListCollection) {
+    static tuple<double, vector<int>,vector<double>> chooseAlgo(int method, int source, int dest, adjListCollection &adjListCollection) {
         //dijkstra=0,astar=1 ect
         switch (method) {
             case 0:
@@ -73,6 +73,18 @@ public:
             cout << i << ' ';
         }
         cout << "]";
+    }
+
+    static vector<int> findPath(vector<int> prevNode, int source, int destination){
+        int temdest = destination;
+        vector<int> shortestPath;
+        while (temdest != source && prevNode[temdest] != -1){
+            shortestPath.push_back(temdest);
+            temdest = prevNode[temdest];
+        }
+        shortestPath.push_back(source);
+        reverse(shortestPath.begin(),shortestPath.end());
+        return shortestPath;
     }
 };
 #endif //SHORTESTPATH
