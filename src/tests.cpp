@@ -159,6 +159,24 @@ void testAStarToyExample(){
 }
 
 
+void testDistance(string method, long long source, long long target, adjListCollection &adjCol){
+    int from = adjacencyList::getIntID(adjCol,source);
+    int to = adjacencyList::getIntID(adjCol,target);
+    auto t1 = high_resolution_clock::now();
+    ///tuple<double,vector<int>> result = shortestPath::chooseAlgo(shortestPath::spmap.find(method)->second, from ,to,adjCol);
+    auto t2 = high_resolution_clock::now();
+    duration<double, milli> ms_double = t2 - t1;
+    //vector<long long> idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(result.prevNode,from,to));
+    cout << method <<" from: "<< source <<" to: " << target <<"\n" ;
+    //cout << "distance: " << result.distanceToDest << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
+    //cout << "nodes in path: "<< idvec.size() << endl;
+    //cout << "path: ";
+    //shortestPath::printVec(idvec);
+    cout << endl;
+
+}
+
+
 void testDijkstraMaltaSmall(adjListCollection &adjCol){
     //short area in malta
     int from = adjacencyList::getIntID(adjCol,146885871);
