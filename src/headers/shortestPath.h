@@ -22,7 +22,7 @@ public:
         //dijkstra=0,astar=1 ect
         switch (method) {
             case 0:
-                return dijkstra::djikstraShortestPath(source,dest,adjListCollection);
+                return dijkstra::djikstraShortestPath(source,dest,true,adjListCollection);
             case 1:
                 return aStar::aStarShortestPath(source,dest,adjListCollection);
             default:

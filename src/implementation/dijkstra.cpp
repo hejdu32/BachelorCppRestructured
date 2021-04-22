@@ -65,7 +65,7 @@ int nodesConsidered2(vector<bool> nodesSeen){
     return nodes;
 }
 
-tuple<double, vector<int>,vector<double>> dijkstra::djikstraShortestPath(int source, int dest, adjListCollection &adjCol) {
+tuple<double, vector<int>,vector<double>> dijkstra::djikstraShortestPath(int source, int dest, bool earlyStopping, adjListCollection &adjCol) {
     const double INF = 999999999999;
     int sizeOfGraph = adjCol.idSoFar;
     //initilaize distance from source to everything to infinity
@@ -89,7 +89,7 @@ tuple<double, vector<int>,vector<double>> dijkstra::djikstraShortestPath(int sou
         int headId = head.first;
 
         //Have we reached destination check
-        if (headId==dest){
+        if (earlyStopping && headId==dest){
             //we have arrived at destination and we are done
             //cout << "we have hit destination \n";
             break;
