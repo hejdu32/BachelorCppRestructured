@@ -36,13 +36,13 @@ void communicateWithJava() {
                 cin >> nodeIdTo;
                 int from = adjCol.longIdToIntID[stoll(nodeIdFrom)];
                 int to = adjCol.longIdToIntID[stoll(nodeIdTo)];
-                tuple<double,vector<int>,vector<double>> result = shortestPath::chooseAlgo(dijkstra, from, to, adjCol);
-                vector<long long> idvec = adjacencyList::prevNodeToShortestPath(adjCol, get<1>(result));
+                spResultStruct result = shortestPath::chooseAlgo(dijkstra, from, to, adjCol);
+                vector<long long> idvec = adjacencyList::spVectorToLongId(adjCol, result.prevNode);
                 string listOfNodes = "NodeIds";
                 for(long long nodeId: idvec) {
                     listOfNodes += " " + to_string(nodeId);
                 }
-                double distance = get<0>(result);
+                double distance = result.distanceToDest;
                 cout << listOfNodes << endl;
                 break;
             }
