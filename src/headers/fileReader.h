@@ -34,16 +34,12 @@ public:
         cin.tie(NULL);
         string line;
         ifstream myfile(path);
-        int counter = 2;
 
         getline(myfile,line);
         int nodes= stoi(line);
         getline(myfile,line);
         int ways = stoi(line);
         for (int i = 0; i < nodes; ++i) {
-            counter++;
-            if(counter % 1000000 == 0)
-                cout << counter << endl;
             getline(myfile, line);
             long long sourceID = stoll(line);
             int source = adjacencyList::insertInMaps(adjCol, sourceID);
@@ -53,9 +49,6 @@ public:
             adjacencyList::addyCoord(adjCol, source, stod(line));
         }
         for (int i = 0; i < ways; ++i) {
-            counter++;
-            if(counter % 1000000 == 0)
-                cout << counter << endl;
             getline(myfile,line);
             istringstream buf(line);
             istream_iterator<string> beg(buf), end;

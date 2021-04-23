@@ -37,8 +37,6 @@ vector<landmarksStruct> landmarks::initLandmarks(vector<long long> nodeIDs, adjL
 
 spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollection &adjCol) {
     landmarksStruct bestForward = choseLandmarks(source, dest, adjCol);
-
-    //astar here
     const double INF = 999999999999;
     int sizeOfGraph = adjCol.idSoFar;
     int meanSpeed = 130;
@@ -54,7 +52,6 @@ spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollectio
     //prevNode[source] = -1;
     //heap of nodes to evaluate
     priority_queue<pair<int, double>, vector<pair<int, double>>, comparator> minHeap;
-    //astar ends
 
     minHeap.push(make_pair(source, 0.0));
 
@@ -69,10 +66,6 @@ spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollectio
             //cout << "we have hit destination \n";
             break;
         }
-
-        //double aX = adjacencyList::getxCoord(adjCol, headId);  double aY = adjacencyList::getyCoord(adjCol, headId);
-        //double heuristHead = calcHeuristicDistance(fdestX, fdestY, aX, aY, meanSpeed);
-
         //add new nodes to queue
         for(auto i: adjCol.adjlst[headId]){
             int node = i.first;
@@ -110,12 +103,13 @@ landmarksStruct landmarks::choseLandmarks(int source, int dest, adjListCollectio
         double distFromSource = distToSource; //placeholder values
         double distFromDest = distToDest;
 
-        double lowerBound = max(distToDest - distToSource, distFromSource - distFromDest);
-        if(bestBound == 0 || lowerBound < bestBound) {
+        double lowerBound = max(distToSource - distToDest, distToDest - distToSource);
+        if(bestBound == 0 || lowerBound > bestBound) {
             bestBounding = index;
             bestBound = lowerBound;
         }
     }
+    cout << "chosen landmark: " << bestBounding.nodeID << endl;
     return bestBounding;
 }
 
@@ -127,7 +121,7 @@ double landmarks::calcHeuristicDistance(int start, int dest, landmarksStruct &cu
     double distFromStart = distToStart; //placeholder values
     double distFromDest = distToDest;
 
-    double lowerBound = max(distToDest - distToStart, distFromStart - distFromDest);
+    double lowerBound = max(distToStart - distToDest, distToDest - distToStart);
     return lowerBound;
 }
 
