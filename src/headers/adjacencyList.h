@@ -19,12 +19,18 @@ using namespace std;
         vector<int> prevNode;
         vector<double> distanceVec;
     };
+    struct landmarksStruct {
+        long long nodeID;
+        vector<int> prevNode;
+        vector<double> distanceVec;
+    };
     struct adjListCollection {
         std::vector<std::vector<std::pair<int, double>>> adjlst{};
         std::map<long long, int> longIdToIntID{};
         std::map<int, long long> intIdToLongID{};
         std::vector<double> xCoord;
         std::vector<double> yCoord;
+        std::vector<landmarksStruct> landmarksStructs{};
         int idSoFar = 0;
     };
 
@@ -126,6 +132,10 @@ using namespace std;
 
         static double getxCoord(adjListCollection &collection, int value){return collection.xCoord[value];}
         static double getyCoord(adjListCollection &collection, int value){return collection.yCoord[value];}
+
+        static void setLandmarkStructs(adjListCollection &collection, vector<landmarksStruct> landmarkVector){
+            collection.landmarksStructs = landmarkVector;
+        }
 
         static int getIntID(adjListCollection &collection, long long value) {
             return collection.longIdToIntID.find(value)->second;

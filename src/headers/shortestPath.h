@@ -8,6 +8,7 @@
 #include <sstream>
 #include "dijkstra.h"
 #include "aStar.h"
+#include "landmarks.h"
 #include "fileReader.h"
 
 enum shortestPathMethods{
@@ -25,6 +26,8 @@ public:
                 return dijkstra::djikstraShortestPath(source,dest,true,adjListCollection);
             case 1:
                 return aStar::aStarShortestPath(source,dest,adjListCollection);
+            case 2:
+                return landmarks::ALTShortestPath(source,dest,adjListCollection);
             default:
                 cout << "case Unknown";
         }

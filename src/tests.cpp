@@ -2,7 +2,6 @@
 // Created by simon on 13-04-2021.
 //
 #include "headers/adjacencyList.h"
-#include "headers/aStar.h"
 #include "headers/shortestPath.h"
 #include <iostream>
 #include <cassert>
@@ -177,6 +176,12 @@ void testDistancePrints(string method, long long source, long long target, adjLi
     cout << method <<" from: "<< source <<" to: " << target <<"\n" ;
     cout << "distance: " << result.distanceToDest << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
     cout << "nodes in path: "<< idvec.size() << endl;
+    int counterVisited = 0;
+    for (int id : result.prevNode){
+        if (id != -1)
+            counterVisited++;
+    }
+    cout << "Nodes considered: " << counterVisited << endl;
     cout << endl;
 }
 
@@ -190,6 +195,8 @@ adjListCollection setUpDatastructure(string country){
         cout << "###parsing " << country;
         auto t1 = high_resolution_clock::now();
         shortestPath::createAdjacencyList(malta, "file", adjCol);
+        vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks("malta", adjCol);
+        adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
         auto t2 = high_resolution_clock::now();
         duration<double, milli> ms_double = t2 - t1;
         cout << " time: "<< (ms_double.count()/1000) << "seconds###"<<endl;
@@ -215,9 +222,11 @@ void runMaltaTests(){
     //short distance downtown malta
     testDistancePrints("dijkstra",146885871, 1498913919,malta);
     testDistancePrints("astar",146885871, 1498913919,malta);
+    testDistancePrints("landmarks",146885871, 1498913919,malta);
     //long distance arcoss malt island
     testDistancePrints("dijkstra",3593516725, 5037683804,malta);
     testDistancePrints("astar",3593516725, 5037683804,malta);
+    testDistancePrints("landmarks",3593516725, 5037683804,malta);
 }
 void runDenmarkTests(){
     adjListCollection denmark = setUpDatastructure("denmark");
@@ -233,13 +242,25 @@ void runDenmarkTests(){
     testDistancePrints("dijkstra",itbyen,tivoliKobenhavn,denmark);
     testDistancePrints("astar",itbyen,tivoliKobenhavn,denmark);
 }
+
+void landmarksEmptyListTest(){
+    adjListCollection malta = setUpDatastructure("malta");
+    vector<landmarksStruct> notEmpty = landmarks::initLandmarks("malta", malta);
+    assert(notEmpty.size()==8);
+    landmarksStruct firstElem = notEmpty[0];
+    assert(!firstElem.distanceVec.empty());
+    assert(!firstElem.prevNode.empty());
+    assert(firstElem.nodeID != 0);
+}
+
 int main(){
     //TODO FIX SMALL TESTS FOR DIJKSTRA
     //testDijkstraAdjlist();
     //testToyExampleDatastructure();
     //testDijkstraToyExample();
+    landmarksEmptyListTest();
     runMaltaTests();
-    runDenmarkTests();
+    //runDenmarkTests();
 
     //deserializeJsonFromFile();
     return 0;

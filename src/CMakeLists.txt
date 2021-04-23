@@ -9,6 +9,8 @@ set(SOURCES
         implementation/aStar.cpp
         headers/dijkstra.h
         implementation/dijkstra.cpp
+        headers/landmarks.h
+        implementation/landmarks.cpp
         headers/fileReader.h
         headers/shortestPath.h
         implementation/customNode.cpp
