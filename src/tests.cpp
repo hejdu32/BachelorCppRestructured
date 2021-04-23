@@ -188,14 +188,15 @@ void testDistancePrints(string method, long long source, long long target, adjLi
 adjListCollection setUpDatastructure(string country){
     adjListCollection adjCol;
     string malta = "C:/Users/svend/IdeaProjects/BachelorProjectNew/app/malta";
-    string denmark = "C:/Users/a/IdeaProjects/BachelorProject/app/denmark";
+    string denmark = "C:/Users/svend/IdeaProjects/BachelorProjectNew/app/denmark";
 
     if(country== "malta"){
         //adjCol.adjlst.resize(106762,vector<pair<int,double>>(14));
         cout << "###parsing " << country;
         auto t1 = high_resolution_clock::now();
         shortestPath::createAdjacencyList(malta, "file", adjCol);
-        vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks("malta", adjCol);
+        vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
+        vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(landmarksIDs, adjCol);
         adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
         auto t2 = high_resolution_clock::now();
         duration<double, milli> ms_double = t2 - t1;
@@ -207,6 +208,9 @@ adjListCollection setUpDatastructure(string country){
         cout << "###parsing " << country;
         auto t1 = high_resolution_clock::now();
         shortestPath::createAdjacencyList(denmark, "file", adjCol);
+        vector<long long> landmarksIDs = {313159998, 13131369, 483022215, 349198443, 8633706138, 252151251, 369778546, 6187723341, 2252204014, 3149548115, 118416, 148762835, 1108078449, 6816079197, 2387109140, 371441979}; //hardcoded landmarks for denmark
+        vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(landmarksIDs, adjCol);
+        adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
         auto t2 = high_resolution_clock::now();
         duration<double, milli> ms_double = t2 - t1;
         cout << " time: "<< (ms_double.count()/1000) << "seconds###"<<endl;
@@ -237,15 +241,19 @@ void runDenmarkTests(){
 
     testDistancePrints("dijkstra",itbyen, borglum,denmark);
     testDistancePrints("astar",itbyen, borglum,denmark);
+    testDistancePrints("landmarks",itbyen, borglum,denmark);
     testDistancePrints("dijkstra",itbyen,RandersHospital,denmark);
     testDistancePrints("astar",itbyen,RandersHospital,denmark);
+    testDistancePrints("landmarks",itbyen,RandersHospital,denmark);
     testDistancePrints("dijkstra",itbyen,tivoliKobenhavn,denmark);
     testDistancePrints("astar",itbyen,tivoliKobenhavn,denmark);
+    testDistancePrints("landmarks",itbyen,tivoliKobenhavn,denmark);
 }
 
 void landmarksEmptyListTest(){
     adjListCollection malta = setUpDatastructure("malta");
-    vector<landmarksStruct> notEmpty = landmarks::initLandmarks("malta", malta);
+    vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
+    vector<landmarksStruct> notEmpty = landmarks::initLandmarks(landmarksIDs, malta);
     assert(notEmpty.size()==8);
     landmarksStruct firstElem = notEmpty[0];
     assert(!firstElem.distanceVec.empty());
@@ -258,9 +266,9 @@ int main(){
     //testDijkstraAdjlist();
     //testToyExampleDatastructure();
     //testDijkstraToyExample();
-    landmarksEmptyListTest();
-    runMaltaTests();
-    //runDenmarkTests();
+    //landmarksEmptyListTest();
+    //runMaltaTests();
+    runDenmarkTests();
 
     //deserializeJsonFromFile();
     return 0;

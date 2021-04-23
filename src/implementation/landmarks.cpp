@@ -18,23 +18,20 @@ struct comparator{
     }
 };
 
-vector<landmarksStruct> landmarks::initLandmarks(string country, adjListCollection &adjListCollection) {
+vector<landmarksStruct> landmarks::initLandmarks(vector<long long> nodeIDs, adjListCollection &adjListCollection) {
     vector<landmarksStruct> resultVector;
 
-    if (country == "malta"){
-        vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
-        for (auto id:landmarksIDs) {
-            int intID = adjacencyList::getIntID(adjListCollection,id);
-            landmarksStruct landmarksStruct;
-            spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(intID, intID, false, adjListCollection);
-
-            landmarksStruct.distanceVec = distanceToEverything.distanceVec;
-            landmarksStruct.nodeID = id;    //is suppose to be id not intID
-            landmarksStruct.prevNode = distanceToEverything.prevNode;
-
-            resultVector.push_back(landmarksStruct);
-        }
+    //vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
+    for (auto id:nodeIDs) {
+        int intID = adjacencyList::getIntID(adjListCollection,id);
+        landmarksStruct landmarksStruct;
+        spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(intID, intID, false, adjListCollection);
+        landmarksStruct.distanceVec = distanceToEverything.distanceVec;
+        landmarksStruct.nodeID = id;    //is suppose to be id not intID
+        landmarksStruct.prevNode = distanceToEverything.prevNode;
+        resultVector.push_back(landmarksStruct);
     }
+
     return resultVector;
 }
 
