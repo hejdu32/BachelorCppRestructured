@@ -182,8 +182,8 @@ void testDistancePrints(string method, long long source, long long target, adjLi
 
 adjListCollection setUpDatastructure(string country){
     adjListCollection adjCol;
-    string malta = "/home/a/CLionProjects/BachelorCppRestructured/src/resources/malta";
-    string denmark = "/home/a/CLionProjects/BachelorCppRestructured/src/resources/denmark";
+    string malta = "C:/Users/svend/IdeaProjects/BachelorProjectNew/app/malta";
+    string denmark = "C:/Users/a/IdeaProjects/BachelorProject/app/denmark";
 
     if(country== "malta"){
         //adjCol.adjlst.resize(106762,vector<pair<int,double>>(14));

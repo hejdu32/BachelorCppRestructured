@@ -10,12 +10,14 @@ using namespace std;
 void communicateWithJava() {
     enum commands{
         makeAdjacencyList,
-        runDijkstra
+        runDijkstra,
+        runAstar
     };
     map<string, commands> mapStringToEnum =
             {
                     {"makeAdjacencyList", makeAdjacencyList},
-                    {"runDijkstra", runDijkstra}
+                    {"runDijkstra", runDijkstra},
+                    {"runAstar", runAstar}
             };
     string line;
     adjListCollection adjCol;
@@ -23,10 +25,10 @@ void communicateWithJava() {
         commands switchType = mapStringToEnum[line];
         switch (switchType) {
             case makeAdjacencyList: {
-                //shortestPath::createAdjacencyList("", "java", adjCol);
-                nodesAndWaysWrapper wrapper = adjacencyList::deserializeFromJson("C:/proj/BachelorCppCmake/resources/malta.json");
-                adjacencyList::createAdjListCollection(wrapper, adjCol);
-                cout << "Finished making adjacency list" << endl;
+                shortestPath::createAdjacencyList("C:/Users/svend/IdeaProjects/BachelorProjectNew/app/malta", "file", adjCol);
+                //nodesAndWaysWrapper wrapper = adjacencyList::deserializeFromJson("C:/proj/BachelorCppCmake/resources/malta.json");
+                //adjacencyList::createAdjListCollection(wrapper, adjCol);
+                cout << "Finished" << endl;
                 break;
             }
             case runDijkstra: {
@@ -37,6 +39,23 @@ void communicateWithJava() {
                 int from = adjCol.longIdToIntID[stoll(nodeIdFrom)];
                 int to = adjCol.longIdToIntID[stoll(nodeIdTo)];
                 spResultStruct result = shortestPath::chooseAlgo(dijkstra, from, to, adjCol);
+                vector<long long> idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode,from,to);
+                string listOfNodes = "NodeIds";
+                for(long long nodeId: idvec) {
+                    listOfNodes += " " + to_string(nodeId);
+                }
+                double distance = result.distanceToDest;
+                cout << listOfNodes << endl;
+                break;
+            }
+            case runAstar: {
+                string nodeIdFrom;
+                string nodeIdTo;
+                cin >> nodeIdFrom;
+                cin >> nodeIdTo;
+                int from = adjCol.longIdToIntID[stoll(nodeIdFrom)];
+                int to = adjCol.longIdToIntID[stoll(nodeIdTo)];
+                spResultStruct result = shortestPath::chooseAlgo(astar, from, to, adjCol);
                 vector<long long> idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode,from,to);
                 string listOfNodes = "NodeIds";
                 for(long long nodeId: idvec) {
