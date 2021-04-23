@@ -37,7 +37,7 @@ void communicateWithJava() {
                 int from = adjCol.longIdToIntID[stoll(nodeIdFrom)];
                 int to = adjCol.longIdToIntID[stoll(nodeIdTo)];
                 spResultStruct result = shortestPath::chooseAlgo(dijkstra, from, to, adjCol);
-                vector<long long> idvec = adjacencyList::spVectorToLongId(adjCol, result.prevNode);
+                vector<long long> idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode,from,to);
                 string listOfNodes = "NodeIds";
                 for(long long nodeId: idvec) {
                     listOfNodes += " " + to_string(nodeId);
