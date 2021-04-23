@@ -76,13 +76,21 @@ using namespace std;
             }
         }
 
-        static vector<long long> spVectorToLongId(adjListCollection &collection, vector<int> spList) {
-            vector<long long> vectorWLongs;
-            for (auto id: spList) {
-                long long newid = collection.intIdToLongID.find(id)->second;
-                vectorWLongs.push_back(newid);
+        static vector<long long> prevNodeToShortestPath(adjListCollection &collection, vector<int> prevNode, int source, int destination) {
+            int temdest = destination;
+            vector<int> shortestPath;
+            while (temdest != source && prevNode[temdest] != -1){
+                shortestPath.push_back(temdest);
+                temdest = prevNode[temdest];
             }
-            return vectorWLongs;
+            shortestPath.push_back(source);
+            reverse(shortestPath.begin(),shortestPath.end());
+            vector<long long> spVectorLongs;
+            for (auto id: shortestPath) {
+                long long newid = collection.intIdToLongID.find(id)->second;
+                spVectorLongs.push_back(newid);
+            }
+            return spVectorLongs;
         }
 
         static void addxCoord(adjListCollection &collection, int node, double xCoord) {

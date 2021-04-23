@@ -27,7 +27,7 @@ void testDijkstraAdjlist(){
     int end = adjacencyList::getIntID(adjCol,5);
 
     result = shortestPath::chooseAlgo(dijkstra,start,end,adjCol);
-    idvec = adjacencyList::spVectorToLongId(adjCol,shortestPath::findPath(result.prevNode,start,end));
+    idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, start, end);
     adjacencyList::printGraph(adjCol);
 
     assert(idvec[0]==1);
@@ -100,7 +100,7 @@ void testDijkstraToyExample() {
     vector<long long> idvec;
 
     result = shortestPath::chooseAlgo(dijkstra, aNode, bNode, adjCol);
-    idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(result.prevNode,aNode,bNode));
+    idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, aNode, bNode);
     //testing a->b gives path a,e,b with distance 4
     assert(idvec[0] == aNode);
     assert(idvec[1] == eNode);
@@ -108,13 +108,13 @@ void testDijkstraToyExample() {
     assert(result.distanceToDest == 4);
 
     result = shortestPath::chooseAlgo(dijkstra, aNode, eNode, adjCol);
-    idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(result.prevNode,aNode,eNode));
+    idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, aNode, eNode);
     assert(idvec[0] == 0);
     assert(idvec[1] == 4);
     assert(result.distanceToDest == 3);
 
     result = shortestPath::chooseAlgo(dijkstra, aNode, cNode, adjCol);
-    idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(result.prevNode,aNode,cNode));
+    idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, aNode, cNode);
     assert(idvec[0] == 0);
     assert(idvec[1] == 4);
     assert(idvec[2] == 1);
@@ -122,7 +122,7 @@ void testDijkstraToyExample() {
     assert(result.distanceToDest == 6);
 
     result = shortestPath::chooseAlgo(dijkstra, aNode, dNode, adjCol);
-    idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(result.prevNode,aNode,dNode));
+    idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, aNode, dNode);
     assert(idvec[0] == 0);
     assert(idvec[1] == 4);
     assert(idvec[2] == 3);
@@ -147,7 +147,7 @@ void testAStarToyExample(){
     spResultStruct result; vector<long long> idvec;
 
     result = shortestPath::chooseAlgo(astar,aNode,cNode,adjCol);
-    idvec = adjacencyList::spVectorToLongId(adjCol, result.prevNode);
+    idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, aNode, cNode);
 
     assert(idvec[0]==0);
     assert(idvec[1]==4);
@@ -173,7 +173,7 @@ void testDistancePrints(string method, long long source, long long target, adjLi
     spResultStruct result = shortestPath::chooseAlgo(spmap[method], from ,to,adjCol);
     auto t2 = high_resolution_clock::now();
     duration<double, milli> ms_double = t2 - t1;
-    vector<long long> idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(result.prevNode,from,to));
+    vector<long long> idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, from, to);
     cout << method <<" from: "<< source <<" to: " << target <<"\n" ;
     cout << "distance: " << result.distanceToDest << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
     cout << "nodes in path: "<< idvec.size() << endl;
@@ -240,10 +240,6 @@ int main(){
     //testDijkstraToyExample();
     runMaltaTests();
     runDenmarkTests();
-    //_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
-    //_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
-    //_CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_FILE | _CRTDBG_MODE_WNDW );
-    //_CrtSetReportFile( _CRT_ASSERT, _CRTDBG_FILE_STDERR );
 
     //deserializeJsonFromFile();
     return 0;

@@ -44,19 +44,6 @@ void printRoute(vector<int> const &prevPath, int source, int dest){
     cout << dest << " ";
 }
 
-
-vector<int> createSPList(vector<int> prevNode, int source, int destination){
-    int temdest = destination;
-    vector<int> shortestPath;
-    while (temdest != source && prevNode[temdest] != -1){
-        shortestPath.push_back(temdest);
-        temdest = prevNode[temdest];
-    }
-    shortestPath.push_back(source);
-    reverse(shortestPath.begin(),shortestPath.end());
-    return shortestPath;
-}
-
 int nodesConsidered2(vector<bool> nodesSeen){
     int nodes = 0;
     for (auto b:nodesSeen) {
@@ -111,7 +98,6 @@ spResultStruct dijkstra::djikstraShortestPath(int source, int dest, bool earlySt
         //mark head as it has been seen and cant be considered again
         nodeSeen[headId] = true;
     }
-    //vector<int> path = createSPList(prevNode,source,dest);
     spResultStruct resultStruct;
     resultStruct.distanceToDest = distance[dest];
     resultStruct.distanceVec = distance;
