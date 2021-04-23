@@ -13,7 +13,7 @@
 using namespace std;
 class aStar {
 public:
-    static tuple<double, vector<int>,vector<double>> aStarShortestPath(int source, int dest, adjListCollection &adjCol);
+    static spResultStruct aStarShortestPath(int source, int dest, adjListCollection &adjCol);
 };
 
 

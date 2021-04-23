@@ -36,7 +36,7 @@ double calcHeuristicDistance(double fdestX, double fdestY, double nodeX, double 
 }
 
 
-tuple<double, vector<int>,vector<double>> aStar::aStarShortestPath(int source, int dest, adjListCollection &adjCol) {
+spResultStruct aStar::aStarShortestPath(int source, int dest, adjListCollection &adjCol) {
     const double INF = 999999999999;
     int sizeOfGraph = adjCol.idSoFar;
     int meanSpeed =130;
@@ -98,8 +98,11 @@ tuple<double, vector<int>,vector<double>> aStar::aStarShortestPath(int source, i
         nodeSeen[headId] = true;
     }
     //cout << "astar nodes considered: " << nodesConsidered(nodeSeen) << endl;
-
-    return make_tuple(distance[dest],prevNode,distance);
+    spResultStruct resultStruct;
+    resultStruct.distanceToDest = distance[dest];
+    resultStruct.distanceVec = distance;
+    resultStruct.prevNode = prevNode;
+    return resultStruct;
 }
 
 

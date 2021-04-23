@@ -22,12 +22,12 @@ void testDijkstraAdjlist(){
     adjListCollection adjCol;
     shortestPath::createAdjacencyList("C:/Users/a/CLionProjects/BachelorCppRestructured/resources/adjlist","file",adjCol);
 
-    tuple<double,vector<int>,vector<double>> result; vector<long long> idvec;
+    spResultStruct result; vector<long long> idvec;
     int start = adjacencyList::getIntID(adjCol,1);
     int end = adjacencyList::getIntID(adjCol,5);
 
     result = shortestPath::chooseAlgo(dijkstra,start,end,adjCol);
-    idvec = adjacencyList::spVectorToLongId(adjCol,shortestPath::findPath(get<1>(result),start,end));
+    idvec = adjacencyList::spVectorToLongId(adjCol,shortestPath::findPath(result.prevNode,start,end));
     adjacencyList::printGraph(adjCol);
 
     assert(idvec[0]==1);
@@ -96,37 +96,37 @@ void testDijkstraToyExample() {
         dNode = 3,
         eNode = 4
     };
-    tuple<double, vector<int>,vector<double>> result;
+    spResultStruct result;
     vector<long long> idvec;
 
     result = shortestPath::chooseAlgo(dijkstra, aNode, bNode, adjCol);
-    idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(get<1>(result),aNode,bNode));
+    idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(result.prevNode,aNode,bNode));
     //testing a->b gives path a,e,b with distance 4
     assert(idvec[0] == aNode);
     assert(idvec[1] == eNode);
     assert(idvec[2] == bNode);
-    assert(get<0>(result) == 4);
+    assert(result.distanceToDest == 4);
 
     result = shortestPath::chooseAlgo(dijkstra, aNode, eNode, adjCol);
-    idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(get<1>(result),aNode,eNode));
+    idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(result.prevNode,aNode,eNode));
     assert(idvec[0] == 0);
     assert(idvec[1] == 4);
-    assert(get<0>(result) == 3);
+    assert(result.distanceToDest == 3);
 
     result = shortestPath::chooseAlgo(dijkstra, aNode, cNode, adjCol);
-    idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(get<1>(result),aNode,cNode));
+    idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(result.prevNode,aNode,cNode));
     assert(idvec[0] == 0);
     assert(idvec[1] == 4);
     assert(idvec[2] == 1);
     assert(idvec[3] == 2);
-    assert(get<0>(result) == 6);
+    assert(result.distanceToDest == 6);
 
     result = shortestPath::chooseAlgo(dijkstra, aNode, dNode, adjCol);
-    idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(get<1>(result),aNode,dNode));
+    idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(result.prevNode,aNode,dNode));
     assert(idvec[0] == 0);
     assert(idvec[1] == 4);
     assert(idvec[2] == 3);
-    assert(get<0>(result) == 5);
+    assert(result.distanceToDest == 5);
     cout << "Toy example Dijkstra test passed" << endl;
 }
 //dep doesnt work with actual weights
@@ -144,15 +144,15 @@ void testAStarToyExample(){
     };
     //test that the euclidDist has been written correct
 
-    tuple<double,vector<int>,vector<double>> result; vector<long long> idvec;
+    spResultStruct result; vector<long long> idvec;
 
     result = shortestPath::chooseAlgo(astar,aNode,cNode,adjCol);
-    idvec = adjacencyList::spVectorToLongId(adjCol, get<1>(result));
+    idvec = adjacencyList::spVectorToLongId(adjCol, result.prevNode);
 
     assert(idvec[0]==0);
     assert(idvec[1]==4);
     assert(idvec[2]==2);
-    assert(get<0>(result) == 11);
+    assert(result.distanceToDest == 11);
     cout << "Toy Example aStar test passed" << endl;
 }
 void deserializeJsonFromFile(){
@@ -170,12 +170,12 @@ void testDistancePrints(string method, long long source, long long target, adjLi
     int from = adjacencyList::getIntID(adjCol,source);
     int to = adjacencyList::getIntID(adjCol,target);
     auto t1 = high_resolution_clock::now();
-    tuple<double,vector<int>,vector<double>> result = shortestPath::chooseAlgo(spmap[method], from ,to,adjCol);
+    spResultStruct result = shortestPath::chooseAlgo(spmap[method], from ,to,adjCol);
     auto t2 = high_resolution_clock::now();
     duration<double, milli> ms_double = t2 - t1;
-    vector<long long> idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(get<1>(result),from,to));
+    vector<long long> idvec = adjacencyList::spVectorToLongId(adjCol, shortestPath::findPath(result.prevNode,from,to));
     cout << method <<" from: "<< source <<" to: " << target <<"\n" ;
-    cout << "distance: " << get<0>(result) << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
+    cout << "distance: " << result.distanceToDest << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
     cout << "nodes in path: "<< idvec.size() << endl;
     cout << endl;
 }

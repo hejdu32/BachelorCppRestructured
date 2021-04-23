@@ -18,7 +18,7 @@ static std::map<std::string, int> spmap={{"dijkstra", 0},{"astar", 1},{"landmark
 
 class shortestPath {
 public:
-    static tuple<double, vector<int>,vector<double>> chooseAlgo(int method, int source, int dest, adjListCollection &adjListCollection) {
+    static spResultStruct chooseAlgo(int method, int source, int dest, adjListCollection &adjListCollection) {
         //dijkstra=0,astar=1 ect
         switch (method) {
             case 0:

@@ -15,7 +15,7 @@
 using namespace std;
 class dijkstra {
 public:
-    static tuple<double, vector<int>,vector<double>> djikstraShortestPath(int source, int dest,bool earlyStopping, adjListCollection &adjCol);
+    static spResultStruct djikstraShortestPath(int source, int dest,bool earlyStopping, adjListCollection &adjCol);
 };
 
 

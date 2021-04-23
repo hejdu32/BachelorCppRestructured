@@ -14,7 +14,11 @@
 
 
 using namespace std;
-
+    struct spResultStruct {
+        double distanceToDest;
+        vector<int> prevNode;
+        vector<double> distanceVec;
+    };
     struct adjListCollection {
         std::vector<std::vector<std::pair<int, double>>> adjlst{};
         std::map<long long, int> longIdToIntID{};
