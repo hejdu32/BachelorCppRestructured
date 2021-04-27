@@ -39,7 +39,6 @@ spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollectio
     landmarksStruct bestForward = choseLandmarks(source, dest, adjCol);
     const double INF = 999999999999;
     int sizeOfGraph = adjCol.idSoFar;
-    int meanSpeed = 130;
     //initilaize distance from source to everything to infinity
     //distance from source to source to 0
     vector<double> distance(sizeOfGraph, INF);
@@ -67,7 +66,8 @@ spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollectio
             break;
         }
         //add new nodes to queue
-        for(auto i: adjCol.adjlst[headId]){
+        auto connectedNodes = adjCol.adjlst[headId];
+        for(auto i: connectedNodes){
             int node = i.first;
             double weight = i.second;
             double heuristIntermediate = calcHeuristicDistance(node, dest, bestForward);

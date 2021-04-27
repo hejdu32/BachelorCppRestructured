@@ -74,7 +74,8 @@ spResultStruct aStar::aStarShortestPath(int source, int dest, adjListCollection 
         //double heuristHead = calcHeuristicDistance(fdestX, fdestY, aX, aY, meanSpeed);
 
         //add new nodes to queue
-        for(auto i: adjCol.adjlst[headId]){
+        auto connectedNodes = adjCol.adjlst[headId];
+        for(auto i: connectedNodes){
             int node = i.first;
             double weight = i.second;
             double nodeX = adjacencyList::getxCoord(adjCol, node);  double nodeY = adjacencyList::getyCoord(adjCol, node);

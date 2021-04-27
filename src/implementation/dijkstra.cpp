@@ -83,14 +83,16 @@ spResultStruct dijkstra::djikstraShortestPath(int source, int dest, bool earlySt
         }
 
         //add new nodes to queue
-        for(auto i: adjCol.adjlst[headId]){
+        auto connectedNodes = adjCol.adjlst[headId];
+        for(auto i: connectedNodes){
             int node = i.first;
             double weight = i.second;
-
+            double newDistance = distance[headId]+weight;
+            double oldDistnace = distance[node];
             //relaxation step
-            if(!nodeSeen[node] && (distance[headId]+weight) < distance[node]){
+            if(!nodeSeen[node] && newDistance < oldDistnace){
                 //update the distance to the node and add it to the queue
-                distance[node] = distance[headId]+weight;
+                distance[node] = newDistance;
                 prevNode[node] = headId; //remember the node before for finding the shortest path to destination
                 minHeap.push(make_pair(node,distance[node]));
             }

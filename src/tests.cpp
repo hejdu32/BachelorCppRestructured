@@ -3,9 +3,11 @@
 //
 #include "headers/adjacencyList.h"
 #include "headers/shortestPath.h"
+#include <cstdlib>
 #include <iostream>
 #include <cassert>
 #include <chrono>
+
 
 
 
@@ -185,6 +187,12 @@ void testDistancePrints(string method, long long source, long long target, adjLi
     cout << endl;
 }
 
+void testDistance(string method, int source, int target, adjListCollection &adjCol){
+    //int from = adjacencyList::getIntID(adjCol,source);
+    //int to = adjacencyList::getIntID(adjCol,target);
+    spResultStruct result = shortestPath::chooseAlgo(spmap[method], source ,target,adjCol);
+}
+
 adjListCollection setUpDatastructure(string country){
     adjListCollection adjCol;
     string malta = "/home/a/IdeaProjects/BachelorProject/app/malta";
@@ -204,16 +212,17 @@ adjListCollection setUpDatastructure(string country){
     }else if(country=="denmark"){
         //adjCol.xCoord.resize(3976155);
         //adjCol.yCoord.resize(3976155);
-        //adjCol.adjlst.resize(2500000,vector<pair<int,double>>(15));
-        cout << "###parsing " << country;
-        auto t1 = high_resolution_clock::now();
+        //adjCol.adjlst.resize(3976155,vector<pair<int,double>>(14));
+
+        //cout << "###parsing " << country;
+        //auto t1 = high_resolution_clock::now();
         shortestPath::createAdjacencyList(denmark, "file", adjCol);
-        vector<long long> landmarksIDs = {313159998, 13131369, 483022215, 349198443, 8633706138, 252151251, 369778546, 6187723341, 2252204014, 3149548115, 118416, 148762835, 1108078449, 6816079197, 2387109140, 371441979}; //hardcoded landmarks for denmark
+        vector<long long> landmarksIDs = {313159998, 13131369, 483022215, 349198443, 252151251, 369778546, 6187723341, 2252204014, 3149548115, 118416, 1108078449, 6816079197, 2387109140, 371441979}; //hardcoded landmarks for denmark
         vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(landmarksIDs, adjCol);
         adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
-        auto t2 = high_resolution_clock::now();
-        duration<double, milli> ms_double = t2 - t1;
-        cout << " time: "<< (ms_double.count()/1000) << "seconds###"<<endl;
+        //auto t2 = high_resolution_clock::now();
+        //duration<double, milli> ms_double = t2 - t1;
+        //cout << " time: "<< (ms_double.count()/1000) << "seconds###"<<endl;
     }else {
         cout << country << " not found";
     }
@@ -261,15 +270,32 @@ void landmarksEmptyListTest(){
     assert(firstElem.nodeID != 0);
 }
 
+void denmark20RandomPoints(string method){
+    adjListCollection denmark = setUpDatastructure("denmark");
+    int highestNbr = denmark.idSoFar;
+    int amountOfTests = 50;
+    srand(100);
+    vector<int> ids(amountOfTests,0);
+    for (int i = 0; i < amountOfTests; ++i) {
+        ids[i] = rand() % highestNbr;
+    }
+
+    for (int i = 0; i < ids.size(); i+=2) {
+        testDistance(method, i, i+1,denmark);
+    }
+
+}
+
 int main(){
-    //TODO FIX SMALL TESTS FOR DIJKSTRA
+
     //testDijkstraAdjlist();
     //testToyExampleDatastructure();
     //testDijkstraToyExample();
     //landmarksEmptyListTest();
     //runMaltaTests();
-    runDenmarkTests();
-
-    //deserializeJsonFromFile();
+    //runDenmarkTests();
+    //denmark20RandomPoints("dijkstra");
+    //denmark20RandomPoints("astar");
+    denmark20RandomPoints("landmarks");
     return 0;
 }
