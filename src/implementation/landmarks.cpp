@@ -28,7 +28,6 @@ vector<landmarksStruct> landmarks::initLandmarks(vector<long long> nodeIDs, adjL
         spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(intID, intID, false, adjListCollection);
         landmarksStruct.distanceVec = distanceToEverything.distanceVec;
         landmarksStruct.nodeID = id;    //is suppose to be id not intID
-        landmarksStruct.prevNode = distanceToEverything.prevNode;
         resultVector.push_back(landmarksStruct);
     }
 
@@ -37,7 +36,7 @@ vector<landmarksStruct> landmarks::initLandmarks(vector<long long> nodeIDs, adjL
 
 spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollection &adjCol) {
     landmarksStruct bestForward = choseLandmarks(source, dest, adjCol);
-    const double INF = 999999999999;
+    const double INF = std::numeric_limits<double>::infinity();
     int sizeOfGraph = adjCol.idSoFar;
     //initilaize distance from source to everything to infinity
     //distance from source to source to 0
@@ -109,7 +108,6 @@ landmarksStruct landmarks::choseLandmarks(int source, int dest, adjListCollectio
             bestBound = lowerBound;
         }
     }
-    cout << "chosen landmark: " << bestBounding.nodeID << endl;
     return bestBounding;
 }
 

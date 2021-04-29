@@ -37,7 +37,7 @@ double calcHeuristicDistance(double fdestX, double fdestY, double nodeX, double 
 
 
 spResultStruct aStar::aStarShortestPath(int source, int dest, adjListCollection &adjCol) {
-    const double INF = 999999999999;
+    const double INF = std::numeric_limits<double>::infinity();
     int sizeOfGraph = adjCol.idSoFar;
     int meanSpeed =130;
     //initilaize distance from source to everything to infinity

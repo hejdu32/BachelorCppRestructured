@@ -196,7 +196,7 @@ void testDistance(string method, int source, int target, adjListCollection &adjC
 adjListCollection setUpDatastructure(string country){
     adjListCollection adjCol;
     string malta = "/home/a/IdeaProjects/BachelorProject/app/malta";
-    string denmark = "/home/a/IdeaProjects/BachelorProject/app/denmark";
+    string denmark = "C:/Users/svend/IdeaProjects/BachelorProjectNew/app/denmark";
 
     if(country== "malta"){
         //adjCol.adjlst.resize(106762,vector<pair<int,double>>(14));
@@ -206,6 +206,7 @@ adjListCollection setUpDatastructure(string country){
         vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
         vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(landmarksIDs, adjCol);
         adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
+        cout << "gothere" << endl;
         auto t2 = high_resolution_clock::now();
         duration<double, milli> ms_double = t2 - t1;
         cout << " time: "<< (ms_double.count()/1000) << "seconds###"<<endl;

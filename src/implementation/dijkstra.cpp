@@ -53,7 +53,7 @@ int nodesConsidered2(vector<bool> nodesSeen){
 }
 
 spResultStruct dijkstra::djikstraShortestPath(int source, int dest, bool earlyStopping, adjListCollection &adjCol) {
-    const double INF = 999999999999;
+    const double INF = std::numeric_limits<double>::infinity();
     int sizeOfGraph = adjCol.idSoFar;
     //initilaize distance from source to everything to infinity
     //distance from source to source to 0
