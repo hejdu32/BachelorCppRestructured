@@ -219,7 +219,7 @@ adjListCollection setUpDatastructure(string country){
         //auto t1 = high_resolution_clock::now();
         shortestPath::createAdjacencyList(denmark, "file", adjCol);
         vector<long long> landmarksIDs = {313159998, 13131369, 483022215, 349198443, 252151251, 369778546, 6187723341, 2252204014, 3149548115, 118416, 1108078449, 6816079197, 2387109140, 371441979}; //hardcoded landmarks for denmark
-        vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(landmarksIDs, adjCol);
+        vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(12, adjCol);
         adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
         //auto t2 = high_resolution_clock::now();
         //duration<double, milli> ms_double = t2 - t1;

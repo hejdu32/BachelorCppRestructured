@@ -11,6 +11,7 @@ using namespace std;
 class landmarks {
 public:
     static vector<landmarksStruct> initLandmarks(vector<long long> nodeIDs, adjListCollection &adjListCollection);
+    static vector<landmarksStruct> initLandmarks(int amount, adjListCollection &adjListCollection);
     static spResultStruct ALTShortestPath(int source, int dest, adjListCollection &adjCol);
 
     static landmarksStruct choseLandmarks(int source, int dest, adjListCollection &collection);
