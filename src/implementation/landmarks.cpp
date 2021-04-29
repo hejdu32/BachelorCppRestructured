@@ -20,8 +20,6 @@ struct comparator{
 
 vector<landmarksStruct> landmarks::initLandmarks(vector<long long> nodeIDs, adjListCollection &adjListCollection) {
     vector<landmarksStruct> resultVector;
-
-    //vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
     for (auto id:nodeIDs) {
         int intID = adjacencyList::getIntID(adjListCollection,id);
         landmarksStruct landmarksStruct;
@@ -35,25 +33,23 @@ vector<landmarksStruct> landmarks::initLandmarks(vector<long long> nodeIDs, adjL
 }
 
 vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &adjListCollection) {
+    double minimumDistance = 3000;
     vector<landmarksStruct> resultVector;
     int highestNbr = adjListCollection.idSoFar;
-    srand(100);
+    //srand(4);
     int randomNode = rand() % highestNbr;
-    map<int,bool> landmarkIDS;
+    vector<int> landmarkIDS;
+    landmarkIDS.resize(1,randomNode);
+    //cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
 
-    //cout << "Random node " << adjListCollection.intIdToLongID[randomNode] << endl;
     vector<double> accuVec;
     accuVec.resize(highestNbr,0);
     for (int i = 0; i < amount; ++i) {
-        landmarksStruct landmarksStruct;
-        spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, adjListCollection);
-        landmarksStruct.distanceVec = distanceToEverything.distanceVec;
-        landmarksStruct.nodeID = adjListCollection.intIdToLongID[randomNode];    //is suppose to be id not intID
-        resultVector.push_back(landmarksStruct);
-
-
-        //cout << "Accuvec size " << accuVec.size() << endl;
-
+        //landmarksStruct landmarksStruct;
+        //spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, adjListCollection);
+        //landmarksStruct.distanceVec = distanceToEverything.distanceVec;
+        //landmarksStruct.nodeID = adjListCollection.intIdToLongID[randomNode];    //is suppose to be id not intID
+        //resultVector.push_back(landmarksStruct);
         vector<double> euclidDistVector;
         euclidDistVector.resize(highestNbr,0);
         double sourceX = adjListCollection.xCoord[randomNode];
@@ -64,36 +60,45 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
             double euclidDistToJ = adjacencyList::euclidDistance(sourceX, sourceY, targetX, targetY);
             euclidDistVector[j]=euclidDistToJ;
         }
-
+        //add the euclid distance vector to accumulator vector
         transform (accuVec.begin(), accuVec.end(), euclidDistVector.begin(), accuVec.begin(), std::plus<double>());
 
-        int counter = 0;
         double bestSoFar = 0;
         int bestSoFarIndex = 0;
         double INF = numeric_limits<double>::infinity();
-
         for (int j = 0; j < accuVec.size(); ++j) {
-            if(accuVec[j] == numeric_limits<double>::infinity()){
-                counter ++;
-            }
             double dist = accuVec[j];
-            if(dist < INF && bestSoFar < dist && landmarkIDS.find(j)==landmarkIDS.end()){
-                //cout << "J: " << j << " dist: "<< dist << " bestSoFar: "<< bestSoFar << endl;
+            bool isJLandmark = find(landmarkIDS.begin(),landmarkIDS.end(),j) != landmarkIDS.end();
+            bool isJFarEnoughFromOtherLandmarks = true;
+            if(!isJLandmark){
+                double jX = adjListCollection.xCoord[j];
+                double jY = adjListCollection.yCoord[j];
+                for (int lmk:landmarkIDS) {
+                    double lmkX = adjListCollection.xCoord[lmk];
+                    double lmkY = adjListCollection.yCoord[lmk];
+                    double distance = adjacencyList::euclidDistance(jX,jY,lmkX,lmkY);
+                    if (distance < minimumDistance){
+                        isJFarEnoughFromOtherLandmarks = false;
+                    }
+                }
+            }
+
+            if(dist < INF && bestSoFar < dist && !isJLandmark && isJFarEnoughFromOtherLandmarks){
                 bestSoFar = dist;
                 bestSoFarIndex = j;
             }
         }
-        //cout << "inf counter: " << counter << endl;
-
         randomNode = bestSoFarIndex;
-        //cout << "intID for randomNode: " << randomNode << endl;
-        //cout << "Chosen node: " << adjListCollection.intIdToLongID[randomNode] << " with dist: " << accuVec[randomNode] << endl;
-
-        cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
-        landmarkIDS.insert(make_pair(randomNode, true));
+        //cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
+        landmarkIDS.push_back(randomNode);
     }
-
-    return resultVector;
+    //recast to long longs for calling initLandmarks
+    vector<long long> longIdsOfLandmarks;
+    for (int id:landmarkIDS) {
+        long long longID = adjacencyList::getLongID(adjListCollection,id);
+        longIdsOfLandmarks.push_back(longID);
+    }
+    return initLandmarks(longIdsOfLandmarks,adjListCollection);
 }
 
 spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollection &adjCol) {
