@@ -54,7 +54,8 @@ public:
             istream_iterator<string> beg(buf), end;
             vector<string> lineAsTokens(beg, end);
             int maxSpeed = stoi(lineAsTokens[0]);
-            for (int j = 1; j < lineAsTokens.size()-1; ++j) {
+            bool isOneway = stoi(lineAsTokens[1]);
+            for (int j = 2; j < lineAsTokens.size()-1; ++j) {
                 int firstNode = adjacencyList::getIntID(adjCol, stoll(lineAsTokens[j]));
                 int secondNode = adjacencyList::getIntID(adjCol, stoll(lineAsTokens[j+1]));
                 double srcX = adjacencyList::getxCoord(adjCol, firstNode);
@@ -62,8 +63,13 @@ public:
                 double destX = adjacencyList::getxCoord(adjCol, secondNode);
                 double destY = adjacencyList::getyCoord(adjCol, secondNode);
                 double weight = adjacencyList::distanceCalc(srcX, srcY, destX, destY,maxSpeed);
-                adjacencyList::addEdge(adjCol, firstNode, secondNode, weight);
-                adjacencyList::addEdge(adjCol, secondNode, firstNode, weight);
+                if(isOneway) {
+                    adjacencyList::addEdge(adjCol, firstNode, secondNode, weight);
+                }
+                else {
+                    adjacencyList::addEdge(adjCol, firstNode, secondNode, weight);
+                    adjacencyList::addEdge(adjCol, secondNode, firstNode, weight);
+                }
             }
         }
         myfile.close();
