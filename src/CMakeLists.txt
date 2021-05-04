@@ -19,3 +19,4 @@ set(SOURCES
 
 add_executable(BachelorCppCmake main.cpp ${SOURCES})
 add_executable(Tests tests.cpp ${SOURCES})
+add_executable(stressTest stressTest.cpp ${SOURCES})
