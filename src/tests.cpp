@@ -20,7 +20,7 @@ using std::chrono::seconds;
 
 void testAdjlistSimpleDijkstra(){
     adjListCollection adjCol;
-    shortestPath::createAdjacencyList("/home/a/CLionProjects/BachelorCppRestructured/src/resources/adjlist","file",adjCol);
+    shortestPath::createAdjacencyList("C:/Users/a/CLionProjects/BachelorCppRestructured/resources/adjlist","file",adjCol);
 
     spResultStruct result; vector<long long> idvec;
     int start = adjacencyList::getIntID(adjCol,1);
@@ -167,8 +167,8 @@ void testDistance(string method, int source, int target, adjListCollection &adjC
 
 adjListCollection setUpDatastructure(string country){
     adjListCollection adjCol;
-    string malta = "/home/a/IdeaProjects/BachelorProject/app/malta";
-    string denmark = "/home/a/IdeaProjects/BachelorProject/app/denmark";
+    string malta = "C:/Users/svend/IdeaProjects/BachelorProjectNew/app/malta";
+    string denmark = "C:/Users/svend/IdeaProjects/BachelorProjectNew/app/denmark";
 
     if(country== "malta"){
         //adjCol.adjlst.resize(106762,vector<pair<int,double>>(14));
@@ -263,7 +263,7 @@ int main(){
     //testToyExampleDatastructure();
     //testDijkstraToyExample();
     //landmarksEmptyListTest();
-    runMaltaTests();
+    //runMaltaTests();
     runDenmarkTests();
     denmark50RandomPoints("dijkstra");
     denmark50RandomPoints("astar");

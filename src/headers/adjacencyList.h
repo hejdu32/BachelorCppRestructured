@@ -133,7 +133,7 @@ using namespace std;
         static double getxCoord(adjListCollection &collection, int value){return collection.xCoord[value];}
         static double getyCoord(adjListCollection &collection, int value){return collection.yCoord[value];}
 
-        static void setLandmarkStructs(adjListCollection &collection, vector<landmarksStruct> landmarkVector){
+        static void setLandmarkStructs(adjListCollection &collection, vector<landmarksStruct> &landmarkVector){
             collection.landmarksStructs = landmarkVector;
         }
 
