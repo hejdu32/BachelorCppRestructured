@@ -167,18 +167,18 @@ void testDistance(string method, int source, int target, adjListCollection &adjC
 
 adjListCollection setUpDatastructure(string country){
     adjListCollection adjCol;
-    string malta = "C:/Users/a/IdeaProjects/BachelorProject/app/malta";
-    string denmark = "C:/Users/a/IdeaProjects/BachelorProject/app/denmark";
+    string malta = "/home/a/IdeaProjects/BachelorProject/app/malta";
+    string denmark = "/home/a/IdeaProjects/BachelorProject/app/denmark";
 
     if(country== "malta"){
         //adjCol.adjlst.resize(106762,vector<pair<int,double>>(14));
         cout << "###parsing " << country;
         auto t1 = high_resolution_clock::now();
         shortestPath::createAdjacencyList(malta, "file", adjCol);
-        vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
-        vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(landmarksIDs, adjCol);
+        //vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
+        vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(12, adjCol);
         adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
-        cout << "gothere" << endl;
+        //cout << "gothere" << endl;
         auto t2 = high_resolution_clock::now();
         duration<double, milli> ms_double = t2 - t1;
         cout << " time: "<< (ms_double.count()/1000) << "seconds###"<<endl;
@@ -187,15 +187,15 @@ adjListCollection setUpDatastructure(string country){
         //adjCol.yCoord.resize(3976155);
         //adjCol.adjlst.resize(3976155,vector<pair<int,double>>(14));
 
-        //cout << "###parsing " << country;
-        //auto t1 = high_resolution_clock::now();
+        cout << "###parsing " << country;
+        auto t1 = high_resolution_clock::now();
         shortestPath::createAdjacencyList(denmark, "file", adjCol);
-        vector<long long> landmarksIDs = {313159998, 13131369, 483022215, 349198443, 252151251, 369778546, 6187723341, 2252204014, 3149548115, 118416, 1108078449, 6816079197, 2387109140, 371441979}; //hardcoded landmarks for denmark
+        //vector<long long> landmarksIDs = {313159998, 13131369, 483022215, 349198443, 252151251, 369778546, 6187723341, 2252204014, 3149548115, 118416, 1108078449, 6816079197, 2387109140, 371441979}; //hardcoded landmarks for denmark
         vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(12, adjCol);
         adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
-        //auto t2 = high_resolution_clock::now();
-        //duration<double, milli> ms_double = t2 - t1;
-        //cout << " time: "<< (ms_double.count()/1000) << "seconds###"<<endl;
+        auto t2 = high_resolution_clock::now();
+        duration<double, milli> ms_double = t2 - t1;
+        cout << " time: "<< (ms_double.count()/1000) << "seconds###"<<endl;
     }else {
         cout << country << " not found";
     }
@@ -239,11 +239,10 @@ void landmarksEmptyListTest(){
     assert(notEmpty.size()==8);
     landmarksStruct firstElem = notEmpty[0];
     assert(!firstElem.distanceVec.empty());
-    assert(!firstElem.prevNode.empty());
     assert(firstElem.nodeID != 0);
 }
 
-void denmark20RandomPoints(string method){
+void denmark50RandomPoints(string method){
     adjListCollection denmark = setUpDatastructure("denmark");
     int highestNbr = denmark.idSoFar;
     int amountOfTests = 50;
@@ -256,18 +255,18 @@ void denmark20RandomPoints(string method){
     for (int i = 0; i < ids.size(); i+=2) {
         testDistance(method, i, i+1,denmark);
     }
-
+    cout << "denmark 50 tests with " << method << " passed "<< endl;
 }
 
 int main(){
-    testAdjlistSimpleDijkstra();
-    testToyExampleDatastructure();
-    testDijkstraToyExample();
+    //testAdjlistSimpleDijkstra();
+    //testToyExampleDatastructure();
+    //testDijkstraToyExample();
     //landmarksEmptyListTest();
-    //runMaltaTests();
-    //runDenmarkTests();
-    //denmark20RandomPoints("dijkstra");
-    //denmark20RandomPoints("astar");
-    //denmark20RandomPoints("landmarks");
+    runMaltaTests();
+    runDenmarkTests();
+    denmark50RandomPoints("dijkstra");
+    denmark50RandomPoints("astar");
+    denmark50RandomPoints("landmarks");
     return 0;
 }
