@@ -196,7 +196,7 @@ void testDistance(string method, int source, int target, adjListCollection &adjC
 adjListCollection setUpDatastructure(string country){
     adjListCollection adjCol;
     string malta = "/home/a/IdeaProjects/BachelorProject/app/malta";
-    string denmark = "C:/Users/svend/IdeaProjects/BachelorProjectNew/app/denmark";
+    string denmark = "C:/Users/a/IdeaProjects/BachelorProject/app/denmark";
 
     if(country== "malta"){
         //adjCol.adjlst.resize(106762,vector<pair<int,double>>(14));
