@@ -10,7 +10,6 @@
 
 
 
-
 using namespace std;
 
 using std::chrono::high_resolution_clock;
@@ -86,7 +85,7 @@ void testToyExampleDatastructure(){
 
 void testDijkstraToyExample() {
     adjListCollection adjCol;
-    //shortestPath::createAdjacencyList("C:/Users/a/CLionProjects/BachelorCppRestructured/resources/dijkstraTest", "file", adjCol);
+    shortestPath::createAdjacencyList("C:/Users/a/CLionProjects/BachelorCppRestructured/resources/dijkstraTest", "file", adjCol);
     //testing that all the nodes in the toy graph has the smallest path
     createToyExample(adjCol);
     enum toyExampleVals {
@@ -130,32 +129,7 @@ void testDijkstraToyExample() {
     assert(result.distanceToDest == 5);
     cout << "Toy example Dijkstra test passed" << endl;
 }
-//dep doesnt work with actual weights
-void testAStarToyExample(){
-    adjListCollection adjCol;
-    createToyExample(adjCol);
-    //testing that all the nodes in the toy graph has the smallest path
-    enum toyExampleVals{
-        //translation table to values after putting the
-        aNode = 0,
-        bNode = 1,
-        cNode = 2,
-        dNode = 3,
-        eNode = 4
-    };
-    //test that the euclidDist has been written correct
 
-    spResultStruct result; vector<long long> idvec;
-
-    result = shortestPath::chooseAlgo(astar,aNode,cNode,adjCol);
-    idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, aNode, cNode);
-
-    assert(idvec[0]==0);
-    assert(idvec[1]==4);
-    assert(idvec[2]==2);
-    assert(result.distanceToDest == 11);
-    cout << "Toy Example aStar test passed" << endl;
-}
 void deserializeJsonFromFile(){
     using namespace nlohmann;
     json j;
@@ -195,7 +169,7 @@ void testDistance(string method, int source, int target, adjListCollection &adjC
 
 adjListCollection setUpDatastructure(string country){
     adjListCollection adjCol;
-    string malta = "/home/a/IdeaProjects/BachelorProject/app/malta";
+    string malta = "C:/Users/a/IdeaProjects/BachelorProject/app/malta";
     string denmark = "C:/Users/a/IdeaProjects/BachelorProject/app/denmark";
 
     if(country== "malta"){
@@ -288,15 +262,14 @@ void denmark20RandomPoints(string method){
 }
 
 int main(){
-
-    //testDijkstraAdjlist();
-    //testToyExampleDatastructure();
-    //testDijkstraToyExample();
-    //landmarksEmptyListTest();
-    //runMaltaTests();
-    //runDenmarkTests();
-    //denmark20RandomPoints("dijkstra");
-    //denmark20RandomPoints("astar");
+    testDijkstraAdjlist();
+    testToyExampleDatastructure();
+    testDijkstraToyExample();
+    landmarksEmptyListTest();
+    runMaltaTests();
+    runDenmarkTests();
+    denmark20RandomPoints("dijkstra");
+    denmark20RandomPoints("astar");
     denmark20RandomPoints("landmarks");
     return 0;
 }
