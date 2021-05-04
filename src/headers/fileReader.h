@@ -49,6 +49,7 @@ public:
             adjacencyList::addyCoord(adjCol, source, stod(line));
         }
         for (int i = 0; i < ways; ++i) {
+
             getline(myfile,line);
             istringstream buf(line);
             istream_iterator<string> beg(buf), end;
@@ -65,8 +66,7 @@ public:
                 double weight = adjacencyList::distanceCalc(srcX, srcY, destX, destY,maxSpeed);
                 if(isOneway) {
                     adjacencyList::addEdge(adjCol, firstNode, secondNode, weight);
-                }
-                else {
+                } else {
                     adjacencyList::addEdge(adjCol, firstNode, secondNode, weight);
                     adjacencyList::addEdge(adjCol, secondNode, firstNode, weight);
                 }

@@ -18,9 +18,9 @@ using std::chrono::duration;
 using std::chrono::milliseconds;
 using std::chrono::seconds;
 
-void testDijkstraAdjlist(){
+void testAdjlistSimpleDijkstra(){
     adjListCollection adjCol;
-    shortestPath::createAdjacencyList("C:/Users/a/CLionProjects/BachelorCppRestructured/resources/adjlist","file",adjCol);
+    shortestPath::createAdjacencyList("/home/a/CLionProjects/BachelorCppRestructured/src/resources/adjlist","file",adjCol);
 
     spResultStruct result; vector<long long> idvec;
     int start = adjacencyList::getIntID(adjCol,1);
@@ -28,14 +28,14 @@ void testDijkstraAdjlist(){
 
     result = shortestPath::chooseAlgo(dijkstra,start,end,adjCol);
     idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, start, end);
-    adjacencyList::printGraph(adjCol);
+    //adjacencyList::printGraph(adjCol);
 
     assert(idvec[0]==1);
     assert(idvec[1]==2);
     assert(idvec[2]==4);
     assert(idvec[3]==5);
     //shortestPath::printVec(idvec);
-    cout << "adjlist Dijkstra test passed" << endl;
+    cout << "Adjlist Simple Dijkstra test passed" << endl;
 }
 
 void createToyExample(adjListCollection &collection) {
@@ -45,25 +45,20 @@ void createToyExample(adjListCollection &collection) {
     int cNode = adjacencyList::insertInMaps(collection,2);
     int dNode = adjacencyList::insertInMaps(collection,3);
     int eNode = adjacencyList::insertInMaps(collection,4);
-    adjacencyList::addEdge(collection,aNode,bNode,10);
-    adjacencyList::addEdge(collection,aNode,eNode,3);
-    adjacencyList::addEdge(collection,bNode,cNode,2);
-    adjacencyList::addEdge(collection,bNode,eNode,4);
-    adjacencyList::addEdge(collection,cNode,dNode,9);
-    adjacencyList::addEdge(collection,dNode,cNode,7);
-    adjacencyList::addEdge(collection,eNode,bNode,1);
-    adjacencyList::addEdge(collection,eNode,cNode,8);
+    adjacencyList::addEdge(collection,aNode,bNode,6);
+    adjacencyList::addEdge(collection,aNode,cNode,3);
+    adjacencyList::addEdge(collection,bNode,cNode,4);
+    adjacencyList::addEdge(collection,bNode,dNode,2);
+    adjacencyList::addEdge(collection,cNode,bNode,1);
+    adjacencyList::addEdge(collection,cNode,dNode,6);
+    adjacencyList::addEdge(collection,cNode,eNode,2);
+    adjacencyList::addEdge(collection,dNode,eNode,4);
     adjacencyList::addEdge(collection,eNode,dNode,2);
-    //adjacencyList::addHeuristicDist(collection,aNode,5.0);
-    //adjacencyList::addHeuristicDist(collection,bNode,9.0);
-    //adjacencyList::addHeuristicDist(collection,cNode,0);
-    //adjacencyList::addHeuristicDist(collection,dNode,3);
-    //adjacencyList::addHeuristicDist(collection,eNode,4);
 }
 
 void testToyExampleDatastructure(){
     adjListCollection adjCol;
-    //shortestPath::createAdjacencyList("C:/Users/a/CLionProjects/BachelorCppRestructured/resources/dijkstraTest", "file", adjCol);
+    //shortestPath::createAdjacencyList("/home/a/CLionProjects/BachelorCppRestructured/src/resources/dijkstraTest", "file", adjCol);
     //testing that all the nodes in the toy graph has the smallest path
     createToyExample(adjCol);
     enum toyExampleVals {
@@ -74,18 +69,19 @@ void testToyExampleDatastructure(){
         dNode = 3,
         eNode = 4
     };
+    //adjacencyList::printGraph(adjCol);
     assert(adjacencyList::getIntID(adjCol,aNode) == 0);
     assert(adjacencyList::getIntID(adjCol,bNode) == 1);
     assert(adjacencyList::getIntID(adjCol,cNode) == 2);
     assert(adjacencyList::getIntID(adjCol,dNode) == 3);
     assert(adjacencyList::getIntID(adjCol,eNode) == 4);
-    //adjacencyList::printGraph(adjCol);
+    assert(adjCol.adjlst[2].size()==3);
+    assert(adjCol.adjlst[3].size()==1);
     cout<<"test toy example fixture passed" << endl;
 }
 
 void testDijkstraToyExample() {
     adjListCollection adjCol;
-    shortestPath::createAdjacencyList("C:/Users/a/CLionProjects/BachelorCppRestructured/resources/dijkstraTest", "file", adjCol);
     //testing that all the nodes in the toy graph has the smallest path
     createToyExample(adjCol);
     enum toyExampleVals {
@@ -98,34 +94,36 @@ void testDijkstraToyExample() {
     };
     spResultStruct result;
     vector<long long> idvec;
-
     result = shortestPath::chooseAlgo(dijkstra, aNode, bNode, adjCol);
     idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, aNode, bNode);
-    //testing a->b gives path a,e,b with distance 4
+    //testing a->b gives path a,c,b with distance 4
     assert(idvec[0] == aNode);
-    assert(idvec[1] == eNode);
+    assert(idvec[1] == cNode);
     assert(idvec[2] == bNode);
     assert(result.distanceToDest == 4);
 
-    result = shortestPath::chooseAlgo(dijkstra, aNode, eNode, adjCol);
-    idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, aNode, eNode);
-    assert(idvec[0] == 0);
-    assert(idvec[1] == 4);
-    assert(result.distanceToDest == 3);
-
     result = shortestPath::chooseAlgo(dijkstra, aNode, cNode, adjCol);
     idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, aNode, cNode);
-    assert(idvec[0] == 0);
-    assert(idvec[1] == 4);
-    assert(idvec[2] == 1);
-    assert(idvec[3] == 2);
-    assert(result.distanceToDest == 6);
+    //testing a->c gives path a,c with distance 3
+    assert(idvec[0] == aNode);
+    assert(idvec[1] == cNode);
+    assert(result.distanceToDest == 3);
 
     result = shortestPath::chooseAlgo(dijkstra, aNode, dNode, adjCol);
     idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, aNode, dNode);
-    assert(idvec[0] == 0);
-    assert(idvec[1] == 4);
-    assert(idvec[2] == 3);
+    //testing a->d gives path a,c,b,d with distance 6
+    assert(idvec[0] == aNode);
+    assert(idvec[1] == cNode);
+    assert(idvec[2] == bNode);
+    assert(idvec[3] == dNode);
+    assert(result.distanceToDest == 6);
+
+    result = shortestPath::chooseAlgo(dijkstra, aNode, eNode, adjCol);
+    idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, aNode, eNode);
+    //testing a->e gives path a,c,e with distance 5
+    assert(idvec[0] == aNode);
+    assert(idvec[1] == cNode);
+    assert(idvec[2] == eNode);
     assert(result.distanceToDest == 5);
     cout << "Toy example Dijkstra test passed" << endl;
 }
@@ -262,14 +260,14 @@ void denmark20RandomPoints(string method){
 }
 
 int main(){
-    testDijkstraAdjlist();
+    testAdjlistSimpleDijkstra();
     testToyExampleDatastructure();
     testDijkstraToyExample();
-    landmarksEmptyListTest();
-    runMaltaTests();
-    runDenmarkTests();
-    denmark20RandomPoints("dijkstra");
-    denmark20RandomPoints("astar");
-    denmark20RandomPoints("landmarks");
+    //landmarksEmptyListTest();
+    //runMaltaTests();
+    //runDenmarkTests();
+    //denmark20RandomPoints("dijkstra");
+    //denmark20RandomPoints("astar");
+    //denmark20RandomPoints("landmarks");
     return 0;
 }
