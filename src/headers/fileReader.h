@@ -54,7 +54,7 @@ public:
             istream_iterator<string> beg(buf), end;
             vector<string> lineAsTokens(beg, end);
             int maxSpeed = stoi(lineAsTokens[0]);
-            bool isOneway = stoi(lineAsTokens[1]);
+            int isOneway = stoi(lineAsTokens[1]);
             for (int j = 2; j < lineAsTokens.size()-1; ++j) {
                 int firstNode = adjacencyList::getIntID(adjCol, stoll(lineAsTokens[j]));
                 int secondNode = adjacencyList::getIntID(adjCol, stoll(lineAsTokens[j+1]));
