@@ -129,20 +129,10 @@ void testDijkstraToyExample() {
     cout << "Toy example Dijkstra test passed" << endl;
 }
 
-void deserializeJsonFromFile(){
-    using namespace nlohmann;
-    json j;
-    ifstream jsonFile;
-    //File path with appropriate json file created by java in graphBuilder writeToFileAsJsonMethod
-    jsonFile.open("C:/proj/test.json");
-    jsonFile >> j;
-    auto wrapperClass = j.get<nodesAndWaysWrapper>();
-    //cout << wrapperClass.toString() << endl;
-}
-
 void runMaltaTests(){
     adjListCollection malta = util::setUpDatastructure("malta");
     //short distance downtown malta
+
     util::testDistancePrints("dijkstra",146885871, 1498913919,malta);
     util::testDistancePrints("astar",146885871, 1498913919,malta);
     util::testDistancePrints("landmarks",146885871, 1498913919,malta);
@@ -180,12 +170,14 @@ void landmarksEmptyListTest(){
 }
 
 int main(){
-    testAdjlistSimpleDijkstra();
-    testToyExampleDatastructure();
-    testDijkstraToyExample();
-    landmarksEmptyListTest();
+    //testAdjlistSimpleDijkstra();
+    //testToyExampleDatastructure();
+    //testDijkstraToyExample();
+    //landmarksEmptyListTest();
     runMaltaTests();
-    runDenmarkTests();
+    //runDenmarkTests();
+
+
     //denmark50RandomPoints("dijkstra",50);
     //denmark50RandomPoints("astar",50);
     //denmark50RandomPoints("landmarks",50);
