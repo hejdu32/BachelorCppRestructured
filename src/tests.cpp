@@ -160,8 +160,6 @@ void testDistancePrints(string method, long long source, long long target, adjLi
 }
 
 void testDistance(string method, int source, int target, adjListCollection &adjCol){
-    //int from = adjacencyList::getIntID(adjCol,source);
-    //int to = adjacencyList::getIntID(adjCol,target);
     spResultStruct result = shortestPath::chooseAlgo(spmap[method], source ,target,adjCol);
 }
 
@@ -171,22 +169,16 @@ adjListCollection setUpDatastructure(string country){
     string denmark = "/home/a/IdeaProjects/BachelorProject/app/denmark";
 
     if(country== "malta"){
-        //adjCol.adjlst.resize(106762,vector<pair<int,double>>(14));
         cout << "###parsing " << country;
         auto t1 = high_resolution_clock::now();
         shortestPath::createAdjacencyList(malta, "file", adjCol);
         //vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
         vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(12, adjCol);
         adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
-        //cout << "gothere" << endl;
         auto t2 = high_resolution_clock::now();
         duration<double, milli> ms_double = t2 - t1;
         cout << " time: "<< (ms_double.count()/1000) << "seconds###"<<endl;
     }else if(country=="denmark"){
-        //adjCol.xCoord.resize(3976155);
-        //adjCol.yCoord.resize(3976155);
-        //adjCol.adjlst.resize(3976155,vector<pair<int,double>>(14));
-
         cout << "###parsing " << country;
         auto t1 = high_resolution_clock::now();
         shortestPath::createAdjacencyList(denmark, "file", adjCol);

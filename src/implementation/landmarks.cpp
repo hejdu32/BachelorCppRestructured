@@ -45,11 +45,6 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
     vector<double> accuVec;
     accuVec.resize(highestNbr,0);
     for (int i = 0; i < amount; ++i) {
-        //landmarksStruct landmarksStruct;
-        //spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, adjListCollection);
-        //landmarksStruct.distanceVec = distanceToEverything.distanceVec;
-        //landmarksStruct.nodeID = adjListCollection.intIdToLongID[randomNode];    //is suppose to be id not intID
-        //resultVector.push_back(landmarksStruct);
         vector<double> euclidDistVector;
         euclidDistVector.resize(highestNbr,0);
         double sourceX = adjListCollection.xCoord[randomNode];
