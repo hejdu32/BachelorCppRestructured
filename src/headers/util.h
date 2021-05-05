@@ -85,7 +85,7 @@ public:
     }
 
     static void randomPointsComparrison(int amountOfTests, int seed){
-        adjListCollection denmark = setUpDatastructure("denmark");
+        adjListCollection denmark = setUpDatastructure("malta");
         int highestNbr = denmark.idSoFar;
         srand(seed);
         vector<int> ids(amountOfTests,0); int size = ids.size();
@@ -99,6 +99,8 @@ public:
         spResultStruct dijkstraResult;
         spResultStruct astarResult;
         spResultStruct landmarksResult;
+
+
         cout << "Testing "<< amountOfTests << " points in denmark " << endl;
         for (int i = 0; i < size; i+=2) {
             if(i % 100 == 0 && i != 0){

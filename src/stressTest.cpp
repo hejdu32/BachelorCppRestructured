@@ -6,6 +6,6 @@
 
 int main(){
 
-    util::randomPointsComparrison(1000, 1234);
+    util::randomPointsComparrison(100, 42069);
     return 0;
 }
