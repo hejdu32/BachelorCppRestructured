@@ -5,7 +5,6 @@
 #include "headers/util.h"
 
 int main(){
-
-    util::randomPointsComparrison(100, 42069);
+    util::randomPointsComparrison(10000, rand());
     return 0;
 }

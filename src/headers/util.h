@@ -69,7 +69,9 @@ public:
                 counterVisited++;
         }
         cout << "Nodes considered: " << counterVisited << endl;
-        cout << endl;
+        //cout << "path"<< endl;
+        //shortestPath::printVec(idvec);
+        //cout << endl;
     }
 
     static spResultStruct testDistance(const string& method, int source, int target, adjListCollection &adjCol){
@@ -85,7 +87,7 @@ public:
     }
 
     static void randomPointsComparrison(int amountOfTests, int seed){
-        adjListCollection denmark = setUpDatastructure("malta");
+        adjListCollection denmark = setUpDatastructure("denmark");
         int highestNbr = denmark.idSoFar;
         srand(seed);
         vector<int> ids(amountOfTests,0); int size = ids.size();

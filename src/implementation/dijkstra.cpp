@@ -64,7 +64,6 @@ spResultStruct dijkstra::djikstraShortestPath(int source, int dest, bool earlySt
     nodeSeen[source] = true;
     //path from source to destination
     vector<int> prevNode(sizeOfGraph,-1);
-    //prevNode[source] = -1;
     //heap of nodes to evaluate
     priority_queue<pair<int,double>, vector<pair<int,double>>, comparator> minHeap;
 
