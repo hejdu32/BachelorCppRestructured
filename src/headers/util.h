@@ -29,7 +29,7 @@ public:
             auto t1 = high_resolution_clock::now();
             shortestPath::createAdjacencyList(malta, "file", adjCol);
             //vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
-            vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(12, adjCol);
+            vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(16, adjCol);
             adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
             auto t2 = high_resolution_clock::now();
             duration<double, milli> ms_double = t2 - t1;
@@ -38,8 +38,8 @@ public:
             cout << "###parsing " << country << endl;
             auto t1 = high_resolution_clock::now();
             shortestPath::createAdjacencyList(denmark, "file", adjCol);
-            //vector<long long> landmarksIDs = {313159998, 13131369, 483022215, 349198443, 252151251, 369778546, 6187723341, 2252204014, 3149548115, 118416, 1108078449, 6816079197, 2387109140, 371441979}; //hardcoded landmarks for denmark
-            vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(12, adjCol);
+            //vector<long long> landmarksIDs = {2753462644,5745423643,57054823,2159452194,1177521825,489401874,283198526,1818976308,5098316959,971808896,1507951792,1116342996}; //hardcoded landmarks for denmark
+            vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(3, adjCol);
             adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
             auto t2 = high_resolution_clock::now();
             duration<double, milli> ms_double = t2 - t1;

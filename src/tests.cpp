@@ -181,6 +181,6 @@ int main(){
 
     //denmark50RandomPoints("dijkstra",50);
     //denmark50RandomPoints("astar",50);
-    util::randomPointsComparrison(50, 100);
+    //util::randomPointsComparrison(50, 100);
     return 0;
 }

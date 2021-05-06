@@ -44,23 +44,23 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
     vector<vector<double>> markDistanceVectors;
     for (int i = 0; i < amount+1; ++i) {
         if(i!=0) cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
-        //vector<double> euclidDistVector;
-        //euclidDistVector.resize(highestNbr,0);
-        //double sourceX = adjListCollection.xCoord[randomNode];
-        //double sourceY = adjListCollection.yCoord[randomNode];
-        //for (int j = 0; j < highestNbr; ++j) {
-        //    //if(j % 1000 == 0)
-        //    //    cout << "euclidloop: " << j << endl;
-        //    double targetX = adjListCollection.xCoord[j];
-        //    double targetY = adjListCollection.yCoord[j];
-        //    double euclidDistToJ = adjacencyList::euclidDistance(sourceX, sourceY, targetX, targetY);
-        //    euclidDistVector[j]=euclidDistToJ;
-        //}
+        vector<double> euclidDistVector;
+        euclidDistVector.resize(highestNbr,0);
+        double sourceX = adjListCollection.xCoord[randomNode];
+        double sourceY = adjListCollection.yCoord[randomNode];
+        for (int j = 0; j < highestNbr; ++j) {
+            //if(j % 1000 == 0)
+            //    cout << "euclidloop: " << j << endl;
+            double targetX = adjListCollection.xCoord[j];
+            double targetY = adjListCollection.yCoord[j];
+            double euclidDistToJ = adjacencyList::euclidDistance(sourceX, sourceY, targetX, targetY);
+            euclidDistVector[j]=euclidDistToJ;
+        }
         landmarksStruct landmarksStruct;
         spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, adjListCollection);
         landmarksStruct.distanceVec = distanceToEverything.distanceVec;
-        landmarksStruct.nodeID = randomNode;    //is suppose to be id not intID
-        markDistanceVectors.push_back(landmarksStruct.distanceVec);
+        landmarksStruct.nodeID = adjListCollection.intIdToLongID[randomNode];    //is suppose to be id not intID
+        markDistanceVectors.push_back(euclidDistVector);
         if(i!=0) resultVector.push_back(landmarksStruct);
         double longestDistToClosestMark = 0.0;
         for (int j = 0; j <= highestNbr; ++j) { //loops over all nodes
