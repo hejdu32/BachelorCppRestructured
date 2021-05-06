@@ -99,6 +99,7 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
 
 spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollection &adjCol) {
     landmarksStruct bestForward = choseLandmarks(source, dest, adjCol);
+    cout << "chosen landmark: "<< bestForward.nodeID << endl;
     const double INF = std::numeric_limits<double>::infinity();
     int sizeOfGraph = adjCol.idSoFar;
     //initilaize distance from source to everything to infinity

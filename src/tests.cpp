@@ -174,9 +174,9 @@ int main(){
     //testAdjlistSimpleDijkstra();
     //testToyExampleDatastructure();
     //testDijkstraToyExample();
-    landmarksEmptyListTest();
-    runMaltaTests();
-    //runDenmarkTests();
+    //landmarksEmptyListTest();
+    //runMaltaTests();
+    runDenmarkTests();
 
 
     //denmark50RandomPoints("dijkstra",50);

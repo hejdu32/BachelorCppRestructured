@@ -21,8 +21,8 @@ class util{
 public:
     static adjListCollection setUpDatastructure(string country){
         adjListCollection adjCol;
-        string malta = "C:/Users/svend/IdeaProjects/BachelorProjectNew/app/malta";
-        string denmark = "C:/Users/svend/IdeaProjects/BachelorProjectNew/app/denmark";
+        string malta = "C:/Users/a/IdeaProjects/BachelorProjectNew/app/malta";
+        string denmark = "C:/Users/a/IdeaProjects/BachelorProjectNew/app/denmark";
 
         if(country== "malta"){
             cout << "###parsing " << country << endl;
@@ -87,7 +87,7 @@ public:
     }
 
     static void randomPointsComparrison(int amountOfTests, int seed){
-        adjListCollection denmark = setUpDatastructure("malta");
+        adjListCollection denmark = setUpDatastructure("denmark");
         int highestNbr = denmark.idSoFar;
         srand(seed);
         vector<int> ids(amountOfTests,0); int size = ids.size();
