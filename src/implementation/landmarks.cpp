@@ -38,27 +38,31 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
     int highestNbr = adjListCollection.idSoFar;
     //srand(4);
     int randomNode = rand() % highestNbr;
-    vector<int> landmarkIDS;
-    landmarkIDS.resize(1,randomNode);
     const double INF = std::numeric_limits<double>::infinity();
     //cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
 
     vector<vector<double>> markDistanceVectors;
-    for (int i = 0; i < amount; ++i) {
-        cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
-        vector<double> euclidDistVector;
-        euclidDistVector.resize(highestNbr,0);
-        double sourceX = adjListCollection.xCoord[randomNode];
-        double sourceY = adjListCollection.yCoord[randomNode];
-        for (int j = 0; j < highestNbr; ++j) {
-            //if(j % 1000 == 0)
-            //    cout << "euclidloop: " << j << endl;
-            double targetX = adjListCollection.xCoord[j];
-            double targetY = adjListCollection.yCoord[j];
-            double euclidDistToJ = adjacencyList::euclidDistance(sourceX, sourceY, targetX, targetY);
-            euclidDistVector[j]=euclidDistToJ;
-        }
-        markDistanceVectors.push_back(euclidDistVector);
+    for (int i = 0; i < amount+1; ++i) {
+        if(i!=0) cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
+        //vector<double> euclidDistVector;
+        //euclidDistVector.resize(highestNbr,0);
+        //double sourceX = adjListCollection.xCoord[randomNode];
+        //double sourceY = adjListCollection.yCoord[randomNode];
+        //for (int j = 0; j < highestNbr; ++j) {
+        //    //if(j % 1000 == 0)
+        //    //    cout << "euclidloop: " << j << endl;
+        //    double targetX = adjListCollection.xCoord[j];
+        //    double targetY = adjListCollection.yCoord[j];
+        //    double euclidDistToJ = adjacencyList::euclidDistance(sourceX, sourceY, targetX, targetY);
+        //    euclidDistVector[j]=euclidDistToJ;
+        //}
+        landmarksStruct landmarksStruct;
+        spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, adjListCollection);
+        landmarksStruct.distanceVec = distanceToEverything.distanceVec;
+        landmarksStruct.nodeID = randomNode;    //is suppose to be id not intID
+        markDistanceVectors.push_back(landmarksStruct.distanceVec);
+        if(i!=0) resultVector.push_back(landmarksStruct);
+
 
         double longestDistToClosestMark = 0.0;
         for (int j = 0; j <= highestNbr; ++j) { //loops over all nodes
@@ -71,72 +75,26 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
                 //if(j % 1000 == 0)
                 //    cout << "looping over landmarks: " << j << endl;
                 //double distToCandidate = distVec[j];
-                if (distToCandidate < closestMark)
+                if (distToCandidate != INF && distToCandidate < closestMark)
                     closestMark = distToCandidate;
             }
-            if (closestMark > longestDistToClosestMark) {
+            if (closestMark != INF && closestMark > longestDistToClosestMark) {
                 longestDistToClosestMark = closestMark;
                 randomNode = j;
             }
             //if(j % 1000 == 0)
             //    cout << "last thing of the loop: " << j << endl;
         }
-        landmarkIDS.push_back(randomNode);
+        if(i==0) markDistanceVectors.pop_back();
     }
 
-
-    //vector<double> accuVec;
-    //accuVec.resize(highestNbr,0);
-    //for (int i = 0; i < amount; ++i) {
-    //    vector<double> euclidDistVector;
-    //    euclidDistVector.resize(highestNbr,0);
-    //    double sourceX = adjListCollection.xCoord[randomNode];
-    //    double sourceY = adjListCollection.yCoord[randomNode];
-    //    for (int j = 0; j < highestNbr; ++j) {
-    //        double targetX = adjListCollection.xCoord[j];
-    //        double targetY = adjListCollection.yCoord[j];
-    //        double euclidDistToJ = adjacencyList::euclidDistance(sourceX, sourceY, targetX, targetY);
-    //        euclidDistVector[j]=euclidDistToJ;
-    //    }
-    //    //add the euclid distance vector to accumulator vector
-    //    transform (accuVec.begin(), accuVec.end(), euclidDistVector.begin(), accuVec.begin(), std::plus<double>());
-//
-    //    double bestSoFar = 0;
-    //    int bestSoFarIndex = 0;
-    //    double INF = numeric_limits<double>::infinity();
-    //    for (int j = 0; j < accuVec.size(); ++j) {
-    //        double dist = accuVec[j];
-    //        bool isJLandmark = find(landmarkIDS.begin(),landmarkIDS.end(),j) != landmarkIDS.end();
-    //        bool isJFarEnoughFromOtherLandmarks = true;
-    //        if(!isJLandmark){
-    //            double jX = adjListCollection.xCoord[j];
-    //            double jY = adjListCollection.yCoord[j];
-    //            for (int lmk:landmarkIDS) {
-    //                double lmkX = adjListCollection.xCoord[lmk];
-    //                double lmkY = adjListCollection.yCoord[lmk];
-    //                double distance = adjacencyList::euclidDistance(jX,jY,lmkX,lmkY);
-    //                if (distance < minimumDistance){
-    //                    isJFarEnoughFromOtherLandmarks = false;
-    //                }
-    //            }
-    //        }
-//
-    //        if(dist < INF && bestSoFar < dist && !isJLandmark && isJFarEnoughFromOtherLandmarks){
-    //            bestSoFar = dist;
-    //            bestSoFarIndex = j;
-    //        }
-    //    }
-    //    randomNode = bestSoFarIndex;
-    //    //cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
-    //    landmarkIDS.push_back(randomNode);
-    //}
     //recast to long longs for calling initLandmarks
-    vector<long long> longIdsOfLandmarks;
-    for (int id:landmarkIDS) {
-        long long longID = adjacencyList::getLongID(adjListCollection,id);
-        longIdsOfLandmarks.push_back(longID);
-    }
-    return initLandmarks(longIdsOfLandmarks,adjListCollection);
+    //vector<long long> longIdsOfLandmarks;
+    //for (int id:landmarkIDS) {
+    //    long long longID = adjacencyList::getLongID(adjListCollection,id);
+    //    longIdsOfLandmarks.push_back(longID);
+    //}
+    return resultVector;
 }
 
 spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollection &adjCol) {
