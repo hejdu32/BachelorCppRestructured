@@ -174,8 +174,8 @@ int main(){
     //testAdjlistSimpleDijkstra();
     //testToyExampleDatastructure();
     //testDijkstraToyExample();
-    landmarksEmptyListTest();
-    runMaltaTests();
+    //landmarksEmptyListTest();
+    //runMaltaTests();
     //runDenmarkTests();
 
 

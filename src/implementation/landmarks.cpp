@@ -62,8 +62,6 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
         landmarksStruct.nodeID = randomNode;    //is suppose to be id not intID
         markDistanceVectors.push_back(landmarksStruct.distanceVec);
         if(i!=0) resultVector.push_back(landmarksStruct);
-
-
         double longestDistToClosestMark = 0.0;
         for (int j = 0; j <= highestNbr; ++j) { //loops over all nodes
             //if(j % 1000 == 0)
@@ -95,6 +93,12 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
     //    longIdsOfLandmarks.push_back(longID);
     //}
     return resultVector;
+}
+
+adjListCollection reverseAdjListCollection(adjListCollection &adjCol){
+    adjListCollection reversedAdjCol;
+    reversedAdjCol.adjlst.resize(adjCol.idSoFar, vector<pair<int, double>>{});
+
 }
 
 spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollection &adjCol) {

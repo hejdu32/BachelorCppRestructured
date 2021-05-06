@@ -25,12 +25,12 @@ using namespace std;
         vector<double> distanceVec;
     };
     struct adjListCollection {
-        std::vector<std::vector<std::pair<int, double>>> adjlst{};
-        std::map<long long, int> longIdToIntID{};
-        std::map<int, long long> intIdToLongID{};
-        std::vector<double> xCoord;
-        std::vector<double> yCoord;
-        std::vector<landmarksStruct> landmarksStructs{};
+        vector<vector<pair<int, double>>> adjlst{};
+        map<long long, int> longIdToIntID{};
+        map<int, long long> intIdToLongID{};
+        vector<double> xCoord;
+        vector<double> yCoord;
+        vector<landmarksStruct> landmarksStructs{};
         int idSoFar = 0;
     };
 

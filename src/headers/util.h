@@ -21,8 +21,8 @@ class util{
 public:
     static adjListCollection setUpDatastructure(string country){
         adjListCollection adjCol;
-        string malta = "C:/Users/svend/IdeaProjects/BachelorProjectNew/app/malta";
-        string denmark = "C:/Users/svend/IdeaProjects/BachelorProjectNew/app/denmark";
+        string malta = "E:/Proj/BachelorCppRestructured/resources/malta";
+        string denmark = "E:/Proj/BachelorCppRestructured/resources/denmark";
 
         if(country== "malta"){
             cout << "###parsing " << country << endl;
