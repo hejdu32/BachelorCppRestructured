@@ -51,8 +51,8 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
         double sourceX = adjListCollection.xCoord[randomNode];
         double sourceY = adjListCollection.yCoord[randomNode];
         for (int j = 0; j < highestNbr; ++j) {
-            if(j % 1000 == 0)
-                cout << "euclidloop: " << j << endl;
+            //if(j % 1000 == 0)
+            //    cout << "euclidloop: " << j << endl;
             double targetX = adjListCollection.xCoord[j];
             double targetY = adjListCollection.yCoord[j];
             double euclidDistToJ = adjacencyList::euclidDistance(sourceX, sourceY, targetX, targetY);
@@ -62,13 +62,15 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
 
         double longestDistToClosestMark = 0.0;
         for (int j = 0; j <= highestNbr; ++j) { //loops over all nodes
-            if(j % 1000 == 0)
-                cout << "longestDistToClosestMark: " << j << endl;
+            //if(j % 1000 == 0)
+            //    cout << "longestDistToClosestMark: " << j << endl;
             double closestMark = INF;
-            for (vector<double> distVec : markDistanceVectors){
-                if(j % 1000 == 0)
-                    cout << "looping over landmarks: " << j << endl;
-                double distToCandidate = distVec[j];
+            //for (vector<double> distVec : markDistanceVectors){
+            for (int k = 0; k < markDistanceVectors.size(); ++k) {
+                double distToCandidate = markDistanceVectors[k][j];
+                //if(j % 1000 == 0)
+                //    cout << "looping over landmarks: " << j << endl;
+                //double distToCandidate = distVec[j];
                 if (distToCandidate < closestMark)
                     closestMark = distToCandidate;
             }
@@ -76,8 +78,8 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
                 longestDistToClosestMark = closestMark;
                 randomNode = j;
             }
-            if(j % 1000 == 0)
-                cout << "last thing of the loop: " << j << endl;
+            //if(j % 1000 == 0)
+            //    cout << "last thing of the loop: " << j << endl;
         }
         landmarkIDS.push_back(randomNode);
     }
