@@ -87,7 +87,7 @@ public:
     }
 
     static void randomPointsComparrison(int amountOfTests, int seed){
-        adjListCollection denmark = setUpDatastructure("malta");
+        adjListCollection denmark = setUpDatastructure("denmark");
         int highestNbr = denmark.idSoFar;
         srand(seed);
         vector<int> ids(amountOfTests,0); int size = ids.size();

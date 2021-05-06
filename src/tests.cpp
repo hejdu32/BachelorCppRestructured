@@ -176,7 +176,7 @@ int main(){
     //testDijkstraToyExample();
     //landmarksEmptyListTest();
     //runMaltaTests();
-    //runDenmarkTests();
+    runDenmarkTests();
 
 
     //denmark50RandomPoints("dijkstra",50);
