@@ -21,21 +21,21 @@ class util{
 public:
     static adjListCollection setUpDatastructure(string country){
         adjListCollection adjCol;
-        string malta = "C:/Users/a/IdeaProjects/BachelorProject/app/malta";
-        string denmark = "C:/Users/a/IdeaProjects/BachelorProject/app/denmark";
+        string malta = "C:/Users/svend/IdeaProjects/BachelorProjectNew/app/malta";
+        string denmark = "C:/Users/svend/IdeaProjects/BachelorProjectNew/app/denmark";
 
         if(country== "malta"){
-            cout << "###parsing " << country;
+            cout << "###parsing " << country << endl;
             auto t1 = high_resolution_clock::now();
             shortestPath::createAdjacencyList(malta, "file", adjCol);
             //vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
-            vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(12, adjCol);
+            vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(24, adjCol);
             adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
             auto t2 = high_resolution_clock::now();
             duration<double, milli> ms_double = t2 - t1;
             cout << " time: "<< (ms_double.count()/1000) << "seconds###"<<endl;
         }else if(country=="denmark"){
-            cout << "###parsing " << country;
+            cout << "###parsing " << country << endl;
             auto t1 = high_resolution_clock::now();
             shortestPath::createAdjacencyList(denmark, "file", adjCol);
             //vector<long long> landmarksIDs = {313159998, 13131369, 483022215, 349198443, 252151251, 369778546, 6187723341, 2252204014, 3149548115, 118416, 1108078449, 6816079197, 2387109140, 371441979}; //hardcoded landmarks for denmark
@@ -87,7 +87,7 @@ public:
     }
 
     static void randomPointsComparrison(int amountOfTests, int seed){
-        adjListCollection denmark = setUpDatastructure("denmark");
+        adjListCollection denmark = setUpDatastructure("malta");
         int highestNbr = denmark.idSoFar;
         srand(seed);
         vector<int> ids(amountOfTests,0); int size = ids.size();

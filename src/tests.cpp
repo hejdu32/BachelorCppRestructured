@@ -161,8 +161,8 @@ void runDenmarkTests(){
 
 void landmarksEmptyListTest(){
     adjListCollection malta = util::setUpDatastructure("malta");
-    vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
-    vector<landmarksStruct> notEmpty = landmarks::initLandmarks(landmarksIDs, malta);
+    //vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
+    vector<landmarksStruct> notEmpty = landmarks::initLandmarks(10, malta);
     assert(notEmpty.size()==8);
     landmarksStruct firstElem = notEmpty[0];
     assert(!firstElem.distanceVec.empty());
@@ -170,16 +170,17 @@ void landmarksEmptyListTest(){
 }
 
 int main(){
+    cout << "Testing" << endl;
     //testAdjlistSimpleDijkstra();
     //testToyExampleDatastructure();
     //testDijkstraToyExample();
-    //landmarksEmptyListTest();
+    landmarksEmptyListTest();
     runMaltaTests();
     //runDenmarkTests();
 
 
     //denmark50RandomPoints("dijkstra",50);
     //denmark50RandomPoints("astar",50);
-    //denmark50RandomPoints("landmarks",50);
+    util::randomPointsComparrison(50, 100);
     return 0;
 }

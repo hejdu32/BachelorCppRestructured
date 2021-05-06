@@ -13,7 +13,8 @@
 
 enum shortestPathMethods{
     dijkstra = 0,
-    astar = 1
+    astar = 1,
+    alt = 2
 };
 static std::map<std::string, int> spmap={{"dijkstra", 0},{"astar", 1},{"landmarks", 2}};
 

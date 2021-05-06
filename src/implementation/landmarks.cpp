@@ -40,53 +40,94 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
     int randomNode = rand() % highestNbr;
     vector<int> landmarkIDS;
     landmarkIDS.resize(1,randomNode);
+    const double INF = std::numeric_limits<double>::infinity();
     //cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
 
-    vector<double> accuVec;
-    accuVec.resize(highestNbr,0);
+    vector<vector<double>> markDistanceVectors;
     for (int i = 0; i < amount; ++i) {
+        cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
         vector<double> euclidDistVector;
         euclidDistVector.resize(highestNbr,0);
         double sourceX = adjListCollection.xCoord[randomNode];
         double sourceY = adjListCollection.yCoord[randomNode];
         for (int j = 0; j < highestNbr; ++j) {
+            if(j % 1000 == 0)
+                cout << "euclidloop: " << j << endl;
             double targetX = adjListCollection.xCoord[j];
             double targetY = adjListCollection.yCoord[j];
             double euclidDistToJ = adjacencyList::euclidDistance(sourceX, sourceY, targetX, targetY);
             euclidDistVector[j]=euclidDistToJ;
         }
-        //add the euclid distance vector to accumulator vector
-        transform (accuVec.begin(), accuVec.end(), euclidDistVector.begin(), accuVec.begin(), std::plus<double>());
+        markDistanceVectors.push_back(euclidDistVector);
 
-        double bestSoFar = 0;
-        int bestSoFarIndex = 0;
-        double INF = numeric_limits<double>::infinity();
-        for (int j = 0; j < accuVec.size(); ++j) {
-            double dist = accuVec[j];
-            bool isJLandmark = find(landmarkIDS.begin(),landmarkIDS.end(),j) != landmarkIDS.end();
-            bool isJFarEnoughFromOtherLandmarks = true;
-            if(!isJLandmark){
-                double jX = adjListCollection.xCoord[j];
-                double jY = adjListCollection.yCoord[j];
-                for (int lmk:landmarkIDS) {
-                    double lmkX = adjListCollection.xCoord[lmk];
-                    double lmkY = adjListCollection.yCoord[lmk];
-                    double distance = adjacencyList::euclidDistance(jX,jY,lmkX,lmkY);
-                    if (distance < minimumDistance){
-                        isJFarEnoughFromOtherLandmarks = false;
-                    }
-                }
+        double longestDistToClosestMark = 0.0;
+        for (int j = 0; j <= highestNbr; ++j) { //loops over all nodes
+            if(j % 1000 == 0)
+                cout << "longestDistToClosestMark: " << j << endl;
+            double closestMark = INF;
+            for (vector<double> distVec : markDistanceVectors){
+                if(j % 1000 == 0)
+                    cout << "looping over landmarks: " << j << endl;
+                double distToCandidate = distVec[j];
+                if (distToCandidate < closestMark)
+                    closestMark = distToCandidate;
             }
-
-            if(dist < INF && bestSoFar < dist && !isJLandmark && isJFarEnoughFromOtherLandmarks){
-                bestSoFar = dist;
-                bestSoFarIndex = j;
+            if (closestMark > longestDistToClosestMark) {
+                longestDistToClosestMark = closestMark;
+                randomNode = j;
             }
+            if(j % 1000 == 0)
+                cout << "last thing of the loop: " << j << endl;
         }
-        randomNode = bestSoFarIndex;
-        //cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
         landmarkIDS.push_back(randomNode);
     }
+
+
+    //vector<double> accuVec;
+    //accuVec.resize(highestNbr,0);
+    //for (int i = 0; i < amount; ++i) {
+    //    vector<double> euclidDistVector;
+    //    euclidDistVector.resize(highestNbr,0);
+    //    double sourceX = adjListCollection.xCoord[randomNode];
+    //    double sourceY = adjListCollection.yCoord[randomNode];
+    //    for (int j = 0; j < highestNbr; ++j) {
+    //        double targetX = adjListCollection.xCoord[j];
+    //        double targetY = adjListCollection.yCoord[j];
+    //        double euclidDistToJ = adjacencyList::euclidDistance(sourceX, sourceY, targetX, targetY);
+    //        euclidDistVector[j]=euclidDistToJ;
+    //    }
+    //    //add the euclid distance vector to accumulator vector
+    //    transform (accuVec.begin(), accuVec.end(), euclidDistVector.begin(), accuVec.begin(), std::plus<double>());
+//
+    //    double bestSoFar = 0;
+    //    int bestSoFarIndex = 0;
+    //    double INF = numeric_limits<double>::infinity();
+    //    for (int j = 0; j < accuVec.size(); ++j) {
+    //        double dist = accuVec[j];
+    //        bool isJLandmark = find(landmarkIDS.begin(),landmarkIDS.end(),j) != landmarkIDS.end();
+    //        bool isJFarEnoughFromOtherLandmarks = true;
+    //        if(!isJLandmark){
+    //            double jX = adjListCollection.xCoord[j];
+    //            double jY = adjListCollection.yCoord[j];
+    //            for (int lmk:landmarkIDS) {
+    //                double lmkX = adjListCollection.xCoord[lmk];
+    //                double lmkY = adjListCollection.yCoord[lmk];
+    //                double distance = adjacencyList::euclidDistance(jX,jY,lmkX,lmkY);
+    //                if (distance < minimumDistance){
+    //                    isJFarEnoughFromOtherLandmarks = false;
+    //                }
+    //            }
+    //        }
+//
+    //        if(dist < INF && bestSoFar < dist && !isJLandmark && isJFarEnoughFromOtherLandmarks){
+    //            bestSoFar = dist;
+    //            bestSoFarIndex = j;
+    //        }
+    //    }
+    //    randomNode = bestSoFarIndex;
+    //    //cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
+    //    landmarkIDS.push_back(randomNode);
+    //}
     //recast to long longs for calling initLandmarks
     vector<long long> longIdsOfLandmarks;
     for (int id:landmarkIDS) {
@@ -158,13 +199,14 @@ landmarksStruct landmarks::choseLandmarks(int source, int dest, adjListCollectio
     double bestBound = 0;
 
     for (auto index : landmarksVector) {
-        double distToSource = index.distanceVec[source];
-        double distToDest = index.distanceVec[dest];
-
-        double distFromSource = distToSource; //placeholder values
-        double distFromDest = distToDest;
-
-        double lowerBound = max(distToSource - distToDest, distToDest - distToSource);
+        double lowerBound = calcHeuristicDistance(source, dest,index);
+        //double distToSource = index.distanceVec[source];
+        //double distToDest = index.distanceVec[dest];
+//
+        //double distFromSource = distToSource; //placeholder values
+        //double distFromDest = distToDest;
+//
+        //double lowerBound = max(distToSource - distToDest, distToDest - distToSource);
         if(bestBound == 0 || lowerBound > bestBound) {
             bestBounding = index;
             bestBound = lowerBound;
