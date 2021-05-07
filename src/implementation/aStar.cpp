@@ -70,29 +70,27 @@ spResultStruct aStar::aStarShortestPath(int source, int dest, adjListCollection 
             break;
         }
 
-        //double aX = adjacencyList::getxCoord(adjCol, headId);  double aY = adjacencyList::getyCoord(adjCol, headId);
-        //double heuristHead = calcHeuristicDistance(fdestX, fdestY, aX, aY, meanSpeed);
-
         //add new nodes to queue
         auto connectedNodes = adjCol.adjlst[headId];
         for(auto i: connectedNodes){
             int node = i.first;
             double weight = i.second;
             double nodeX = adjacencyList::getxCoord(adjCol, node);  double nodeY = adjacencyList::getyCoord(adjCol, node);
+
             double heuristIntermediate = calcHeuristicDistance(fdestX, fdestY, nodeX, nodeY, meanSpeed);
             //relaxation step, in astar we add the heuristic weight in to consideration
-            if(!nodeSeen[node] && (distance[headId]+weight) < distance[node]){
+            double newPotentialDistance = distance[headId]+weight;
+            if(!nodeSeen[node] && newPotentialDistance < distance[node]){
                 //update the distance to the node and add it to the queue
-                distance[node] = distance[headId]+weight;
+                distance[node] = newPotentialDistance;
                 prevNode[node] = headId; //remember the node before for finding the shortest path to destination
                 //add the heuristic to the weight so we sort based on it.
-                double queueVal = distance[node] + heuristIntermediate; //
+                double queueVal = distance[node] + heuristIntermediate;
                 if (queueVal <= 0.0){
                     cout << "negVal: " << queueVal << "\n";
                     cout << "nodeA: " << adjCol.intIdToLongID.find(headId)->second << " nodeB: " <<  adjCol.intIdToLongID.find(node)->second << endl;
                 }
-
-                minHeap.push(make_pair(node, distance[node] + heuristIntermediate));//
+                minHeap.push(make_pair(node, distance[node] + heuristIntermediate));
             }
         }
         //mark head as it has been seen and cant be considered again

@@ -21,8 +21,8 @@ class util{
 public:
     static adjListCollection setUpDatastructure(string country){
         adjListCollection adjCol;
-        string malta = "E:/Proj/BachelorCppRestructured/resources/malta";
-        string denmark = "E:/Proj/BachelorCppRestructured/resources/denmark";
+        string malta = "C:/Users/a/IdeaProjects/BachelorProject/app/malta";
+        string denmark = "C:/Users/a/IdeaProjects/BachelorProject/app/denmark";
 
         if(country== "malta"){
             cout << "###parsing " << country << endl;
@@ -39,7 +39,7 @@ public:
             auto t1 = high_resolution_clock::now();
             shortestPath::createAdjacencyList(denmark, "file", adjCol);
             //vector<long long> landmarksIDs = {2753462644,5745423643,57054823,2159452194,1177521825,489401874,283198526,1818976308,5098316959,971808896,1507951792,1116342996}; //hardcoded landmarks for denmark
-            vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(8, adjCol);
+            vector<landmarksStruct> initedLandmarks = landmarks::initLandmarks(12, adjCol);
             adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
             auto t2 = high_resolution_clock::now();
             duration<double, milli> ms_double = t2 - t1;
@@ -60,8 +60,13 @@ public:
         auto t2 = high_resolution_clock::now();
         duration<double, milli> ms_double = t2 - t1;
         vector<long long> idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, from, to);
+        if(method == "landmarks"){
+            cout << method <<" from: "<< source <<" to: " << target << " with landmark: " << result.chosenLandmark <<"\n" ;
+        } else{
         cout << method <<" from: "<< source <<" to: " << target <<"\n" ;
+        }
         cout << "distance: " << result.distanceToDest << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
+
         cout << "nodes in path: "<< idvec.size() << endl;
         int counterVisited = 0;
         for (int id : result.prevNode){

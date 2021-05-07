@@ -79,6 +79,10 @@ void testToyExampleDatastructure(){
     assert(adjCol.adjlst[2].size()==3);
     assert(adjCol.adjlst[3].size()==1);
     cout<<"test toy example fixture passed" << endl;
+
+    //adjacencyList::printGraph(adjCol);
+    //adjListCollection revCol = landmarks::reverseAdjListCollection(adjCol);
+    //adjacencyList::printGraph(revCol);
 }
 
 void testDijkstraToyExample() {
@@ -175,12 +179,9 @@ int main(){
     //testToyExampleDatastructure();
     //testDijkstraToyExample();
     //landmarksEmptyListTest();
-    //runMaltaTests();
+    runMaltaTests();
     runDenmarkTests();
 
 
-    //denmark50RandomPoints("dijkstra",50);
-    //denmark50RandomPoints("astar",50);
-    //util::randomPointsComparrison(50, 100);
     return 0;
 }

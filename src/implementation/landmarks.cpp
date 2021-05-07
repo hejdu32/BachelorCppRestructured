@@ -32,10 +32,9 @@ vector<landmarksStruct> landmarks::initLandmarks(vector<long long> nodeIDs, adjL
     return resultVector;
 }
 
-adjListCollection reverseAdjListCollection(adjListCollection &adjCol){
+adjListCollection landmarks::reverseAdjListCollection(adjListCollection &adjCol){
     adjListCollection reversedAdjCol;
     reversedAdjCol.adjlst.resize(adjCol.idSoFar, vector<pair<int, double>>{});
-    cout << "gothere" << endl;
     for(int i = 0; i < adjCol.adjlst.size(); i++){
         vector<pair<int, double>> currentEdges = adjCol.adjlst[i];
         for(int j = 0; j < currentEdges.size(); j++) {
@@ -51,10 +50,9 @@ adjListCollection reverseAdjListCollection(adjListCollection &adjCol){
 
 vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &adjListCollection) {
     struct adjListCollection reversedAdjListCollection = reverseAdjListCollection(adjListCollection);
-    double minimumDistance = 3000;
     vector<landmarksStruct> resultVector;
     int highestNbr = adjListCollection.idSoFar;
-    //srand(4);
+
     int randomNode = rand() % highestNbr;
     const double INF = std::numeric_limits<double>::infinity();
     //cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
@@ -62,26 +60,16 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
     vector<vector<double>> markDistanceVectors;
     for (int i = 0; i < amount+1; ++i) {
         if(i!=0) cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
-        vector<double> euclidDistVector;
-        euclidDistVector.resize(highestNbr,0);
-        double sourceX = adjListCollection.xCoord[randomNode];
-        double sourceY = adjListCollection.yCoord[randomNode];
-        for (int j = 0; j < highestNbr; ++j) {
-            //if(j % 1000 == 0)
-            //    cout << "euclidloop: " << j << endl;
-            double targetX = adjListCollection.xCoord[j];
-            double targetY = adjListCollection.yCoord[j];
-            double euclidDistToJ = adjacencyList::euclidDistance(sourceX, sourceY, targetX, targetY);
-            euclidDistVector[j]=euclidDistToJ;
-        }
         landmarksStruct landmarksStruct;
         spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, adjListCollection);
         spResultStruct distanceFromEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, reversedAdjListCollection);
         landmarksStruct.distanceVec = distanceToEverything.distanceVec;
-        landmarksStruct.reversedDistanceVec = distanceToEverything.distanceVec;
+        landmarksStruct.reversedDistanceVec = distanceFromEverything.distanceVec;
         landmarksStruct.nodeID = adjListCollection.intIdToLongID[randomNode];    //is suppose to be id not intID
         markDistanceVectors.push_back(landmarksStruct.distanceVec);
+
         if(i!=0) resultVector.push_back(landmarksStruct);
+
         double longestDistToClosestMark = 0.0;
         for (int j = 0; j <= highestNbr; ++j) { //loops over all nodes
             //if(j % 1000 == 0)
@@ -181,13 +169,7 @@ landmarksStruct landmarks::choseLandmarks(int source, int dest, adjListCollectio
 
     for(int i = 0; i < collection.landmarksStructs.size(); i++) {
         double lowerBound = calcHeuristicDistance(source, dest,collection.landmarksStructs[i]);
-        //double distToSource = index.distanceVec[source];
-        //double distToDest = index.distanceVec[dest];
-//
-        //double distFromSource = distToSource; //placeholder values
-        //double distFromDest = distToDest;
-//
-        //double lowerBound = max(distToSource - distToDest, distToDest - distToSource);
+        cout << "landmark: " << collection.landmarksStructs[i].nodeID << " lowerBound " << lowerBound << endl;
         if(bestBound == 0 || lowerBound > bestBound) {
             bestBounding = i;
             bestBound = lowerBound;
@@ -199,7 +181,7 @@ landmarksStruct landmarks::choseLandmarks(int source, int dest, adjListCollectio
 double landmarks::calcHeuristicDistance(int source, int target, landmarksStruct &currLandmark) {
     double distFromSourceToLandmark = currLandmark.reversedDistanceVec[source];
     double distFromTargetToLandmark = currLandmark.reversedDistanceVec[target];
-    double lowerBoundToLandmark = distFromTargetToLandmark - distFromSourceToLandmark;
+    double lowerBoundToLandmark =  distFromSourceToLandmark - distFromTargetToLandmark;
 
 
     double distFromLandmarkToSource = currLandmark.distanceVec[source];
