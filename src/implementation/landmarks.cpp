@@ -32,7 +32,25 @@ vector<landmarksStruct> landmarks::initLandmarks(vector<long long> nodeIDs, adjL
     return resultVector;
 }
 
+adjListCollection reverseAdjListCollection(adjListCollection &adjCol){
+    adjListCollection reversedAdjCol;
+    reversedAdjCol.adjlst.resize(adjCol.idSoFar, vector<pair<int, double>>{});
+    cout << "gothere" << endl;
+    for(int i = 0; i < adjCol.adjlst.size(); i++){
+        vector<pair<int, double>> currentEdges = adjCol.adjlst[i];
+        for(int j = 0; j < currentEdges.size(); j++) {
+            pair<int, double> temp = currentEdges[j];
+            int newSource = temp.first;
+            int newDist = temp.second;
+            reversedAdjCol.adjlst[newSource].push_back(make_pair(i, newDist));
+        }
+    }
+    reversedAdjCol.idSoFar = adjCol.idSoFar;
+    return reversedAdjCol;
+}
+
 vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &adjListCollection) {
+    struct adjListCollection reversedAdjListCollection = reverseAdjListCollection(adjListCollection);
     double minimumDistance = 3000;
     vector<landmarksStruct> resultVector;
     int highestNbr = adjListCollection.idSoFar;
@@ -58,9 +76,11 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
         }
         landmarksStruct landmarksStruct;
         spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, adjListCollection);
+        spResultStruct distanceFromEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, reversedAdjListCollection);
         landmarksStruct.distanceVec = distanceToEverything.distanceVec;
+        landmarksStruct.reversedDistanceVec = distanceToEverything.distanceVec;
         landmarksStruct.nodeID = adjListCollection.intIdToLongID[randomNode];    //is suppose to be id not intID
-        markDistanceVectors.push_back(euclidDistVector);
+        markDistanceVectors.push_back(landmarksStruct.distanceVec);
         if(i!=0) resultVector.push_back(landmarksStruct);
         double longestDistToClosestMark = 0.0;
         for (int j = 0; j <= highestNbr; ++j) { //loops over all nodes
@@ -95,15 +115,10 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
     return resultVector;
 }
 
-adjListCollection reverseAdjListCollection(adjListCollection &adjCol){
-    adjListCollection reversedAdjCol;
-    reversedAdjCol.adjlst.resize(adjCol.idSoFar, vector<pair<int, double>>{});
-
-}
 
 spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollection &adjCol) {
     landmarksStruct bestForward = choseLandmarks(source, dest, adjCol);
-    cout << "chosen landmark: "<< bestForward.nodeID << endl;
+    //cout << "chosen landmark: "<< bestForward.nodeID << endl;
     const double INF = std::numeric_limits<double>::infinity();
     int sizeOfGraph = adjCol.idSoFar;
     //initilaize distance from source to everything to infinity
@@ -134,7 +149,7 @@ spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollectio
         }
         //add new nodes to queue
         auto connectedNodes = adjCol.adjlst[headId];
-        for(auto i: connectedNodes){
+        for(auto const &i: connectedNodes){
             int node = i.first;
             double weight = i.second;
             double heuristIntermediate = calcHeuristicDistance(node, dest, bestForward);
@@ -144,6 +159,7 @@ spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollectio
                 distance[node] = distance[headId]+weight;
                 prevNode[node] = headId; //remember the node before for finding the shortest path to destination
                 //add the heuristic to the weight so we sort based on it.
+
                 minHeap.push(make_pair(node, distance[node] + heuristIntermediate));//
             }
         }
@@ -155,16 +171,16 @@ spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollectio
     resultStruct.distanceToDest = distance[dest];
     resultStruct.distanceVec = distance;
     resultStruct.prevNode = prevNode;
+    resultStruct.chosenLandmark = bestForward.nodeID;
     return resultStruct;
 }
 
 landmarksStruct landmarks::choseLandmarks(int source, int dest, adjListCollection &collection) {
-    vector<landmarksStruct> landmarksVector = collection.landmarksStructs;
-    landmarksStruct bestBounding;
+    int bestBounding;
     double bestBound = 0;
 
-    for (auto index : landmarksVector) {
-        double lowerBound = calcHeuristicDistance(source, dest,index);
+    for(int i = 0; i < collection.landmarksStructs.size(); i++) {
+        double lowerBound = calcHeuristicDistance(source, dest,collection.landmarksStructs[i]);
         //double distToSource = index.distanceVec[source];
         //double distToDest = index.distanceVec[dest];
 //
@@ -173,22 +189,24 @@ landmarksStruct landmarks::choseLandmarks(int source, int dest, adjListCollectio
 //
         //double lowerBound = max(distToSource - distToDest, distToDest - distToSource);
         if(bestBound == 0 || lowerBound > bestBound) {
-            bestBounding = index;
+            bestBounding = i;
             bestBound = lowerBound;
         }
     }
-    return bestBounding;
+    return collection.landmarksStructs[bestBounding];
 }
 
-double landmarks::calcHeuristicDistance(int start, int dest, landmarksStruct &currLandmark) {
-    double distToStart = currLandmark.distanceVec[start];
-    double distToDest = currLandmark.distanceVec[dest];
+double landmarks::calcHeuristicDistance(int source, int target, landmarksStruct &currLandmark) {
+    double distFromSourceToLandmark = currLandmark.reversedDistanceVec[source];
+    double distFromTargetToLandmark = currLandmark.reversedDistanceVec[target];
+    double lowerBoundToLandmark = distFromSourceToLandmark - distFromTargetToLandmark;
 
 
-    double distFromStart = distToStart; //placeholder values
-    double distFromDest = distToDest;
+    double distFromLandmarkToSource = currLandmark.distanceVec[source];
+    double distFromLandmarkToTarget = currLandmark.distanceVec[target];
+    double lowerBoundFromLandmark = distFromLandmarkToTarget - distFromLandmarkToSource;
 
-    double lowerBound = max(distToStart - distToDest, distToDest - distToStart);
-    return lowerBound;
+    double largestLowerbound = max(lowerBoundToLandmark, lowerBoundFromLandmark);
+    return largestLowerbound;
 }
 

@@ -18,11 +18,12 @@ using namespace std;
         double distanceToDest;
         vector<int> prevNode;
         vector<double> distanceVec;
+        long long chosenLandmark;
     };
     struct landmarksStruct {
         long long nodeID;
-        vector<int> prevNode;
         vector<double> distanceVec;
+        vector<double> reversedDistanceVec;
     };
     struct adjListCollection {
         vector<vector<pair<int, double>>> adjlst{};

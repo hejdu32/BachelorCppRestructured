@@ -29,7 +29,7 @@ public:
             auto t1 = high_resolution_clock::now();
             shortestPath::createAdjacencyList(malta, "file", adjCol);
             //vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
-            vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(16, adjCol);
+            vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(8, adjCol);
             adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
             auto t2 = high_resolution_clock::now();
             duration<double, milli> ms_double = t2 - t1;
@@ -39,7 +39,7 @@ public:
             auto t1 = high_resolution_clock::now();
             shortestPath::createAdjacencyList(denmark, "file", adjCol);
             //vector<long long> landmarksIDs = {2753462644,5745423643,57054823,2159452194,1177521825,489401874,283198526,1818976308,5098316959,971808896,1507951792,1116342996}; //hardcoded landmarks for denmark
-            vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(3, adjCol);
+            vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(8, adjCol);
             adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
             auto t2 = high_resolution_clock::now();
             duration<double, milli> ms_double = t2 - t1;
@@ -78,18 +78,22 @@ public:
         return shortestPath::chooseAlgo(spmap[method], source ,target,adjCol);
     }
 
-    static void printDisagreement(string method, int from, int to, double dijkstraDist, double wrongDist, adjListCollection &adjCol){
+    static void printDisagreement(string method, int from, int to, spResultStruct &dijkstraStruct, spResultStruct &wrongStruct, adjListCollection &adjCol){
         long long source = adjacencyList::getLongID(adjCol,from);
         long long dest = adjacencyList::getLongID(adjCol,to);
-        cout << "Disagreement with " << method << " from: " << source << " to: " << dest << endl;
-        cout << "dijkstra distance: " << dijkstraDist << " " << method << " distance: "<< wrongDist << endl;
+        long long temp = -1;
+        if(method == "landmarks") {
+             temp = wrongStruct.chosenLandmark;
+        }
+        cout << "Disagreement with " << method << " from: " << source << " to: " << dest << " landmark: " << temp << endl;
+        cout << "dijkstra distance: " << dijkstraStruct.distanceToDest << " " << method << " distance: "<< wrongStruct.distanceToDest << endl;
 
     }
 
     static void randomPointsComparrison(int amountOfTests, int seed){
-        adjListCollection denmark = setUpDatastructure("denmark");
+        adjListCollection denmark = setUpDatastructure("malta");
         int highestNbr = denmark.idSoFar;
-        srand(seed);
+        //srand(seed);
         vector<int> ids(amountOfTests,0); int size = ids.size();
         for (int i = 0; i < amountOfTests; ++i) {
             ids[i] = rand() % highestNbr;
@@ -114,11 +118,11 @@ public:
 
             if (dijkstraResult.distanceToDest != astarResult.distanceToDest){
                 astarFails++;
-                printDisagreement("astar",ids[i],ids[i+1],dijkstraResult.distanceToDest,astarResult.distanceToDest,denmark);
+                printDisagreement("astar",ids[i],ids[i+1],dijkstraResult, astarResult,denmark);
             }
             if (dijkstraResult.distanceToDest != landmarksResult.distanceToDest){
                 landmarksFails++;
-                printDisagreement("landmarks",ids[i],ids[i+1],dijkstraResult.distanceToDest,landmarksResult.distanceToDest,denmark);
+                printDisagreement("landmarks",ids[i],ids[i+1],dijkstraResult, landmarksResult,denmark);
             }
         }
         cout << "Finished "<< amountOfTests<< " on denmark" << endl;
