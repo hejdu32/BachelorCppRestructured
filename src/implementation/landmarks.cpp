@@ -199,7 +199,7 @@ landmarksStruct landmarks::choseLandmarks(int source, int dest, adjListCollectio
 double landmarks::calcHeuristicDistance(int source, int target, landmarksStruct &currLandmark) {
     double distFromSourceToLandmark = currLandmark.reversedDistanceVec[source];
     double distFromTargetToLandmark = currLandmark.reversedDistanceVec[target];
-    double lowerBoundToLandmark = distFromSourceToLandmark - distFromTargetToLandmark;
+    double lowerBoundToLandmark = distFromTargetToLandmark - distFromSourceToLandmark;
 
 
     double distFromLandmarkToSource = currLandmark.distanceVec[source];
