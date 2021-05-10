@@ -21,8 +21,8 @@ class util{
 public:
     static adjListCollection setUpDatastructure(string country){
         adjListCollection adjCol;
-        string malta = "C:/Users/a/IdeaProjects/BachelorProject/app/malta";
-        string denmark = "C:/Users/a/IdeaProjects/BachelorProject/app/denmark";
+        string malta = "C:/Users/svend/IdeaProjects/BachelorProjectNew/app/malta";
+        string denmark = "C:/Users/svend/IdeaProjects/BachelorProjectNew/app/denmark";
 
         if(country== "malta"){
             cout << "###parsing " << country << endl;
@@ -30,7 +30,10 @@ public:
             shortestPath::createAdjacencyList(malta, "file", adjCol);
             //vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
             vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(8, adjCol);
-            adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
+            for (int i = 0; i <initedLandmarks.size(); ++i) {
+                adjacencyList::setLandmarkStructs(adjCol, initedLandmarks[i]);
+            }
+            //adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
             auto t2 = high_resolution_clock::now();
             duration<double, milli> ms_double = t2 - t1;
             cout << " time: "<< (ms_double.count()/1000) << "seconds###"<<endl;
@@ -39,8 +42,10 @@ public:
             auto t1 = high_resolution_clock::now();
             shortestPath::createAdjacencyList(denmark, "file", adjCol);
             //vector<long long> landmarksIDs = {2753462644,5745423643,57054823,2159452194,1177521825,489401874,283198526,1818976308,5098316959,971808896,1507951792,1116342996}; //hardcoded landmarks for denmark
-            vector<landmarksStruct> initedLandmarks = landmarks::initLandmarks(12, adjCol);
-            adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
+            vector<landmarksStruct> initedLandmarks = landmarks::initLandmarks(24, adjCol);
+            for (int i = 0; i <initedLandmarks.size(); ++i) {
+                adjacencyList::setLandmarkStructs(adjCol., initedLandmarks[i]);
+            }
             auto t2 = high_resolution_clock::now();
             duration<double, milli> ms_double = t2 - t1;
             cout << " time: "<< (ms_double.count()/1000) << "seconds###"<<endl;

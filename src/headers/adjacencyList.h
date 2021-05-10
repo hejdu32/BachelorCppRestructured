@@ -134,8 +134,8 @@ using namespace std;
         static double getxCoord(adjListCollection &collection, int value){return collection.xCoord[value];}
         static double getyCoord(adjListCollection &collection, int value){return collection.yCoord[value];}
 
-        static void setLandmarkStructs(adjListCollection &collection, vector<landmarksStruct> &landmarkVector){
-            collection.landmarksStructs = landmarkVector;
+        static void setLandmarkStructs(adjListCollection &collection, landmarksStruct &landmark){
+            collection.landmarksStructs.emplace_back(move(landmark));
         }
 
         static int getIntID(adjListCollection &collection, long long value) {

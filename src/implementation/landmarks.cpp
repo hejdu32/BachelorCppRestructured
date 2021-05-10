@@ -57,7 +57,7 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
     const double INF = std::numeric_limits<double>::infinity();
     //cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
 
-    vector<vector<double>> markDistanceVectors;
+    //vector<vector<double>> markDistanceVectors;
     for (int i = 0; i < amount+1; ++i) {
         if(i!=0) cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
         landmarksStruct landmarksStruct;
@@ -66,9 +66,9 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
         landmarksStruct.distanceVec = distanceToEverything.distanceVec;
         landmarksStruct.reversedDistanceVec = distanceFromEverything.distanceVec;
         landmarksStruct.nodeID = adjListCollection.intIdToLongID[randomNode];    //is suppose to be id not intID
-        markDistanceVectors.push_back(landmarksStruct.distanceVec);
+        //markDistanceVectors.emplace_back((landmarksStruct.distanceVec));
 
-        if(i!=0) resultVector.push_back(landmarksStruct);
+        if(i!=0) resultVector.emplace_back(landmarksStruct);
 
         double longestDistToClosestMark = 0.0;
         for (int j = 0; j <= highestNbr; ++j) { //loops over all nodes
@@ -76,8 +76,8 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
             //    cout << "longestDistToClosestMark: " << j << endl;
             double closestMark = INF;
             //for (vector<double> distVec : markDistanceVectors){
-            for (int k = 0; k < markDistanceVectors.size(); ++k) {
-                double distToCandidate = markDistanceVectors[k][j];
+            for (int k = 0; k < resultVector.size(); ++k) {
+                double distToCandidate = resultVector[k].distanceVec[j];
                 //if(j % 1000 == 0)
                 //    cout << "looping over landmarks: " << j << endl;
                 //double distToCandidate = distVec[j];
@@ -91,7 +91,7 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
             //if(j % 1000 == 0)
             //    cout << "last thing of the loop: " << j << endl;
         }
-        if(i==0) markDistanceVectors.pop_back();
+        //if(i==0) markDistanceVectors.pop_back();
     }
 
     //recast to long longs for calling initLandmarks
