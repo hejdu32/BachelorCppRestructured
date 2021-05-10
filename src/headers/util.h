@@ -9,6 +9,7 @@
 #include "shortestPath.h"
 #include <cstdlib>
 #include <chrono>
+#include <utility>
 
 
 using std::chrono::high_resolution_clock;
@@ -21,8 +22,8 @@ class util{
 public:
     static adjListCollection setUpDatastructure(string country){
         adjListCollection adjCol;
-        string malta = "C:/Users/svend/IdeaProjects/BachelorProjectNew/app/malta";
-        string denmark = "C:/Users/svend/IdeaProjects/BachelorProjectNew/app/denmark";
+        string malta = "/home/a/IdeaProjects/BachelorProject/app/malta";
+        string denmark = "/home/a/IdeaProjects/BachelorProject/app/denmark";
 
         if(country== "malta"){
             cout << "###parsing " << country << endl;
@@ -71,14 +72,13 @@ public:
         cout << method <<" from: "<< source <<" to: " << target <<"\n" ;
         }
         cout << "distance: " << result.distanceToDest << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
-
-        cout << "nodes in path: "<< idvec.size() << endl;
         int counterVisited = 0;
         for (int id : result.prevNode){
             if (id != -1)
                 counterVisited++;
         }
-        cout << "Nodes considered: " << counterVisited << endl;
+        cout << "Nodes in path: "<< idvec.size() << " Nodes considered: " << counterVisited << endl;
+        cout << "\n";
         //cout << "path"<< endl;
         //shortestPath::printVec(idvec);
         //cout << endl;
@@ -100,8 +100,8 @@ public:
 
     }
 
-    static void randomPointsComparrison(int amountOfTests, int seed){
-        adjListCollection denmark = setUpDatastructure("malta");
+    static void randomPointsComparrison(const string& country, int amountOfTests, int seed){
+        adjListCollection denmark = setUpDatastructure(country);
         int highestNbr = denmark.idSoFar;
         //srand(seed);
         vector<int> ids(amountOfTests,0); int size = ids.size();
@@ -117,22 +117,29 @@ public:
         spResultStruct landmarksResult;
 
 
-        cout << "Testing "<< amountOfTests << " points in denmark " << endl;
-        for (int i = 0; i < size; i+=2) {
+        cout << "Testing "<< amountOfTests << " points in" <<  country<< endl;
+        for (int i = 0; i < size; i++) {
+            int from = ids[i];
+            int to;
+            if(i == size){
+                to = ids[0];
+            }else{
+                to = ids[i+1];
+            }
             if(i % 100 == 0 && i != 0){
                 cout << i << " comparrisons have been tested" << endl;
             }
-            dijkstraResult = testDistance("dijkstra", ids[i], ids[i+1],denmark);
-            astarResult = testDistance("astar", ids[i], ids[i+1],denmark);
-            landmarksResult = testDistance("landmarks", ids[i], ids[i+1],denmark);
+            dijkstraResult = testDistance("dijkstra", from, to,denmark);
+            astarResult = testDistance("astar", from, to,denmark);
+            landmarksResult = testDistance("landmarks", from, to,denmark);
 
             if (dijkstraResult.distanceToDest != astarResult.distanceToDest){
                 astarFails++;
-                printDisagreement("astar",ids[i],ids[i+1],dijkstraResult, astarResult,denmark);
+                printDisagreement("astar",from,to,dijkstraResult, astarResult,denmark);
             }
             if (dijkstraResult.distanceToDest != landmarksResult.distanceToDest){
                 landmarksFails++;
-                printDisagreement("landmarks",ids[i],ids[i+1],dijkstraResult, landmarksResult,denmark);
+                printDisagreement("landmarks",from,to,dijkstraResult, landmarksResult,denmark);
             }
         }
         cout << "Finished "<< amountOfTests<< " on denmark" << endl;

@@ -26,7 +26,7 @@ vector<landmarksStruct> landmarks::initLandmarks(vector<long long> nodeIDs, adjL
         spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(intID, intID, false, adjListCollection);
         landmarksStruct.distanceVec = distanceToEverything.distanceVec;
         landmarksStruct.nodeID = id;    //is suppose to be id not intID
-        resultVector.push_back(landmarksStruct);
+        resultVector.emplace_back(landmarksStruct);
     }
 
     return resultVector;
@@ -169,7 +169,7 @@ landmarksStruct landmarks::choseLandmarks(int source, int dest, adjListCollectio
 
     for(int i = 0; i < collection.landmarksStructs.size(); i++) {
         double lowerBound = calcHeuristicDistance(source, dest,collection.landmarksStructs[i]);
-        cout << "landmark: " << collection.landmarksStructs[i].nodeID << " lowerBound " << lowerBound << endl;
+        //cout << "landmark: " << collection.landmarksStructs[i].nodeID << " lowerBound " << lowerBound << endl;
         if(bestBound == 0 || lowerBound > bestBound) {
             bestBounding = i;
             bestBound = lowerBound;

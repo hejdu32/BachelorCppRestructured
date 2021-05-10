@@ -21,13 +21,13 @@ using std::chrono::seconds;
 
 void testAdjlistSimpleDijkstra(){
     adjListCollection adjCol;
-    shortestPath::createAdjacencyList("C:/Users/a/CLionProjects/BachelorCppRestructured/resources/adjlist","file",adjCol);
+    shortestPath::createAdjacencyList("/home/a/CLionProjects/BachelorCppRestructured/src/resources/adjlist","file",adjCol);
 
     spResultStruct result; vector<long long> idvec;
     int start = adjacencyList::getIntID(adjCol,1);
     int end = adjacencyList::getIntID(adjCol,5);
 
-    result = shortestPath::chooseAlgo(dijkstra,start,end,adjCol);
+    result = shortestPath::chooseAlgo(spmap["dijkstra"],start,end,adjCol);
     idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, start, end);
     //adjacencyList::printGraph(adjCol);
 
@@ -99,7 +99,7 @@ void testDijkstraToyExample() {
     };
     spResultStruct result;
     vector<long long> idvec;
-    result = shortestPath::chooseAlgo(dijkstra, aNode, bNode, adjCol);
+    result = shortestPath::chooseAlgo(spmap["dijkstra"], aNode, bNode, adjCol);
     idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, aNode, bNode);
     //testing a->b gives path a,c,b with distance 4
     assert(idvec[0] == aNode);
@@ -107,14 +107,14 @@ void testDijkstraToyExample() {
     assert(idvec[2] == bNode);
     assert(result.distanceToDest == 4);
 
-    result = shortestPath::chooseAlgo(dijkstra, aNode, cNode, adjCol);
+    result = shortestPath::chooseAlgo(spmap["dijkstra"], aNode, cNode, adjCol);
     idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, aNode, cNode);
     //testing a->c gives path a,c with distance 3
     assert(idvec[0] == aNode);
     assert(idvec[1] == cNode);
     assert(result.distanceToDest == 3);
 
-    result = shortestPath::chooseAlgo(dijkstra, aNode, dNode, adjCol);
+    result = shortestPath::chooseAlgo(spmap["dijkstra"], aNode, dNode, adjCol);
     idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, aNode, dNode);
     //testing a->d gives path a,c,b,d with distance 6
     assert(idvec[0] == aNode);
@@ -123,7 +123,7 @@ void testDijkstraToyExample() {
     assert(idvec[3] == dNode);
     assert(result.distanceToDest == 6);
 
-    result = shortestPath::chooseAlgo(dijkstra, aNode, eNode, adjCol);
+    result = shortestPath::chooseAlgo(spmap["dijkstra"], aNode, eNode, adjCol);
     idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, aNode, eNode);
     //testing a->e gives path a,c,e with distance 5
     assert(idvec[0] == aNode);
@@ -151,22 +151,52 @@ void runDenmarkTests(){
     long long borglum = 860574684;
     long long RandersHospital = 696724340;
     long long tivoliKobenhavn = 3207955227;
-
+    long long skagen = 1818942364; //just south of skagen
+    long long westernJutland = 2400200478; //western jutland
+    long long swJutland = 7725330619; //south western jutland
+    long long southernJutland = 2461634106; // southern jutland
+    long long langeland = 5543870050; //langeland
+    long long lolland = 1471395254; // lolland
+    long long northernZealand = 1305304467; //nord sjælland
+    //århus to århus
     util::testDistancePrints("dijkstra",itbyen, borglum,denmark);
     util::testDistancePrints("astar",itbyen, borglum,denmark);
     util::testDistancePrints("landmarks",itbyen, borglum,denmark);
+    //århus to randers
     util::testDistancePrints("dijkstra",itbyen,RandersHospital,denmark);
     util::testDistancePrints("astar",itbyen,RandersHospital,denmark);
     util::testDistancePrints("landmarks",itbyen,RandersHospital,denmark);
+    //århus to københavn
     util::testDistancePrints("dijkstra",itbyen,tivoliKobenhavn,denmark);
     util::testDistancePrints("astar",itbyen,tivoliKobenhavn,denmark);
     util::testDistancePrints("landmarks",itbyen,tivoliKobenhavn,denmark);
+    //vest jylland til lolland
+    util::testDistancePrints("dijkstra", westernJutland, lolland, denmark);
+    util::testDistancePrints("astar", westernJutland, lolland, denmark);
+    util::testDistancePrints("landmarks", westernJutland, lolland, denmark);
+    //skagen til langeland
+    util::testDistancePrints("dijkstra", skagen, langeland, denmark);
+    util::testDistancePrints("astar", skagen, langeland, denmark);
+    util::testDistancePrints("landmarks", skagen, langeland, denmark);
+    //ho klit to skagen
+    util::testDistancePrints("dijkstra", swJutland, skagen, denmark);
+    util::testDistancePrints("astar", swJutland, skagen, denmark);
+    util::testDistancePrints("landmarks", swJutland, skagen, denmark);
+    //gammel ren to toftum bjerge
+    util::testDistancePrints("dijkstra", southernJutland, westernJutland, denmark);
+    util::testDistancePrints("astar", southernJutland, westernJutland, denmark);
+    util::testDistancePrints("landmarks", southernJutland, westernJutland, denmark);
+    //skagen to northern zealand
+    util::testDistancePrints("dijkstra", skagen, northernZealand, denmark);
+    util::testDistancePrints("astar", skagen, northernZealand, denmark);
+    util::testDistancePrints("landmarks", skagen, northernZealand, denmark);
+
 }
 
 void landmarksEmptyListTest(){
     adjListCollection malta = util::setUpDatastructure("malta");
     //vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
-    vector<landmarksStruct> notEmpty = landmarks::initLandmarks(12, malta);
+    vector<landmarksStruct> notEmpty = landmarks::initLandmarks(8, malta);
     assert(notEmpty.size()==8);
     landmarksStruct firstElem = notEmpty[0];
     assert(!firstElem.distanceVec.empty());
@@ -179,9 +209,8 @@ int main(){
     //testToyExampleDatastructure();
     //testDijkstraToyExample();
     //landmarksEmptyListTest();
-    runMaltaTests();
+    //runMaltaTests();
     runDenmarkTests();
-
 
     return 0;
 }

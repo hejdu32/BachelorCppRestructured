@@ -6,16 +6,17 @@
 #define SHORTESTPATH
 
 #include <sstream>
+#include <algorithm>
 #include "dijkstra.h"
 #include "aStar.h"
 #include "landmarks.h"
 #include "fileReader.h"
 
-enum shortestPathMethods{
-    dijkstra = 0,
-    astar = 1,
-    alt = 2
-};
+//enum shortestPathMethods{
+//    dijkstra = 0,
+//    astar = 1,
+//    alt = 2
+//};
 static std::map<std::string, int> spmap={{"dijkstra", 0},{"astar", 1},{"landmarks", 2}};
 
 class shortestPath {
