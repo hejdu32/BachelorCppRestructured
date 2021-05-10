@@ -74,9 +74,12 @@ public:
         cout << "distance: " << result.distanceToDest << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
         int counterVisited = 0;
         for (int id : result.prevNode){
-            if (id != -1)
+            if (id != -1){
                 counterVisited++;
+                //cout << adjacencyList::getLongID(adjCol, id) << "L," ;
+            }
         }
+        //cout << endl;
         cout << "Nodes in path: "<< idvec.size() << " Nodes considered: " << counterVisited << endl;
         cout << "\n";
         //cout << "path"<< endl;

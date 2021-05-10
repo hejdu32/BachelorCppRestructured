@@ -8,16 +8,15 @@
 
 using namespace std;
 
-void runAlgorithm(const string method, const string &nodeIdFrom, const string &nodeIdTo, adjListCollection &adjCol) {
+void runAlgorithm(const string& method, const string &nodeIdFrom, const string &nodeIdTo, adjListCollection &adjCol) {
     int from = adjCol.longIdToIntID[stoll(nodeIdFrom)];
     int to = adjCol.longIdToIntID[stoll(nodeIdTo)];
     spResultStruct result = shortestPath::chooseAlgo(spmap[method], from, to, adjCol);
     vector<long long> idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode,from,to);
-    string listOfNodes = "NodeIds";
+    string listOfNodes = "path " + method +" " + to_string(result.distanceToDest);
     for(long long nodeId: idvec) {
         listOfNodes += " " + to_string(nodeId);
     }
-    double distance = result.distanceToDest;
     cout << listOfNodes << endl;
     cout << flush;
 }
