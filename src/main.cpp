@@ -2,7 +2,7 @@
 #include "headers/aStar.h"
 #include "headers/shortestPath.h"
 #include "headers/util.h"
-#include "headerLibs/json.hpp"
+//#include "headerLibs/json.hpp"
 #include <iostream>
 #include <cassert>
 
@@ -45,7 +45,7 @@ void communicateWithJava() {
                 cin >> nodeIdTo;
                 int from = adjCol.longIdToIntID[stoll(nodeIdFrom)];
                 int to = adjCol.longIdToIntID[stoll(nodeIdTo)];
-                spResultStruct result = shortestPath::chooseAlgo(dijkstra, from, to, adjCol);
+                spResultStruct result = shortestPath::chooseAlgo(spmap["dijkstra"], from, to, adjCol);
                 vector<long long> idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode,from,to);
                 string listOfNodes = "NodeIds";
                 for(long long nodeId: idvec) {
@@ -62,7 +62,7 @@ void communicateWithJava() {
                 cin >> nodeIdTo;
                 int from = adjCol.longIdToIntID[stoll(nodeIdFrom)];
                 int to = adjCol.longIdToIntID[stoll(nodeIdTo)];
-                spResultStruct result = shortestPath::chooseAlgo(astar, from, to, adjCol);
+                spResultStruct result = shortestPath::chooseAlgo(spmap["astar"], from, to, adjCol);
                 vector<long long> idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode,from,to);
                 string listOfNodes = "NodeIds";
                 for(long long nodeId: idvec) {
@@ -79,7 +79,7 @@ void communicateWithJava() {
                 cin >> nodeIdTo;
                 int from = adjCol.longIdToIntID[stoll(nodeIdFrom)];
                 int to = adjCol.longIdToIntID[stoll(nodeIdTo)];
-                spResultStruct result = shortestPath::chooseAlgo(alt, from, to, adjCol);
+                spResultStruct result = shortestPath::chooseAlgo(spmap["alt"], from, to, adjCol);
                 vector<long long> idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode,from,to);
                 string listOfNodes = "NodeIds";
                 for(long long nodeId: idvec) {
