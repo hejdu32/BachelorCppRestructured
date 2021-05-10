@@ -30,7 +30,9 @@ void communicateWithJava() {
             case makeAdjacencyList: {
                 shortestPath::createAdjacencyList("C:/Users/svend/IdeaProjects/BachelorProjectNew/app/malta", "file", adjCol);
                 vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(12, adjCol);
-                adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
+                for (int i = 0; i <initedLandmarks.size(); ++i) {
+                    adjacencyList::setLandmarkStructs(adjCol, initedLandmarks[i]);
+                }
                 //nodesAndWaysWrapper wrapper = adjacencyList::deserializeFromJson("C:/proj/BachelorCppCmake/resources/malta.json");
                 //adjacencyList::createAdjListCollection(wrapper, adjCol);
                 cout << "Finished" << endl;

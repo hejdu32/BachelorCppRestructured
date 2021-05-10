@@ -42,9 +42,9 @@ public:
             auto t1 = high_resolution_clock::now();
             shortestPath::createAdjacencyList(denmark, "file", adjCol);
             //vector<long long> landmarksIDs = {2753462644,5745423643,57054823,2159452194,1177521825,489401874,283198526,1818976308,5098316959,971808896,1507951792,1116342996}; //hardcoded landmarks for denmark
-            vector<landmarksStruct> initedLandmarks = landmarks::initLandmarks(24, adjCol);
+            vector<landmarksStruct> initedLandmarks = landmarks::initLandmarks(12, adjCol);
             for (int i = 0; i <initedLandmarks.size(); ++i) {
-                adjacencyList::setLandmarkStructs(adjCol., initedLandmarks[i]);
+                adjacencyList::setLandmarkStructs(adjCol, initedLandmarks[i]);
             }
             auto t2 = high_resolution_clock::now();
             duration<double, milli> ms_double = t2 - t1;
