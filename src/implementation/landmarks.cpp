@@ -59,7 +59,7 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
 
     //vector<vector<double>> markDistanceVectors;
     for (int i = 0; i < amount+1; ++i) {
-        if(i!=0) cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
+        //if(i!=0) cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
         landmarksStruct landmarksStruct;
         spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, adjListCollection);
         spResultStruct distanceFromEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, reversedAdjListCollection);
