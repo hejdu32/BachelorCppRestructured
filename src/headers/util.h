@@ -23,7 +23,7 @@ public:
     static adjListCollection setUpDatastructure(string country){
         adjListCollection adjCol;
         string malta = "/home/a/IdeaProjects/BachelorProject/app/malta";
-        string denmark = "/home/a/IdeaProjects/BachelorProject/app/denmark";
+        string denmark = "C:/Users/a/IdeaProjects/BachelorProject/app/denmark";
 
         if(country== "malta"){
             cout << "###parsing " << country << endl;
@@ -118,7 +118,6 @@ public:
         spResultStruct dijkstraResult;
         spResultStruct astarResult;
         spResultStruct landmarksResult;
-
 
         cout << "Testing "<< amountOfTests << " points in" <<  country<< endl;
         for (int i = 0; i < size; i++) {

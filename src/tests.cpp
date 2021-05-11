@@ -9,7 +9,9 @@
 #include <cassert>
 //#include <chrono>
 
-
+#include <vector>
+#include <string>
+#include <iterator>
 
 using namespace std;
 
@@ -202,15 +204,41 @@ void landmarksEmptyListTest(){
     assert(!firstElem.distanceVec.empty());
     assert(firstElem.nodeID != 0);
 }
+void formatPrinting(){
+    vector<int> resVec = {-1,1,-1,2,3,4,-1,5,-1,-1,-1,6,7,8};
+    vector<string> nodesConsideredAsStrings;
+    for (int i = 0; i < resVec.size(); ++i) {
+        if (resVec[i] != -1){
+            nodesConsideredAsStrings.emplace_back(to_string(resVec[i]));
+        }
+    }
+    int nodesPerLine = 3;
+    int timesToLoop = (nodesConsideredAsStrings.size()/nodesPerLine);
+    for (int i = 0; i < timesToLoop+1; ++i) {
+        int indexStart = i*nodesPerLine;
+        int indexEnd = indexStart+nodesPerLine;
+        if (indexEnd> nodesConsideredAsStrings.size()){
+            indexEnd = nodesConsideredAsStrings.size();
+        }
+        string listToSend =  "nodesConsidered";
+
+        for (int j = indexStart; j < indexEnd; ++j) {
+            listToSend += " " +nodesConsideredAsStrings[j];
+        }
+        cout<<listToSend<< endl;
+    }
+    cout<< "nodesConsidered end" << endl;
+}
 
 int main(){
     cout << "Testing" << endl;
+    formatPrinting();
     //testAdjlistSimpleDijkstra();
     //testToyExampleDatastructure();
     //testDijkstraToyExample();
     //landmarksEmptyListTest();
     //runMaltaTests();
-    runDenmarkTests();
+    //runDenmarkTests();
 
     return 0;
 }

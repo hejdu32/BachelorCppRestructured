@@ -31,7 +31,9 @@ public:
             case 2:
                 return landmarks::ALTShortestPath(source,dest,adjListCollection);
             default:
-                cout << "case Unknown";
+                cout << "ERROR METHOD NOT FOUND" << endl;
+                spResultStruct emptystruct;
+                return emptystruct;
         }
     }
 

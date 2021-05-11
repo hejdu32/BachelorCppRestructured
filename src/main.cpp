@@ -1,25 +1,65 @@
 #include "headers/adjacencyList.h"
-//#include "headers/aStar.h"
 #include "headers/shortestPath.h"
-//#include "headers/util.h"
-//#include "headerLibs/json.hpp"
 #include <iostream>
-//#include <cassert>
 
 using namespace std;
 
-void runAlgorithm(const string& method, const string &nodeIdFrom, const string &nodeIdTo, adjListCollection &adjCol) {
-    int from = adjCol.longIdToIntID[stoll(nodeIdFrom)];
-    int to = adjCol.longIdToIntID[stoll(nodeIdTo)];
-    spResultStruct result = shortestPath::chooseAlgo(spmap[method], from, to, adjCol);
+void sendResultToJava(const string& method, const int &from, const int &to, spResultStruct &result, adjListCollection &adjCol){
     vector<long long> idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode,from,to);
+    //printing the shortest path
     string listOfNodes = "path " + method +" " + to_string(result.distanceToDest);
     for(long long nodeId: idvec) {
         listOfNodes += " " + to_string(nodeId);
     }
     cout << listOfNodes << endl;
     cout << flush;
+    vector<string> nodesConsideredAsStrings;
+    for (int i = 0; i < result.prevNode.size(); ++i) {
+        if (result.prevNode[i] != -1){
+            nodesConsideredAsStrings.emplace_back(to_string(adjacencyList::getLongID(adjCol,i)));
+        }
+    }
+
+    //printing distance, amount of nodes considered and the chosen landmark if one was used
+    cout << "info " + to_string(result.distanceToDest) << " "<< to_string(nodesConsideredAsStrings.size());
+    if (method == "landmarks"){
+        cout << " " + to_string(result.chosenLandmark);
+    }
+    cout << endl;
+
+    //printing a list of all nodes considered during the ssp problem
+    //cout << "size of nodescons: " << nodesConsideredAsStrings.size() << endl;
+    int nodesPerLine = 10000;
+    unsigned int timesToLoop = (nodesConsideredAsStrings.size()/nodesPerLine);
+    for (int i = 0; i < timesToLoop+1; ++i) {
+        int indexStart = i*nodesPerLine;
+        int indexEnd = indexStart+nodesPerLine;
+        if (indexEnd> nodesConsideredAsStrings.size()){
+            indexEnd = (int)nodesConsideredAsStrings.size();
+        }
+        string listToSend =  "nodesConsidered";
+
+        for (int j = indexStart; j < indexEnd; ++j) {
+            listToSend += " " +nodesConsideredAsStrings[j];
+        }
+        cout<<listToSend<< endl;
+        cout << flush;
+    }
+    cout<< "nodesConsidered end" << endl;
+    cout << flush;
 }
+
+void runAlgorithm(const string& method, const string &nodeIdFrom, const string &nodeIdTo, adjListCollection &adjCol) {
+    int from = adjCol.longIdToIntID[stoll(nodeIdFrom)];
+    int to = adjCol.longIdToIntID[stoll(nodeIdTo)];
+    spResultStruct result = shortestPath::chooseAlgo(spmap[method], from, to, adjCol);
+
+    sendResultToJava(method,from,to,result,adjCol);
+
+}
+
+
+
 
 
 void communicateWithJava() {
@@ -51,13 +91,11 @@ void communicateWithJava() {
                 cout << flush;
             }
             case makeAdjacencyList: {
-                shortestPath::createAdjacencyList("/home/a/IdeaProjects/BachelorProject/app/malta", "file", adjCol);
+                shortestPath::createAdjacencyList("C:/Users/a/IdeaProjects/BachelorProject/app/malta", "file", adjCol);
                 vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(8, adjCol);
                 for (int i = 0; i <initedLandmarks.size(); ++i) {
                     adjacencyList::setLandmarkStructs(adjCol, initedLandmarks[i]);
                 }
-                //nodesAndWaysWrapper wrapper = adjacencyList::deserializeFromJson("C:/proj/BachelorCppCmake/resources/malta.json");
-                //adjacencyList::createAdjListCollection(wrapper, adjCol);
                 cout << "Finished" << endl;
                 cout << flush;
                 break;
@@ -83,9 +121,6 @@ void communicateWithJava() {
         }
     }
     cout << "OutOfLoop error" << endl;
-    //BachelorCpp::createAdjList listMaker;
-    //adjListCollection adjCol;
-    //listMaker.createList("", "java", adjCol);
 }
 
 
