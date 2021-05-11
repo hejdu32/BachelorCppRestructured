@@ -12,12 +12,7 @@
 #include "landmarks.h"
 #include "fileReader.h"
 
-//enum shortestPathMethods{
-//    dijkstra = 0,
-//    astar = 1,
-//    alt = 2
-//};
-static std::map<std::string, int> spmap={{"dijkstra", 0},{"astar", 1},{"landmarks", 2}};
+static map<std::string, int> spmap={{"dijkstra", 0},{"astar", 1},{"landmarks", 2}};
 
 class shortestPath {
 public:
@@ -36,11 +31,11 @@ public:
                 return emptystruct;
         }
     }
-
+    //creates the adjacency list from either file or from java
     static int createAdjacencyList(string path, string method, adjListCollection &adjCol) {
         if (method == "file") {
             //fileReader::readAdjFile(std::move(path), adjCol);
-            fileReader::readAdjFile(std::move(path), adjCol);
+            fileReader::readAdjFile(move(path), adjCol);
         } else if (method == "java") {
             string line;
             bool reading = true;
@@ -73,7 +68,7 @@ public:
         }
         return 0;
     }
-
+    //pretty printing of a vector
     static void printVec(vector<long long>const &input){
         cout << "[";
         for (long long i : input) {

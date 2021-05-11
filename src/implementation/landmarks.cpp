@@ -109,7 +109,7 @@ spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollectio
     //cout << "chosen landmark: "<< bestForward.nodeID << endl;
     const double INF = std::numeric_limits<double>::infinity();
     int sizeOfGraph = adjCol.idSoFar;
-    //initilaize distance from source to everything to infinity
+    //initialize distance from source to everything to infinity
     //distance from source to source to 0
     vector<double> distance(sizeOfGraph, INF);
     distance[source] = 0;

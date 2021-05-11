@@ -58,10 +58,6 @@ void runAlgorithm(const string& method, const string &nodeIdFrom, const string &
 
 }
 
-
-
-
-
 void communicateWithJava() {
     enum commands{
         ERROR,

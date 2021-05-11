@@ -40,7 +40,7 @@ spResultStruct aStar::aStarShortestPath(int source, int dest, adjListCollection 
     const double INF = std::numeric_limits<double>::infinity();
     int sizeOfGraph = adjCol.idSoFar;
     int meanSpeed =130;
-    //initilaize distance from source to everything to infinity
+    //initialize distance from source to everything to infinity
     //distance from source to source to 0
     vector<double> distance(sizeOfGraph,INF);
     distance[source] = 0;

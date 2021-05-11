@@ -44,18 +44,11 @@ void printRoute(vector<int> const &prevPath, int source, int dest){
     cout << dest << " ";
 }
 
-int nodesConsidered2(vector<bool> nodesSeen){
-    int nodes = 0;
-    for (auto b:nodesSeen) {
-        if(b){nodes++;}
-    }
-    return nodes;
-}
 
 spResultStruct dijkstra::djikstraShortestPath(int source, int dest, bool earlyStopping, adjListCollection &adjCol) {
     const double INF = std::numeric_limits<double>::infinity();
     int sizeOfGraph = adjCol.idSoFar;
-    //initilaize distance from source to everything to infinity
+    //initialize distance from source to everything to infinity
     //distance from source to source to 0
     vector<double> distance(sizeOfGraph,INF);
     distance[source] = 0;

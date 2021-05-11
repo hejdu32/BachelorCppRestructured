@@ -10,7 +10,9 @@
 using namespace std;
 class landmarks {
 public:
+    //choose a fixed list of landmarks
     static vector<landmarksStruct> initLandmarks(vector<long long> nodeIDs, adjListCollection &adjListCollection);
+    //choose landmarks based on the furthest distance from a random node and then all other landmarks.
     static vector<landmarksStruct> initLandmarks(int amount, adjListCollection &adjListCollection);
     static spResultStruct ALTShortestPath(int source, int dest, adjListCollection &adjCol);
 
