@@ -35,7 +35,7 @@ public:
         string line;
         ifstream data(pathToData);
         if(!data.is_open()){
-            cout << "Error opening file \n";
+            cout << "Error opening file" << endl;
         }
         getline(data, line);
         int nodes= stoi(line);
@@ -51,7 +51,6 @@ public:
             adjacencyList::addyCoord(adjCol, source, stod(line));
         }
         for (int i = 0; i < ways; ++i) {
-
             getline(data, line);
             istringstream buf(line);
             istream_iterator<string> beg(buf), end;

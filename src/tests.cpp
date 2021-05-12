@@ -203,6 +203,10 @@ void landmarksEmptyListTest(){
     assert(firstElem.nodeID != 0);
 }
 void formatPrinting(){
+
+    //cout<< "27/5 = " << 27/5 << endl;
+    //cout << "27.8632/5.17531 = " << 27.8632/6.17531<< endl;
+    //cout << "27.8632*(5.17531)^-1 = " << 27.8632* pow(6.17531,-1) << endl;
     vector<int> resVec = {-1,1,-1,2,3,4,-1,5,-1,-1,-1,6,7,8};
     vector<string> nodesConsideredAsStrings;
     for (int i = 0; i < resVec.size(); ++i) {

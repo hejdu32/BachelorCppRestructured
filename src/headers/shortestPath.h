@@ -32,10 +32,10 @@ public:
         }
     }
     //creates the adjacency list from either file or from java
-    static int createAdjacencyList(string path, string method, adjListCollection &adjCol) {
+    static int createAdjacencyList(string path, const string& method, adjListCollection &adjCol) {
         if (method == "file") {
             //fileReader::readAdjFile(std::move(path), adjCol);
-            fileReader::readAdjFile(move(path), adjCol);
+            fileReader::readAdjFile(path, adjCol);
         } else if (method == "java") {
             string line;
             bool reading = true;

@@ -31,20 +31,22 @@ void sendResultToJava(const string& method, const int &from, const int &to, spRe
     //printing a list of all nodes considered during the ssp problem
     //cout << "size of nodescons: " << nodesConsideredAsStrings.size() << endl;
     int nodesPerLine = 10000;
-    unsigned int timesToLoop = (nodesConsideredAsStrings.size()/nodesPerLine);
-    for (int i = 0; i < timesToLoop+1; ++i) {
-        int indexStart = i*nodesPerLine;
-        int indexEnd = indexStart+nodesPerLine;
-        if (indexEnd> nodesConsideredAsStrings.size()){
-            indexEnd = (int)nodesConsideredAsStrings.size();
-        }
-        string listToSend =  "nodesConsidered";
+    if(!nodesConsideredAsStrings.empty()){
+        unsigned int timesToLoop = (nodesConsideredAsStrings.size()/nodesPerLine);
+        for (int i = 0; i < timesToLoop+1; ++i) {
+            int indexStart = i*nodesPerLine;
+            int indexEnd = indexStart+nodesPerLine;
+            if (indexEnd> nodesConsideredAsStrings.size()){
+                indexEnd = (int)nodesConsideredAsStrings.size();
+            }
+            string listToSend =  "nodesConsidered";
 
-        for (int j = indexStart; j < indexEnd; ++j) {
-            listToSend += " " +nodesConsideredAsStrings[j];
+            for (int j = indexStart; j < indexEnd; ++j) {
+                listToSend += " " +nodesConsideredAsStrings[j];
+            }
+            cout<<listToSend<< endl;
+            cout << flush;
         }
-        cout<<listToSend<< endl;
-        cout << flush;
     }
     cout<< "nodesConsidered end" << endl;
     cout << flush;
