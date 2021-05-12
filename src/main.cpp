@@ -90,7 +90,7 @@ void communicateWithJava() {
                 cout << flush;
             }
             case makeAdjacencyList: {
-                shortestPath::createAdjacencyList("C:/Users/a/IdeaProjects/BachelorProject/app/malta", "file", adjCol);
+                shortestPath::createAdjacencyList(lineAsTokens[1], "file", adjCol);
                 vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(8, adjCol);
                 for (int i = 0; i <initedLandmarks.size(); ++i) {
                     adjacencyList::setLandmarkStructs(adjCol, initedLandmarks[i]);
