@@ -11,7 +11,7 @@ void sendResultToJava(const string& method, const int &from, const int &to, spRe
     for(long long nodeId: idvec) {
         listOfNodes += " " + to_string(nodeId);
     }
-    cout << listOfNodes << "\n";
+    cout << listOfNodes << endl;
     cout << flush;
     vector<string> nodesConsideredAsStrings;
     for (int i = 0; i < result.prevNode.size(); ++i) {
@@ -25,7 +25,7 @@ void sendResultToJava(const string& method, const int &from, const int &to, spRe
     if (method == "landmarks"){
         cout << " " + to_string(result.chosenLandmark);
     }
-    cout << "\n";
+    cout << endl;
     cout << flush;
 
     //printing a list of all nodes considered during the ssp problem
@@ -43,10 +43,10 @@ void sendResultToJava(const string& method, const int &from, const int &to, spRe
         for (int j = indexStart; j < indexEnd; ++j) {
             listToSend += " " +nodesConsideredAsStrings[j];
         }
-        cout<<listToSend<< "\n";
+        cout<<listToSend<< endl;
         cout << flush;
     }
-    cout<< "nodesConsidered end \n";
+    cout<< "nodesConsidered end" << endl;
     cout << flush;
 }
 
