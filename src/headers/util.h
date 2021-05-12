@@ -20,9 +20,9 @@ using std::chrono::seconds;
 
 class util{
 public:
-    static adjListCollection setUpDatastructure(string country){
+    static adjListCollection setUpDatastructure(const string& country){
         adjListCollection adjCol;
-        string malta = "/home/a/IdeaProjects/BachelorProject/app/malta";
+        string malta = "C:/Users/a/IdeaProjects/BachelorProject/app/malta";
         string denmark = "C:/Users/a/IdeaProjects/BachelorProject/app/denmark";
 
         if(country== "malta"){

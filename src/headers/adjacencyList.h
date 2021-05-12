@@ -18,8 +18,8 @@
 using namespace std;
     struct spResultStruct {
         double distanceToDest;
-        vector<int> prevNode;
         vector<double> distanceVec;
+        vector<int> prevNode;
         long long chosenLandmark;
     };
     struct landmarksStruct {
@@ -147,44 +147,46 @@ using namespace std;
         static long long getLongID(adjListCollection &collection, int value) {
             return collection.intIdToLongID.find(value)->second;
         }
-        //static nodesAndWaysWrapper deserializeFromJson(string filePath){
-        //    using namespace nlohmann;
-        //    json j;
-        //    ifstream jsonFile;
-        //    //File path with appropriate json file created by java in graphBuilder writeToFileAsJsonMethod
-        //    jsonFile.open(filePath);
-        //    jsonFile >> j;
-        //    auto wrapperClass = j.get<nodesAndWaysWrapper>();
-        //    return wrapperClass;
-        //}
-        //static void createAdjListCollection(nodesAndWaysWrapper wrapper, adjListCollection &adjListCollection){
-        //    auto ways = wrapper.getWays();
-        //    for(map<long, customWay>::iterator it = ways.begin(); it != ways.end(); it++){
-        //        long previousId = 0;
-        //        vector<long>::const_iterator itr;
-        //        vector<long> nodeIds = it->second.getNodeIdList();
-        //        auto nodes = wrapper.getNodes();
-        //        for(itr = nodeIds.cbegin(); itr < nodeIds.cend(); itr++){
-        //            if(*itr == nodeIds[0]){
-        //                previousId = *itr;
-        //            }
-        //            else{
-        //                customNode previousNode = nodes[previousId];
-        //                double prevX = previousNode.getLatitudeAsXCoord();
-        //                double prevY = previousNode.getLongtitudeAsYCoord();
-//
-        //                customNode currentNode = nodes[*itr];
-        //                double currX = currentNode.getLatitudeAsXCoord();
-        //                double currY = currentNode.getLongtitudeAsYCoord();
-//
-        //                double dist = euclidDistance(prevX, prevY, currX, currY);
-        //                addEdge(adjListCollection, previousId, *itr, dist);
-        //                addEdge(adjListCollection, *itr, previousId, dist);
-//
-        //                previousId = *itr;
-        //            }
-        //        }
-        //    }
-        //}
     };
 #endif //ADJACENCYLIST
+
+
+//static nodesAndWaysWrapper deserializeFromJson(string filePath){
+//    using namespace nlohmann;
+//    json j;
+//    ifstream jsonFile;
+//    //File path with appropriate json file created by java in graphBuilder writeToFileAsJsonMethod
+//    jsonFile.open(filePath);
+//    jsonFile >> j;
+//    auto wrapperClass = j.get<nodesAndWaysWrapper>();
+//    return wrapperClass;
+//}
+//static void createAdjListCollection(nodesAndWaysWrapper wrapper, adjListCollection &adjListCollection){
+//    auto ways = wrapper.getWays();
+//    for(map<long, customWay>::iterator it = ways.begin(); it != ways.end(); it++){
+//        long previousId = 0;
+//        vector<long>::const_iterator itr;
+//        vector<long> nodeIds = it->second.getNodeIdList();
+//        auto nodes = wrapper.getNodes();
+//        for(itr = nodeIds.cbegin(); itr < nodeIds.cend(); itr++){
+//            if(*itr == nodeIds[0]){
+//                previousId = *itr;
+//            }
+//            else{
+//                customNode previousNode = nodes[previousId];
+//                double prevX = previousNode.getLatitudeAsXCoord();
+//                double prevY = previousNode.getLongtitudeAsYCoord();
+//
+//                customNode currentNode = nodes[*itr];
+//                double currX = currentNode.getLatitudeAsXCoord();
+//                double currY = currentNode.getLongtitudeAsYCoord();
+//
+//                double dist = euclidDistance(prevX, prevY, currX, currY);
+//                addEdge(adjListCollection, previousId, *itr, dist);
+//                addEdge(adjListCollection, *itr, previousId, dist);
+//
+//                previousId = *itr;
+//            }
+//        }
+//    }
+//}

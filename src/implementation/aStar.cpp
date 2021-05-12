@@ -39,7 +39,7 @@ double calcHeuristicDistance(double fdestX, double fdestY, double nodeX, double 
 spResultStruct aStar::aStarShortestPath(int source, int dest, adjListCollection &adjCol) {
     const double INF = std::numeric_limits<double>::infinity();
     int sizeOfGraph = adjCol.idSoFar;
-    int meanSpeed =130;
+    int meanSpeed=130;
     //initialize distance from source to everything to infinity
     //distance from source to source to 0
     vector<double> distance(sizeOfGraph,INF);
@@ -97,11 +97,9 @@ spResultStruct aStar::aStarShortestPath(int source, int dest, adjListCollection 
         nodeSeen[headId] = true;
     }
     //cout << "astar nodes considered: " << nodesConsidered(nodeSeen) << endl;
-    spResultStruct resultStruct;
-    resultStruct.distanceToDest = distance[dest];
-    resultStruct.distanceVec = distance;
-    resultStruct.prevNode = prevNode;
-    return resultStruct;
+    spResultStruct result={distance[dest], distance, prevNode};
+
+    return result;
 }
 
 

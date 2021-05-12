@@ -230,13 +230,13 @@ void formatPrinting(){
 
 int main(){
     cout << "Testing" << endl;
-    formatPrinting();
+    //formatPrinting();
     //testAdjlistSimpleDijkstra();
     //testToyExampleDatastructure();
     //testDijkstraToyExample();
     //landmarksEmptyListTest();
-    //runMaltaTests();
-    //runDenmarkTests();
+    runMaltaTests();
+    runDenmarkTests();
 
     return 0;
 }

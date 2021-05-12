@@ -40,8 +40,8 @@ adjListCollection landmarks::reverseAdjListCollection(adjListCollection &adjCol)
         for(int j = 0; j < currentEdges.size(); j++) {
             pair<int, double> temp = currentEdges[j];
             int newSource = temp.first;
-            int newDist = temp.second;
-            reversedAdjCol.adjlst[newSource].push_back(make_pair(i, newDist));
+            double newDist = temp.second;
+            reversedAdjCol.adjlst[newSource].emplace_back(make_pair(i, newDist));
         }
     }
     reversedAdjCol.idSoFar = adjCol.idSoFar;
@@ -155,12 +155,9 @@ spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollectio
         nodeSeen[headId] = true;
     }
     //cout << "astar nodes considered: " << nodesConsidered(nodeSeen) << endl;
-    spResultStruct resultStruct;
-    resultStruct.distanceToDest = distance[dest];
-    resultStruct.distanceVec = distance;
-    resultStruct.prevNode = prevNode;
-    resultStruct.chosenLandmark = bestForward.nodeID;
-    return resultStruct;
+    spResultStruct result={distance[dest], distance, prevNode, bestForward.nodeID};
+
+    return result;
 }
 
 landmarksStruct landmarks::choseLandmarks(int source, int dest, adjListCollection &collection) {
@@ -182,7 +179,6 @@ double landmarks::calcHeuristicDistance(int source, int target, landmarksStruct 
     double distFromSourceToLandmark = currLandmark.reversedDistanceVec[source];
     double distFromTargetToLandmark = currLandmark.reversedDistanceVec[target];
     double lowerBoundToLandmark =  distFromSourceToLandmark - distFromTargetToLandmark;
-
 
     double distFromLandmarkToSource = currLandmark.distanceVec[source];
     double distFromLandmarkToTarget = currLandmark.distanceVec[target];

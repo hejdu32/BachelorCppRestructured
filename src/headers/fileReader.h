@@ -29,28 +29,30 @@ private:
     }
 
 public:
-    static int readAdjFile(string path, adjListCollection &adjCol) {
+    static int readAdjFile(const string& pathToData, adjListCollection &adjCol) {
         ios_base::sync_with_stdio(false);
         cin.tie(NULL);
         string line;
-        ifstream myfile(path);
-
-        getline(myfile,line);
+        ifstream data(pathToData);
+        if(!data.is_open()){
+            cout << "Error opening file \n";
+        }
+        getline(data, line);
         int nodes= stoi(line);
-        getline(myfile,line);
+        getline(data, line);
         int ways = stoi(line);
         for (int i = 0; i < nodes; ++i) {
-            getline(myfile, line);
+            getline(data, line);
             long long sourceID = stoll(line);
             int source = adjacencyList::insertInMaps(adjCol, sourceID);
-            getline(myfile, line);
+            getline(data, line);
             adjacencyList::addxCoord(adjCol, source, stod(line));
-            getline(myfile, line);
+            getline(data, line);
             adjacencyList::addyCoord(adjCol, source, stod(line));
         }
         for (int i = 0; i < ways; ++i) {
 
-            getline(myfile,line);
+            getline(data, line);
             istringstream buf(line);
             istream_iterator<string> beg(buf), end;
             vector<string> lineAsTokens(beg, end);
@@ -72,7 +74,7 @@ public:
                 }
             }
         }
-        myfile.close();
+        data.close();
         return 0;
     }
 

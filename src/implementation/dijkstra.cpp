@@ -92,10 +92,7 @@ spResultStruct dijkstra::djikstraShortestPath(int source, int dest, bool earlySt
         //mark head as it has been seen and cant be considered again
         nodeSeen[headId] = true;
     }
-    spResultStruct resultStruct;
-    resultStruct.distanceToDest = distance[dest];
-    resultStruct.distanceVec = distance;
-    resultStruct.prevNode = prevNode;
+    spResultStruct result={distance[dest], distance, prevNode};
 
-    return resultStruct;
+    return result;
 }
