@@ -5,12 +5,13 @@
 #ifndef SHORTESTPATH
 #define SHORTESTPATH
 
-#include <sstream>
-#include <algorithm>
+#include "fileReader.h"
 #include "dijkstra.h"
 #include "aStar.h"
 #include "landmarks.h"
-#include "fileReader.h"
+#include <sstream>
+#include <algorithm>
+
 
 static map<std::string, int> spmap={{"dijkstra", 0},{"astar", 1},{"landmarks", 2}};
 

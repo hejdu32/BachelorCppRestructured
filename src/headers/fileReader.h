@@ -5,7 +5,6 @@
 #ifndef FILEREADER
 #define FILEREADER
 
-#include "fileReader.h"
 #include "adjacencyList.h"
 #include <string>
 #include <iostream>

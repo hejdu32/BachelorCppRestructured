@@ -5,7 +5,6 @@
 #ifndef ADJACENCYLIST
 #define ADJACENCYLIST
 
-#include "../implementation/nodesAndWaysWrapper.cpp"
 #include <vector>
 #include <map>
 #include <utility>
@@ -117,20 +116,20 @@ using namespace std;
         }
 
         //astar heuristic algorithms
-        static double euclidDistance(double srcX, double srcY, double destX, double destY){
-            return double(sqrt(pow(srcX-destX,2.0)+pow(srcY-destY,2.0)));
+        static double euclidDistance(double srcX, double srcY, double destX, double destY,int speed){
+            return distanceCalc(srcX,srcY,destX,destY,speed);
         }
-        static double manhatDistance(double srcX, double srcY, double destX, double destY){
-            return double(abs(srcX-destX)+abs(srcY-destY));
+        static double manhatDistance(double srcX, double srcY, double destX, double destY, int speed){
+            return double(abs(srcX-destX)+abs(srcY-destY)* pow(speed,-1));
         }
-        static double chebyDistance(double srcX, double srcY, double destX, double destY){
-            return double(max(abs(srcX-destX),abs(srcY-destY)));
+
+        static double chebyDistance(double srcX, double srcY, double destX, double destY, int speed){
+            return double(max(abs(srcX-destX),abs(srcY-destY))*pow(speed,-1));
         }
         //astar heurisctic algorithms
 
-        static double distanceCalc(double srcX, double srcY, double destX, double destY, int maxSpeed){
-            double dist = sqrt(pow(srcX - destX,2.0)+pow(srcY - destY,2.0));
-            return double(dist/maxSpeed);
+        static double distanceCalc(double srcX, double srcY, double destX, double destY, int speed){
+            return sqrt(pow(srcX - destX,2.0)+pow(srcY - destY,2.0))*pow(speed,-1);
         }
 
         static double getxCoord(adjListCollection &collection, int value){return collection.xCoord[value];}

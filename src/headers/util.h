@@ -109,19 +109,24 @@ public:
         for (int i = 0; i < amountOfTests; ++i) {
             ids[i] = rand() % highestNbr;
         }
-
         int astarFails = 0;
         int landmarksFails = 0;
 
-        spResultStruct dijkstraResult;
-        spResultStruct astarResult;
-        spResultStruct landmarksResult;
+        double totalDijkstraTime=0;
+        double worstDijkstraTime=0;
+
+        double totalAstarTime=0;
+        double worstAstarTime=0;
+
+        double totalALTTime=0;
+        double worstALTTime=0;
 
         cout << "Testing "<< amountOfTests << " points in " <<  country<< endl;
+        //choosing from and to as i and i+1, in case of i=vector size to is i[0]
         for (int i = 0; i < size; i++) {
             int from = ids[i];
             int to;
-            if(i == size){
+            if(i == size-1){
                 to = ids[0];
             }else{
                 to = ids[i+1];
@@ -129,9 +134,36 @@ public:
             if(i % 100 == 0 && i != 0){
                 cout << i << " comparrisons have been tested" << endl;
             }
-            dijkstraResult = testDistance("dijkstra", from, to, countryCol);
-            astarResult = testDistance("astar", from, to, countryCol);
-            landmarksResult = testDistance("landmarks", from, to, countryCol);
+
+            //DIJKSTRA
+            auto timerStart = high_resolution_clock::now();
+            spResultStruct dijkstraResult = testDistance("dijkstra", from, to, countryCol);
+
+            auto timerEnd = high_resolution_clock::now();
+            duration<double, milli> timeDiff = timerEnd -timerStart;
+            double timeInSecs=timeDiff.count()/1000;
+            totalDijkstraTime+=timeInSecs;
+            if (timeInSecs > worstDijkstraTime) worstDijkstraTime = timeInSecs;
+
+            //ASTAR
+            timerStart = high_resolution_clock::now();
+            spResultStruct astarResult = testDistance("astar", from, to, countryCol);
+
+            timerEnd = high_resolution_clock::now();
+            timeDiff = timerEnd-timerStart;
+            timeInSecs=timeDiff.count()/1000;
+            totalAstarTime+=timeInSecs;
+            if (timeInSecs > worstAstarTime) worstAstarTime = timeInSecs;
+
+            //LANDMARKS
+            timerStart = high_resolution_clock::now();
+            spResultStruct landmarksResult = testDistance("landmarks", from, to, countryCol);
+
+            timerEnd = high_resolution_clock::now();
+            timeDiff = timerEnd-timerStart;
+            timeInSecs=timeDiff.count()/1000;
+            totalALTTime+=timeInSecs;
+            if (timeInSecs > worstALTTime) worstALTTime = timeInSecs;
 
             if (dijkstraResult.distanceToDest != astarResult.distanceToDest){
                 astarFails++;
@@ -144,6 +176,9 @@ public:
         }
         cout << "Finished "<< amountOfTests<< " on " << country << endl;
         cout << "astar fails: " << astarFails << " landmark fails: " << landmarksFails << endl;
+        cout << "avg dijk time: " << totalDijkstraTime/amountOfTests << "secs worst case: " << worstDijkstraTime << "secs"<< endl;
+        cout << "avg a*   time: " << totalAstarTime/amountOfTests << "secs worst case: " << worstAstarTime << "secs"<< endl;
+        cout << "avg ALT  time: " << totalALTTime/amountOfTests << "secs worst case: " << worstALTTime << "secs"<< endl;
     }
 
 };

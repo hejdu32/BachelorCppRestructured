@@ -5,10 +5,6 @@
 #ifndef DIJKSTRA
 #define DIJKSTRA
 #include "adjacencyList.h"
-#include<iostream>
-#include<vector>
-#include<set>
-#include<tuple>
 
 
 

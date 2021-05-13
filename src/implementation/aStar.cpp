@@ -2,11 +2,9 @@
 // Created by simon on 12-04-2021.
 //
 
+//#include "../headers/adjacencyList.h"
 #include "../headers/aStar.h"
-#include "../headers/adjacencyList.h"
-#include <vector>
 #include <queue>
-#include <tuple>
 
 using namespace std;
 
@@ -31,15 +29,15 @@ int nodesConsidered(vector<bool> &nodesSeen){
 
 
 
-double calcHeuristicDistance(double fdestX, double fdestY, double nodeX, double nodeY, int meanSpeed){
-    return adjacencyList::distanceCalc(fdestX, fdestY, nodeX, nodeY,meanSpeed);
+double calcHeuristicDistance(double fdestX, double fdestY, double nodeX, double nodeY, int speed){
+    return adjacencyList::euclidDistance(fdestX, fdestY, nodeX, nodeY,speed);
 }
 
 
 spResultStruct aStar::aStarShortestPath(int source, int dest, adjListCollection &adjCol) {
     const double INF = std::numeric_limits<double>::infinity();
     int sizeOfGraph = adjCol.idSoFar;
-    int meanSpeed=80;
+    int speed=130;
     //initialize distance from source to everything to infinity
     //distance from source to source to 0
     vector<double> distance(sizeOfGraph,INF);
@@ -57,7 +55,7 @@ spResultStruct aStar::aStarShortestPath(int source, int dest, adjListCollection 
     double fdestY = adjacencyList::getyCoord(adjCol, dest);
 
 
-    minHeap.push(make_pair(source,0.0+ calcHeuristicDistance(fdestX, fdestY, adjacencyList::getxCoord(adjCol, source), adjacencyList::getyCoord(adjCol, source),meanSpeed)));
+    minHeap.push(make_pair(source,0.0+ calcHeuristicDistance(fdestX, fdestY, adjacencyList::getxCoord(adjCol, source), adjacencyList::getyCoord(adjCol, source),speed)));
     while (!minHeap.empty()){
         //pop the top element
         pair<int,double> head = minHeap.top();
@@ -77,7 +75,7 @@ spResultStruct aStar::aStarShortestPath(int source, int dest, adjListCollection 
             double weight = i.second;
             double nodeX = adjacencyList::getxCoord(adjCol, node);  double nodeY = adjacencyList::getyCoord(adjCol, node);
 
-            double heuristIntermediate = calcHeuristicDistance(fdestX, fdestY, nodeX, nodeY, meanSpeed);
+            double heuristIntermediate = calcHeuristicDistance(fdestX, fdestY, nodeX, nodeY, speed);
             //relaxation step, in astar we add the heuristic weight in to consideration
             double newPotentialDistance = distance[headId]+weight;
             if(!nodeSeen[node] && newPotentialDistance < distance[node]){

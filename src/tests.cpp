@@ -4,10 +4,8 @@
 #include "headers/adjacencyList.h"
 #include "headers/shortestPath.h"
 #include "headers/util.h"
-//#include <cstdlib>
 #include <iostream>
 #include <cassert>
-//#include <chrono>
 #include <vector>
 #include <string>
 
@@ -193,7 +191,6 @@ void runDenmarkTests(){
     util::testDistancePrints("dijkstra", skagen, northernZealand, denmark);
     util::testDistancePrints("astar", skagen, northernZealand, denmark);
     util::testDistancePrints("landmarks", skagen, northernZealand, denmark);
-
 }
 
 void landmarksEmptyListTest(){
@@ -242,7 +239,7 @@ int main(){
     //testDijkstraToyExample();
     //landmarksEmptyListTest();
     //runMaltaTests();
-    //runDenmarkTests();
+    runDenmarkTests();
 
     return 0;
 }
