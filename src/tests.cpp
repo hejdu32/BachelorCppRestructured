@@ -144,6 +144,9 @@ void runMaltaTests(){
     util::testDistancePrints("dijkstra",3593516725, 5037683804,malta);
     util::testDistancePrints("astar",3593516725, 5037683804,malta);
     util::testDistancePrints("landmarks",3593516725, 5037683804,malta);
+    //test that broke alt
+    util::testDistancePrints("dijkstra",3094405033, 7401666051,malta);
+    util::testDistancePrints("landmarks",3094405033, 7401666051,malta);
 }
 void runDenmarkTests(){
     adjListCollection denmark = util::setUpDatastructure("denmark");
@@ -203,7 +206,6 @@ void landmarksEmptyListTest(){
     assert(firstElem.nodeID != 0);
 }
 void formatPrinting(){
-
     //cout<< "27/5 = " << 27/5 << endl;
     //cout << "27.8632/5.17531 = " << 27.8632/6.17531<< endl;
     //cout << "27.8632*(5.17531)^-1 = " << 27.8632* pow(6.17531,-1) << endl;
@@ -239,8 +241,8 @@ int main(){
     //testToyExampleDatastructure();
     //testDijkstraToyExample();
     //landmarksEmptyListTest();
-    runMaltaTests();
-    runDenmarkTests();
+    //runMaltaTests();
+    //runDenmarkTests();
 
     return 0;
 }

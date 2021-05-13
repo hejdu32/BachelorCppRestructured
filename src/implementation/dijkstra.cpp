@@ -81,6 +81,7 @@ spResultStruct dijkstra::djikstraShortestPath(int source, int dest, bool earlySt
             double weight = i.second;
             double newDistance = distance[headId]+weight;
             double oldDistnace = distance[node];
+
             //relaxation step
             if(!nodeSeen[node] && newDistance < oldDistnace){
                 //update the distance to the node and add it to the queue
@@ -92,7 +93,7 @@ spResultStruct dijkstra::djikstraShortestPath(int source, int dest, bool earlySt
         //mark head as it has been seen and cant be considered again
         nodeSeen[headId] = true;
     }
-    spResultStruct result={distance[dest], distance, prevNode};
+   spResultStruct result={distance[dest], distance, prevNode};
 
     return result;
 }

@@ -130,11 +130,14 @@ spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollectio
         minHeap.pop();
         int headId = head.first;
         //Have we reached destination check
+
         if (headId==dest){
             //we have arrived at destination and we are done
             //cout << "we have hit destination \n";
             break;
         }
+        //mark head as it has been seen and cant be considered again
+        nodeSeen[headId] = true;
         //add new nodes to queue
         auto connectedNodes = adjCol.adjlst[headId];
         for(auto const &i: connectedNodes){
@@ -151,8 +154,7 @@ spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollectio
                 minHeap.push(make_pair(node, distance[node] + heuristIntermediate));//
             }
         }
-        //mark head as it has been seen and cant be considered again
-        nodeSeen[headId] = true;
+
     }
     //cout << "astar nodes considered: " << nodesConsidered(nodeSeen) << endl;
     spResultStruct result={distance[dest], distance, prevNode, bestForward.nodeID};
@@ -184,6 +186,18 @@ double landmarks::calcHeuristicDistance(int source, int target, landmarksStruct 
     double distFromLandmarkToTarget = currLandmark.distanceVec[target];
     double lowerBoundFromLandmark = distFromLandmarkToTarget - distFromLandmarkToSource;
 
+    bool isLowerBFromInfinite =  !isfinite(lowerBoundFromLandmark);
+    bool isLowerBToInfinite = !isfinite(lowerBoundToLandmark);
+    if (isLowerBFromInfinite){
+        if (isLowerBToInfinite){
+            //this should only happen if the we have unconnected graphs
+            //cout << "both lower bounds are infinity something went wrong" << endl;
+        }
+        return lowerBoundToLandmark;
+    }
+    if (isLowerBToInfinite){
+        return lowerBoundFromLandmark;
+    }
     double largestLowerbound = max(lowerBoundToLandmark, lowerBoundFromLandmark);
     return largestLowerbound;
 }

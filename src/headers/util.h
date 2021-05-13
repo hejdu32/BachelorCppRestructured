@@ -22,8 +22,8 @@ class util{
 public:
     static adjListCollection setUpDatastructure(const string& country){
         adjListCollection adjCol;
-        string malta = "C:/Users/a/IdeaProjects/BachelorProject/app/malta";
-        string denmark = "C:/Users/a/IdeaProjects/BachelorProject/app/denmark";
+        string malta = "C:/Users/a/IdeaProjects/BachelorProject/malta";
+        string denmark = "C:/Users/a/IdeaProjects/BachelorProject/denmark";
 
         if(country== "malta"){
             cout << "###parsing " << country << endl;
@@ -98,14 +98,12 @@ public:
         if(method == "landmarks") {
              temp = wrongStruct.chosenLandmark;
         }
-        cout << "Disagreement with " << method << " from: " << source << " to: " << dest << " landmark: " << temp << endl;
-        cout << "dijkstra distance: " << dijkstraStruct.distanceToDest << " " << method << " distance: "<< wrongStruct.distanceToDest << endl;
-
+        cout << "Disagreement " << method << " from: " << source << " to: " << dest << " landmark: " << temp << " dijkstra dist: " << dijkstraStruct.distanceToDest << " " << method << " dist: "<< wrongStruct.distanceToDest << endl;
     }
 
     static void randomPointsComparrison(const string& country, int amountOfTests, int seed){
-        adjListCollection denmark = setUpDatastructure(country);
-        int highestNbr = denmark.idSoFar;
+        adjListCollection countryCol = setUpDatastructure(country);
+        int highestNbr = countryCol.idSoFar;
         //srand(seed);
         vector<int> ids(amountOfTests,0); int size = ids.size();
         for (int i = 0; i < amountOfTests; ++i) {
@@ -119,7 +117,7 @@ public:
         spResultStruct astarResult;
         spResultStruct landmarksResult;
 
-        cout << "Testing "<< amountOfTests << " points in" <<  country<< endl;
+        cout << "Testing "<< amountOfTests << " points in " <<  country<< endl;
         for (int i = 0; i < size; i++) {
             int from = ids[i];
             int to;
@@ -131,20 +129,20 @@ public:
             if(i % 100 == 0 && i != 0){
                 cout << i << " comparrisons have been tested" << endl;
             }
-            dijkstraResult = testDistance("dijkstra", from, to,denmark);
-            astarResult = testDistance("astar", from, to,denmark);
-            landmarksResult = testDistance("landmarks", from, to,denmark);
+            dijkstraResult = testDistance("dijkstra", from, to, countryCol);
+            astarResult = testDistance("astar", from, to, countryCol);
+            landmarksResult = testDistance("landmarks", from, to, countryCol);
 
             if (dijkstraResult.distanceToDest != astarResult.distanceToDest){
                 astarFails++;
-                printDisagreement("astar",from,to,dijkstraResult, astarResult,denmark);
+                printDisagreement("astar", from, to, dijkstraResult, astarResult, countryCol);
             }
             if (dijkstraResult.distanceToDest != landmarksResult.distanceToDest){
                 landmarksFails++;
-                printDisagreement("landmarks",from,to,dijkstraResult, landmarksResult,denmark);
+                printDisagreement("landmarks", from, to, dijkstraResult, landmarksResult, countryCol);
             }
         }
-        cout << "Finished "<< amountOfTests<< " on denmark" << endl;
+        cout << "Finished "<< amountOfTests<< " on " << country << endl;
         cout << "astar fails: " << astarFails << " landmark fails: " << landmarksFails << endl;
     }
 

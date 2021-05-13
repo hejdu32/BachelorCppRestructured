@@ -91,7 +91,7 @@ void communicateWithJava() {
             }
             case makeAdjacencyList: {
                 shortestPath::createAdjacencyList(lineAsTokens[1], "file", adjCol);
-                vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(8, adjCol);
+                vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(12, adjCol);
                 for (int i = 0; i <initedLandmarks.size(); ++i) {
                     adjacencyList::setLandmarkStructs(adjCol, initedLandmarks[i]);
                 }
