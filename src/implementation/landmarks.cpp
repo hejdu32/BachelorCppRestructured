@@ -55,11 +55,11 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
 
     int randomNode = rand() % highestNbr;
     const double INF = std::numeric_limits<double>::infinity();
-    //cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
-
+    cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode]<< "#map=8/56.216/12.816" << endl;
+    cout<< "actual landmarks: " << endl;
     //vector<vector<double>> markDistanceVectors;
     for (int i = 0; i < amount+1; ++i) {
-        //if(i!=0) cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
+        //if(i!=0){cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << "#map=8/56.216/12.816"<< endl;}
         landmarksStruct landmarksStruct;
         spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, adjListCollection);
         spResultStruct distanceFromEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, reversedAdjListCollection);
@@ -68,7 +68,9 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
         landmarksStruct.nodeID = adjListCollection.intIdToLongID[randomNode];    //is suppose to be id not intID
         //markDistanceVectors.emplace_back((landmarksStruct.distanceVec));
 
-        if(i!=0) resultVector.emplace_back(landmarksStruct);
+        cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << "#map=8/56.216/12.816"<< endl;
+        resultVector.emplace_back(landmarksStruct);
+
 
         double longestDistToClosestMark = 0.0;
         for (int j = 0; j <= highestNbr; ++j) { //loops over all nodes
@@ -92,6 +94,11 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
             //    cout << "last thing of the loop: " << j << endl;
         }
         //if(i==0) markDistanceVectors.pop_back();
+    }
+    resultVector.erase(resultVector.begin());
+    cout<<"size of result vector: " << resultVector.size() << endl;
+    for (landmarksStruct i:resultVector) {
+    cout << "lmk: " << i.nodeID << endl;
     }
 
     //recast to long longs for calling initLandmarks
@@ -124,13 +131,28 @@ spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollectio
 
     minHeap.push(make_pair(source, 0.0));
 
+    int counter = 0;
     while (!minHeap.empty()){
         //pop the top element
         pair<int,double> head = minHeap.top();
         minHeap.pop();
         int headId = head.first;
-        //Have we reached destination check
 
+        //counter ++;
+        //if (counter%100000==0 && counter != 0){
+        //    //cout << "rebuilding beep boop optimzing beep boop" << endl;
+        //    bestForward = choseLandmarks(headId, dest, adjCol);
+        //    priority_queue<pair<int, double>, vector<pair<int, double>>, comparator> heapRebuild;
+        //    for (int i = 0; i < distance.size(); ++i) {
+        //        if (distance[i] != INF && !nodeSeen[i]){
+        //            double heuristIntermediate = calcHeuristicDistance(i, dest, bestForward);
+        //            heapRebuild.push(make_pair(i, distance[i] + heuristIntermediate));
+        //            minHeap = heapRebuild;
+        //        }
+        //    }
+        //}
+
+        //Have we reached destination check
         if (headId==dest){
             //we have arrived at destination and we are done
             //cout << "we have hit destination \n";
@@ -180,25 +202,25 @@ landmarksStruct landmarks::choseLandmarks(int source, int dest, adjListCollectio
 double landmarks::calcHeuristicDistance(int source, int target, landmarksStruct &currLandmark) {
     double distFromSourceToLandmark = currLandmark.reversedDistanceVec[source];
     double distFromTargetToLandmark = currLandmark.reversedDistanceVec[target];
-    double lowerBoundToLandmark =  distFromSourceToLandmark - distFromTargetToLandmark;
+    double toLandmark = distFromSourceToLandmark - distFromTargetToLandmark;
 
     double distFromLandmarkToSource = currLandmark.distanceVec[source];
     double distFromLandmarkToTarget = currLandmark.distanceVec[target];
-    double lowerBoundFromLandmark = distFromLandmarkToTarget - distFromLandmarkToSource;
+    double fromLandmark = distFromLandmarkToTarget - distFromLandmarkToSource;
 
-    bool isLowerBFromInfinite =  !isfinite(lowerBoundFromLandmark);
-    bool isLowerBToInfinite = !isfinite(lowerBoundToLandmark);
+    bool isLowerBFromInfinite =  !isfinite(fromLandmark);
+    bool isLowerBToInfinite = !isfinite(toLandmark);
     if (isLowerBFromInfinite){
         if (isLowerBToInfinite){
             //this should only happen if the we have unconnected graphs
             //cout << "both lower bounds are infinity something went wrong" << endl;
         }
-        return lowerBoundToLandmark;
+        return toLandmark;
     }
     if (isLowerBToInfinite){
-        return lowerBoundFromLandmark;
+        return fromLandmark;
     }
-    double largestLowerbound = max(lowerBoundToLandmark, lowerBoundFromLandmark);
+    double largestLowerbound = max(toLandmark, fromLandmark);
     return largestLowerbound;
 }
 

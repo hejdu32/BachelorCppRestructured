@@ -116,8 +116,8 @@ using namespace std;
         }
 
         //astar heuristic algorithms
-        static double euclidDistance(double srcX, double srcY, double destX, double destY,int speed){
-            return distanceCalc(srcX,srcY,destX,destY,speed);
+        static double euclidDistance(double srcX, double srcY, double destX, double destY){
+            return sqrt(pow(srcX - destX,2.0)+pow(srcY - destY,2.0));
         }
         static double manhatDistance(double srcX, double srcY, double destX, double destY, int speed){
             return double(abs(srcX-destX)+abs(srcY-destY)* pow(speed,-1));

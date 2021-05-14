@@ -30,7 +30,7 @@ int nodesConsidered(vector<bool> &nodesSeen){
 
 
 double calcHeuristicDistance(double fdestX, double fdestY, double nodeX, double nodeY, int speed){
-    return adjacencyList::euclidDistance(fdestX, fdestY, nodeX, nodeY,speed);
+    return adjacencyList::distanceCalc(fdestX, fdestY, nodeX, nodeY,speed);
 }
 
 

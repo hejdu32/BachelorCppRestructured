@@ -55,6 +55,10 @@ public:
             istream_iterator<string> beg(buf), end;
             vector<string> lineAsTokens(beg, end);
             int maxSpeed = stoi(lineAsTokens[0]);
+            //Specifically ferryways have a speed of 68
+            if (maxSpeed==68){
+                maxSpeed=std::numeric_limits<int>::infinity();
+            }
             int isOneway = stoi(lineAsTokens[1]);
             for (int j = 2; j < lineAsTokens.size()-1; ++j) {
                 int firstNode = adjacencyList::getIntID(adjCol, stoll(lineAsTokens[j]));
@@ -63,7 +67,7 @@ public:
                 double srcY = adjacencyList::getyCoord(adjCol, firstNode);
                 double destX = adjacencyList::getxCoord(adjCol, secondNode);
                 double destY = adjacencyList::getyCoord(adjCol, secondNode);
-                double weight = adjacencyList::distanceCalc(srcX, srcY, destX, destY,maxSpeed);
+                double weight = adjacencyList::distanceCalc(srcX, srcY, destX, destY,maxSpeed); //adjacencyList::distanceCalc(srcX, srcY, destX, destY,maxSpeed);
                 if(isOneway) {
                     adjacencyList::addEdge(adjCol, firstNode, secondNode, weight);
                 } else {

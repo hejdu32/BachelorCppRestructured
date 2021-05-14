@@ -203,6 +203,7 @@ void landmarksEmptyListTest(){
     assert(firstElem.nodeID != 0);
 }
 void formatPrinting(){
+
     //cout<< "27/5 = " << 27/5 << endl;
     //cout << "27.8632/5.17531 = " << 27.8632/6.17531<< endl;
     //cout << "27.8632*(5.17531)^-1 = " << 27.8632* pow(6.17531,-1) << endl;
@@ -233,7 +234,7 @@ void formatPrinting(){
 
 int main(){
     cout << "Testing" << endl;
-    //formatPrinting();
+    formatPrinting();
     //testAdjlistSimpleDijkstra();
     //testToyExampleDatastructure();
     //testDijkstraToyExample();
