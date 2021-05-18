@@ -55,8 +55,8 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
 
     int randomNode = rand() % highestNbr;
     const double INF = std::numeric_limits<double>::infinity();
-    cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode]<< "#map=8/56.216/12.816" << endl;
-    cout<< "actual landmarks: " << endl;
+    //cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
+
     //vector<vector<double>> markDistanceVectors;
     for (int i = 0; i < amount+1; ++i) {
         //if(i!=0){cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << "#map=8/56.216/12.816"<< endl;}
@@ -68,7 +68,7 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
         landmarksStruct.nodeID = adjListCollection.intIdToLongID[randomNode];    //is suppose to be id not intID
         //markDistanceVectors.emplace_back((landmarksStruct.distanceVec));
 
-        cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << "#map=8/56.216/12.816"<< endl;
+        //cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << "#map=8/56.216/12.816"<< endl;
         resultVector.emplace_back(landmarksStruct);
 
 
@@ -96,10 +96,10 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
         //if(i==0) markDistanceVectors.pop_back();
     }
     resultVector.erase(resultVector.begin());
-    cout<<"size of result vector: " << resultVector.size() << endl;
-    for (landmarksStruct i:resultVector) {
-    cout << "lmk: " << i.nodeID << endl;
-    }
+    //cout<<"size of result vector: " << resultVector.size() << endl;
+    //for (landmarksStruct i:resultVector) {
+    //cout << "lmk: " << i.nodeID << endl;
+    //}
 
     //recast to long longs for calling initLandmarks
     //vector<long long> longIdsOfLandmarks;
