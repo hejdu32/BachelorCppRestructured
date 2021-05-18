@@ -10,7 +10,7 @@
 #include <cstdlib>
 #include <chrono>
 #include <utility>
-#include <iomanip>
+
 
 using std::chrono::high_resolution_clock;
 using std::chrono::duration_cast;
@@ -58,57 +58,47 @@ public:
         return adjCol;
     }
 
-    static int calcNodesConsidered(vector<int> &prevNode){
-        int counterVisited = 0;
-        for (int i = 0; i < prevNode.size(); ++i) {
-            if (prevNode[i] != -1){
-                counterVisited++;
-            }
-        }
-        return counterVisited;
-    }
     static void testDistancePrints(const string& method, long long source, long long target, adjListCollection &adjCol){
         int from = adjacencyList::getIntID(adjCol,source);
         int to = adjacencyList::getIntID(adjCol,target);
-
-        pair<spResultStruct, double> result = testDistance(method, from ,to,adjCol);
-
-        vector<long long> idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.first.prevNode, from, to);
+        auto t1 = high_resolution_clock::now();
+        spResultStruct result = shortestPath::chooseAlgo(spmap[method], from ,to,adjCol);
+        auto t2 = high_resolution_clock::now();
+        duration<double, milli> ms_double = t2 - t1;
+        vector<long long> idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode, from, to);
         if(method == "landmarks"){
-            cout << method <<" from: "<< source <<" to: " << target << " with landmark: " << result.first.chosenLandmark <<"\n" ;
+            cout << method <<" from: "<< source <<" to: " << target << " with landmark: " << result.chosenLandmark <<"\n" ;
         } else{
         cout << method <<" from: "<< source <<" to: " << target <<"\n" ;
         }
-        cout << "distance: " << result.first.distanceToDest << " time to find path: "<< result.second << "secs"<<endl;
-        int nodesConsidered = calcNodesConsidered(result.first.prevNode);
+        cout << "distance: " << result.distanceToDest << " time to find path: "<< ms_double.count()/1000 << "secs"<<endl;
+        int counterVisited = 0;
+        for (int id : result.prevNode){
+            if (id != -1){
+                counterVisited++;
+                //cout << adjacencyList::getLongID(adjCol, id) << "L," ;
+            }
+        }
         //cout << endl;
-        cout << "Nodes in path: "<< idvec.size() << " Nodes considered: " << nodesConsidered << endl;
+        cout << "Nodes in path: "<< idvec.size() << " Nodes considered: " << counterVisited << endl;
         cout << "\n";
         //cout << "path"<< endl;
         //shortestPath::printVec(idvec);
         //cout << endl;
     }
 
-    static pair<spResultStruct, double> testDistance(const string& method, int source, int target, adjListCollection &adjCol){
-        auto timerStart = high_resolution_clock::now();
-
-        spResultStruct res = shortestPath::chooseAlgo(spmap[method], source , target, adjCol);
-
-        auto timerEnd = high_resolution_clock::now();
-        duration<double, milli> timeDiff = timerEnd -timerStart;
-        double timeInSecs=timeDiff.count()/1000;
-        return make_pair(res,timeInSecs);
+    static spResultStruct testDistance(const string& method, int source, int target, adjListCollection &adjCol){
+        return shortestPath::chooseAlgo(spmap[method], source ,target,adjCol);
     }
 
-    static void printDisagreement(const string& method, int from, int to, spResultStruct &dijkstraStruct, spResultStruct &wrongStruct, adjListCollection &adjCol){
+    static void printDisagreement(string method, int from, int to, spResultStruct &dijkstraStruct, spResultStruct &wrongStruct, adjListCollection &adjCol){
         long long source = adjacencyList::getLongID(adjCol,from);
         long long dest = adjacencyList::getLongID(adjCol,to);
-        string strToPrint = "Disagreement " + method + " from: " + to_string(source) + " to: " + to_string(dest);
+        long long temp = -1;
         if(method == "landmarks") {
-             strToPrint+= " landmark: "+to_string(wrongStruct.chosenLandmark);
+             temp = wrongStruct.chosenLandmark;
         }
-        strToPrint += " dijkstra dist: " + to_string(dijkstraStruct.distanceToDest) + " " + method + " dist: "+ to_string(wrongStruct.distanceToDest);
-        cout << strToPrint << endl;
+        cout << "Disagreement " << method << " from: " << source << " to: " << dest << " landmark: " << temp << " dijkstra dist: " << dijkstraStruct.distanceToDest << " " << method << " dist: "<< wrongStruct.distanceToDest << endl;
     }
 
     static void randomPointsComparrison(const string& country, int amountOfTests, int seed){
@@ -121,9 +111,6 @@ public:
         }
         int astarFails = 0;
         int landmarksFails = 0;
-        long long dijkNodesConsidered=0;
-        long long astarNodesConsidered=0;
-        long long landmarksNodesConsidered=0;
 
         double totalDijkstraTime=0;
         double worstDijkstraTime=0;
@@ -137,7 +124,6 @@ public:
         cout << "Testing "<< amountOfTests << " points in " <<  country<< endl;
         //choosing from and to as i and i+1, in case of i=vector size to is i[0]
         for (int i = 0; i < size; i++) {
-            cout<< "test nmbr: " << i << endl;
             int from = ids[i];
             int to;
             if(i == size-1){
@@ -146,46 +132,53 @@ public:
                 to = ids[i+1];
             }
             if(i % 10 == 0 && i != 0){
-                cout << i << " comparisons have been tested" << endl;
+                cout << i << " comparrisons have been tested" << endl;
             }
+
             //DIJKSTRA
-            pair<spResultStruct,double> dijkstraResult = testDistance("dijkstra", from, to, countryCol);
-            totalDijkstraTime+=dijkstraResult.second;
-            if (dijkstraResult.second > worstDijkstraTime) worstDijkstraTime = dijkstraResult.second;
-            dijkNodesConsidered += calcNodesConsidered(dijkstraResult.first.prevNode);
+            auto timerStart = high_resolution_clock::now();
+            spResultStruct dijkstraResult = testDistance("dijkstra", from, to, countryCol);
+
+            auto timerEnd = high_resolution_clock::now();
+            duration<double, milli> timeDiff = timerEnd -timerStart;
+            double timeInSecs=timeDiff.count()/1000;
+            totalDijkstraTime+=timeInSecs;
+            if (timeInSecs > worstDijkstraTime) worstDijkstraTime = timeInSecs;
+
             //ASTAR
-            pair<spResultStruct,double> astarResult = testDistance("astar", from, to, countryCol);
-            totalAstarTime+=astarResult.second;
-            if (astarResult.second > worstAstarTime) worstAstarTime = astarResult.second;
-            astarNodesConsidered += calcNodesConsidered(astarResult.first.prevNode);
+            timerStart = high_resolution_clock::now();
+            spResultStruct astarResult = testDistance("astar", from, to, countryCol);
+
+            timerEnd = high_resolution_clock::now();
+            timeDiff = timerEnd-timerStart;
+            timeInSecs=timeDiff.count()/1000;
+            totalAstarTime+=timeInSecs;
+            if (timeInSecs > worstAstarTime) worstAstarTime = timeInSecs;
 
             //LANDMARKS
-            pair<spResultStruct,double> landmarksResult = testDistance("landmarks", from, to, countryCol);
-            totalALTTime+=landmarksResult.second;
-            if (landmarksResult.second > worstALTTime) worstALTTime = landmarksResult.second;
-            landmarksNodesConsidered += calcNodesConsidered(landmarksResult.first.prevNode);
+            timerStart = high_resolution_clock::now();
+            spResultStruct landmarksResult = testDistance("landmarks", from, to, countryCol);
 
+            timerEnd = high_resolution_clock::now();
+            timeDiff = timerEnd-timerStart;
+            timeInSecs=timeDiff.count()/1000;
+            totalALTTime+=timeInSecs;
+            if (timeInSecs > worstALTTime) worstALTTime = timeInSecs;
 
-            if (dijkstraResult.first.distanceToDest != astarResult.first.distanceToDest){
+            if (dijkstraResult.distanceToDest != astarResult.distanceToDest){
                 astarFails++;
-                printDisagreement("astar", from, to, dijkstraResult.first, astarResult.first, countryCol);
+                printDisagreement("astar", from, to, dijkstraResult, astarResult, countryCol);
             }
-            if (dijkstraResult.first.distanceToDest != landmarksResult.first.distanceToDest){
+            if (dijkstraResult.distanceToDest != landmarksResult.distanceToDest){
                 landmarksFails++;
-                printDisagreement("landmarks", from, to, dijkstraResult.first, landmarksResult.first, countryCol);
+                printDisagreement("landmarks", from, to, dijkstraResult, landmarksResult, countryCol);
             }
         }
-
-        dijkNodesConsidered = dijkNodesConsidered/amountOfTests;
-        astarNodesConsidered = astarNodesConsidered/amountOfTests;
-        landmarksNodesConsidered = landmarksNodesConsidered/amountOfTests;
-
-        cout << "Finished " << amountOfTests<< " tests on " << country << endl;
+        cout << "Finished "<< amountOfTests<< " on " << country << endl;
         cout << "astar fails: " << astarFails << " landmark fails: " << landmarksFails << endl;
-        cout << std::fixed;
-        cout<< std::setprecision(10) << "avg dijk time: " << totalDijkstraTime/amountOfTests << "secs " << "avg nodesEval: " << dijkNodesConsidered <<" worst case time: " << worstDijkstraTime << "secs"<< endl;
-        cout<< std::setprecision(10) << "avg a*   time: " << totalAstarTime/amountOfTests << "secs " << "avg nodesEval: " << astarNodesConsidered <<" worst case time: " << worstAstarTime << "secs"<< endl;
-        cout<< std::setprecision(10) << "avg ALT  time: " << totalALTTime/amountOfTests << "secs " << "avg nodesEval: " << landmarksNodesConsidered <<" worst case time: " << worstALTTime << "secs"<< endl;
+        cout << "avg dijk time: " << totalDijkstraTime/amountOfTests << "secs worst case: " << worstDijkstraTime << "secs"<< endl;
+        cout << "avg a*   time: " << totalAstarTime/amountOfTests << "secs worst case: " << worstAstarTime << "secs"<< endl;
+        cout << "avg ALT  time: " << totalALTTime/amountOfTests << "secs worst case: " << worstALTTime << "secs"<< endl;
     }
 
 };

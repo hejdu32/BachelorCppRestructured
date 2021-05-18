@@ -88,6 +88,7 @@ void communicateWithJava() {
             case ERROR: {
                 cout << "ERROR HAPPENED" << "\n";
                 cout << flush;
+                break;
             }
             case makeAdjacencyList: {
                 shortestPath::createAdjacencyList(lineAsTokens[1], "file", adjCol);
@@ -116,6 +117,10 @@ void communicateWithJava() {
                 string nodeIdTo= lineAsTokens[2];
                 runAlgorithm("landmarks", nodeIdFrom, nodeIdTo, adjCol);
                 break;
+            }
+            default: {
+                cout << "Error: did not understand command" << endl;
+                cout << flush;
             }
         }
     }
