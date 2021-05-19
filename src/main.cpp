@@ -86,7 +86,7 @@ void communicateWithJava() {
         commands switchType = mapStringToEnum[lineAsTokens[0]]; // lineAsTokens[0]
         switch (switchType) {
             case ERROR: {
-                cout << "ERROR HAPPENED" << "\n";
+                cout << "Could not understand input: "<< line << endl;
                 cout << flush;
                 break;
             }
@@ -118,9 +118,9 @@ void communicateWithJava() {
                 runAlgorithm("landmarks", nodeIdFrom, nodeIdTo, adjCol);
                 break;
             }
-            default: {
-                cout << "Error: did not understand command" << endl;
-                cout << flush;
+            default:{
+                cout << "could not understand input: " << line << flush;
+                break;
             }
         }
     }
