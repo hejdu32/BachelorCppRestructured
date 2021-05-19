@@ -77,11 +77,28 @@ using namespace std;
         static void printGraph(adjListCollection &collection) {
             cout << "size of adjlist " << collection.adjlst.size() << endl;
             for (int s = 0; s < collection.adjlst.size(); s++) {
-                cout << "Node " << s << endl;
+                cout << "Node " << adjacencyList::getLongID(collection,s);
                 for (auto &pair: collection.adjlst[s]) {
-                    cout << "dest: " << pair.first << " weight: " << pair.second << endl;
+                    cout << " dest: " << adjacencyList::getLongID(collection,pair.first) << " weight: " << pair.second;
                 }
+                cout << endl;
             }
+        }
+
+        static void graphToFile(adjListCollection &collection) {
+            cout << "making file "<< endl;
+            ofstream myfile;
+            myfile.open ("abcd");
+            myfile  << "size of adjlist " << collection.adjlst.size() << "\n";
+            for (int s = 0; s < collection.adjlst.size(); s++) {
+                myfile << "Node " << adjacencyList::getLongID(collection,s);
+                for (auto &pair: collection.adjlst[s]) {
+                    myfile << " dest: " << adjacencyList::getLongID(collection,pair.first) << " weight: " << pair.second;
+                }
+                myfile << "\n";
+            }
+            myfile.close();
+            cout << "file done"<< endl;
         }
 
         static vector<long long> prevNodeToShortestPath(adjListCollection &collection, vector<int> prevNode, int source, int destination) {

@@ -132,9 +132,9 @@ void testDijkstraToyExample() {
 }
 
 void runMaltaTests(){
-    adjListCollection malta = util::setUpDatastructure("malta");
-    //short distance downtown malta
+    adjListCollection malta = util::setUpDatastructure("malta","normal");
 
+    //short distance downtown malta
     util::testDistancePrints("dijkstra",146885871, 1498913919,malta);
     util::testDistancePrints("astar",146885871, 1498913919,malta);
     util::testDistancePrints("landmarks",146885871, 1498913919,malta);
@@ -145,9 +145,29 @@ void runMaltaTests(){
     //test that broke alt
     util::testDistancePrints("dijkstra",3094405033, 7401666051,malta);
     util::testDistancePrints("landmarks",3094405033, 7401666051,malta);
+
+    cout<< "malta tests on normal graph done"<< endl;
+}
+void reducedMaltaTests(){
+    adjListCollection malta = util::setUpDatastructure("malta","reduced");
+
+    //short distance downtown malta
+    util::testDistancePrints("dijkstra",146885871, 1498913919,malta);
+    util::testDistancePrints("astar",146885871, 1498913919,malta);
+    util::testDistancePrints("landmarks",146885871, 1498913919,malta);
+    //long distance arcoss malt island
+    util::testDistancePrints("dijkstra",3593516725, 5037683804,malta);
+    util::testDistancePrints("astar",3593516725, 5037683804,malta);
+    util::testDistancePrints("landmarks",3593516725, 5037683804,malta);
+    //test that broke alt
+    util::testDistancePrints("dijkstra",3094405033, 7401666051,malta);
+    util::testDistancePrints("landmarks",3094405033, 7401666051,malta);
+
+    adjacencyList::graphToFile(malta);
+    cout<< "malta tests on reduced graph done"<< endl;
 }
 void runDenmarkTests(){
-    adjListCollection denmark = util::setUpDatastructure("denmark");
+    adjListCollection denmark = util::setUpDatastructure("denmark","normal");
     long long itbyen = 957178678;
     long long borglum = 860574684;
     long long RandersHospital = 696724340;
@@ -159,7 +179,6 @@ void runDenmarkTests(){
     long long langeland = 5543870050; //langeland
     long long lolland = 1471395254; // lolland
     long long northernZealand = 1305304467; //nord sjælland
-
     long long smallTownJutland = 8111797406;
     long long midZealand = 5335212690;
 
@@ -203,7 +222,7 @@ void runDenmarkTests(){
 }
 
 void landmarksEmptyListTest(){
-    adjListCollection malta = util::setUpDatastructure("malta");
+    adjListCollection malta = util::setUpDatastructure("malta","normal");
     //vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
     vector<landmarksStruct> notEmpty = landmarks::initLandmarks(8, malta);
     assert(notEmpty.size()==8);
@@ -243,13 +262,14 @@ void formatPrinting(){
 
 int main(){
     cout << "Testing" << endl;
-    formatPrinting();
+    //formatPrinting();
     //testAdjlistSimpleDijkstra();
     //testToyExampleDatastructure();
     //testDijkstraToyExample();
     //landmarksEmptyListTest();
     //runMaltaTests();
-    runDenmarkTests();
+    reducedMaltaTests();
+    //runDenmarkTests();
 
     return 0;
 }

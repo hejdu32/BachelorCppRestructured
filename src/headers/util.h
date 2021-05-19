@@ -20,15 +20,20 @@ using std::chrono::seconds;
 
 class util{
 public:
-    static adjListCollection setUpDatastructure(const string& country){
+    static adjListCollection setUpDatastructure(const string& country,const string& type){
         adjListCollection adjCol;
         string malta = "C:/Users/a/IdeaProjects/BachelorProject/malta";
         string denmark = "C:/Users/a/IdeaProjects/BachelorProject/denmark";
-
+        string method = "file";
+        if (type == "reduced"){
+            //malta += "red";
+            denmark += "red";
+            method = "reduced";
+        }
         if(country== "malta"){
             cout << "parsing " << country << endl;
             auto t1 = high_resolution_clock::now();
-            shortestPath::createAdjacencyList(malta, "file", adjCol);
+            shortestPath::createAdjacencyList(malta, method, adjCol);
             //vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
             vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(8, adjCol);
             for (int i = 0; i <initedLandmarks.size(); ++i) {
@@ -41,7 +46,7 @@ public:
         }else if(country=="denmark"){
             cout << "parsing " << country << endl;
             auto t1 = high_resolution_clock::now();
-            shortestPath::createAdjacencyList(denmark, "file", adjCol);
+            shortestPath::createAdjacencyList(denmark, method, adjCol);
             //vector<long long> landmarksIDs = {2753462644,5745423643,57054823,2159452194,1177521825,489401874,283198526,1818976308,5098316959,971808896,1507951792,1116342996}; //hardcoded landmarks for denmark
             vector<landmarksStruct> initedLandmarks = landmarks::initLandmarks(10, adjCol);
             for (int i = 0; i <initedLandmarks.size(); ++i) {
@@ -109,7 +114,7 @@ public:
     }
 
     static void randomPointsComparrison(const string& country, int amountOfTests, int seed){
-        adjListCollection countryCol = setUpDatastructure(country);
+        adjListCollection countryCol = setUpDatastructure(country,"normal");
         int highestNbr = countryCol.idSoFar;
         //srand(seed);
         vector<int> ids(amountOfTests,0); int size = ids.size();
@@ -154,13 +159,11 @@ public:
             totalAstarTime+=astarResult.second;
             if (astarResult.second > worstAstarTime) worstAstarTime = astarResult.second;
             astarNodesConsidered += calcNodesConsidered(astarResult.first.prevNode);
-
             //LANDMARKS
             pair<spResultStruct,double> landmarksResult = testDistance("landmarks", from, to, countryCol);
             totalALTTime+=landmarksResult.second;
             if (landmarksResult.second > worstALTTime) worstALTTime = landmarksResult.second;
             landmarksNodesConsidered += calcNodesConsidered(landmarksResult.first.prevNode);
-
 
             if (dijkstraResult.first.distanceToDest != astarResult.first.distanceToDest){
                 astarFails++;
@@ -179,9 +182,9 @@ public:
         cout << "Finished " << amountOfTests<< " tests on " << country << endl;
         cout << "astar fails: " << astarFails << " landmark fails: " << landmarksFails << endl;
         cout << std::fixed;
-        cout<< std::setprecision(6) << "avg dijk time: " << totalDijkstraTime/amountOfTests << "msec " << "avg nodesEval: " << dijkNodesConsidered <<" worst case time: " << worstDijkstraTime << "msec"<< endl;
-        cout<< std::setprecision(6) << "avg a*   time: " << totalAstarTime/amountOfTests << "msec " << "avg nodesEval: " << astarNodesConsidered <<" worst case time: " << worstAstarTime << "msec"<< endl;
-        cout<< std::setprecision(6) << "avg ALT  time: " << totalALTTime/amountOfTests << "msec " << "avg nodesEval: " << landmarksNodesConsidered <<" worst case time: " << worstALTTime << "msec"<< endl;
+        cout<< std::setprecision(3) << "avg dijk time: " << totalDijkstraTime/amountOfTests << "msec " << "avg nodesEval: " << dijkNodesConsidered <<" worst case time: " << worstDijkstraTime << "msec"<< endl;
+        cout<< std::setprecision(3) << "avg a*   time: " << totalAstarTime/amountOfTests << "msec " << "avg nodesEval: " << astarNodesConsidered <<" worst case time: " << worstAstarTime << "msec"<< endl;
+        cout<< std::setprecision(3) << "avg ALT  time: " << totalALTTime/amountOfTests << "msec " << "avg nodesEval: " << landmarksNodesConsidered <<" worst case time: " << worstALTTime << "msec"<< endl;
     }
 
 };
