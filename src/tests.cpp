@@ -159,6 +159,11 @@ void runDenmarkTests(){
     long long langeland = 5543870050; //langeland
     long long lolland = 1471395254; // lolland
     long long northernZealand = 1305304467; //nord sjælland
+
+    long long smallTownJutland = 8111797406;
+    long long midZealand = 5335212690;
+
+
     //århus to århus
     util::testDistancePrints("dijkstra",itbyen, borglum,denmark);
     util::testDistancePrints("astar",itbyen, borglum,denmark);
@@ -191,6 +196,10 @@ void runDenmarkTests(){
     util::testDistancePrints("dijkstra", skagen, northernZealand, denmark);
     util::testDistancePrints("astar", skagen, northernZealand, denmark);
     util::testDistancePrints("landmarks", skagen, northernZealand, denmark);
+    //jutland to zealand
+    util::testDistancePrints("dijkstra", smallTownJutland, midZealand, denmark);
+    util::testDistancePrints("astar", smallTownJutland, midZealand, denmark);
+    util::testDistancePrints("landmarks", smallTownJutland, midZealand, denmark);
 }
 
 void landmarksEmptyListTest(){

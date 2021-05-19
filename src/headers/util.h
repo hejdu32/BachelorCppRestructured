@@ -78,7 +78,7 @@ public:
         } else{
             cout << method <<" from: "<< source <<" to: " << target <<"\n" ;
         }
-        cout << "distance: " << result.first.distanceToDest << " time to find path: "<< result.second << "secs"<<endl;
+        cout << "distance: " << result.first.distanceToDest << " time to find path: "<< result.second << "msecs"<<endl;
         int nodesConsidered = calcNodesConsidered(result.first.prevNode);
 
         cout << "Nodes in path: "<< idvec.size() << " Nodes considered: " << nodesConsidered << endl;
