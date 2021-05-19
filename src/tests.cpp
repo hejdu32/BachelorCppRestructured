@@ -267,7 +267,7 @@ int main(){
     //testDijkstraToyExample();
     //landmarksEmptyListTest();
     //runMaltaTests();
-    //reducedMaltaTests();
+    reducedMaltaTests();
     //runDenmarkTests();
 
     return 0;
