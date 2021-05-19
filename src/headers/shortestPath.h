@@ -35,7 +35,8 @@ public:
     //creates the adjacency list from either file or from java
     static int createAdjacencyList(string path, const string& method, adjListCollection &adjCol) {
         if (method == "file") {
-            //fileReader::readAdjFile(std::move(path), adjCol);
+            fileReader::readEntireOsm(std::move(path), adjCol);
+        }else if (method == "reduced") {
             fileReader::readAdjFile(path, adjCol);
         } else if (method == "java") {
             string line;

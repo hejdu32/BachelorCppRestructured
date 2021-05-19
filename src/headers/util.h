@@ -20,7 +20,7 @@ using std::chrono::seconds;
 
 class util{
 public:
-    static adjListCollection setUpDatastructure(const string& country){
+    static adjListCollection setUpDatastructure(const string& country,const string& type){
         adjListCollection adjCol;
         string malta = "C:/Users/svend/IdeaProjects/BachelorProjectNew/malta";
         string denmark = "C:/Users/svend/IdeaProjects/BachelorProjectNew/denmark";
@@ -109,7 +109,7 @@ public:
     }
 
     static void randomPointsComparrison(const string& country, int amountOfTests, int seed){
-        adjListCollection countryCol = setUpDatastructure(country);
+        adjListCollection countryCol = setUpDatastructure(country,"normal");
         int highestNbr = countryCol.idSoFar;
         //srand(seed);
         vector<int> ids(amountOfTests,0); int size = ids.size();
@@ -154,13 +154,11 @@ public:
             totalAstarTime+=astarResult.second;
             if (astarResult.second > worstAstarTime) worstAstarTime = astarResult.second;
             astarNodesConsidered += calcNodesConsidered(astarResult.first.prevNode);
-
             //LANDMARKS
             pair<spResultStruct,double> landmarksResult = testDistance("landmarks", from, to, countryCol);
             totalALTTime+=landmarksResult.second;
             if (landmarksResult.second > worstALTTime) worstALTTime = landmarksResult.second;
             landmarksNodesConsidered += calcNodesConsidered(landmarksResult.first.prevNode);
-
 
             if (dijkstraResult.first.distanceToDest != astarResult.first.distanceToDest){
                 astarFails++;
@@ -179,9 +177,9 @@ public:
         cout << "Finished " << amountOfTests<< " tests on " << country << endl;
         cout << "astar fails: " << astarFails << " landmark fails: " << landmarksFails << endl;
         cout << std::fixed;
-        cout<< std::setprecision(6) << "avg dijk time: " << totalDijkstraTime/amountOfTests << "msec " << "avg nodesEval: " << dijkNodesConsidered <<" worst case time: " << worstDijkstraTime << "msec"<< endl;
-        cout<< std::setprecision(6) << "avg a*   time: " << totalAstarTime/amountOfTests << "msec " << "avg nodesEval: " << astarNodesConsidered <<" worst case time: " << worstAstarTime << "msec"<< endl;
-        cout<< std::setprecision(6) << "avg ALT  time: " << totalALTTime/amountOfTests << "msec " << "avg nodesEval: " << landmarksNodesConsidered <<" worst case time: " << worstALTTime << "msec"<< endl;
+        cout<< std::setprecision(3) << "avg dijk time: " << totalDijkstraTime/amountOfTests << "msec " << "avg nodesEval: " << dijkNodesConsidered <<" worst case time: " << worstDijkstraTime << "msec"<< endl;
+        cout<< std::setprecision(3) << "avg a*   time: " << totalAstarTime/amountOfTests << "msec " << "avg nodesEval: " << astarNodesConsidered <<" worst case time: " << worstAstarTime << "msec"<< endl;
+        cout<< std::setprecision(3) << "avg ALT  time: " << totalALTTime/amountOfTests << "msec " << "avg nodesEval: " << landmarksNodesConsidered <<" worst case time: " << worstALTTime << "msec"<< endl;
     }
 
 };
