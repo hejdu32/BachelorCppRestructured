@@ -37,7 +37,7 @@ public:
         if (method == "file") {
             fileReader::readEntireOsm(std::move(path), adjCol);
         }else if (method == "reduced") {
-            fileReader::readAdjFile(path, adjCol);
+            fileReader::readAdjFile(std::move(path), adjCol);
         } else if (method == "java") {
             string line;
             bool reading = true;
@@ -75,6 +75,13 @@ public:
         cout << "[";
         for (long long i : input) {
             cout << i << ' ';
+        }
+        cout << "]";
+    }
+    static void printVec(adjListCollection &adjCol,vector<pair<int, double>>const &input){
+        cout << "[";
+        for (auto i : input) {
+            cout << "dest: "<< adjCol.intIdToLongID.find(i.first)->second << " dist:" << i.second << ' ';
         }
         cout << "]";
     }

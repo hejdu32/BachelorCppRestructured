@@ -18,18 +18,26 @@ struct comparator{
     }
 };
 
-vector<landmarksStruct> landmarks::initLandmarks(vector<long long> nodeIDs, adjListCollection &adjListCollection) {
+vector<landmarksStruct> landmarks::initLandmarks(vector<long long> nodeIDs, adjListCollection &adjCol) {
     vector<landmarksStruct> resultVector;
     for (auto id:nodeIDs) {
-        int intID = adjacencyList::getIntID(adjListCollection,id);
+        int intID = adjacencyList::getIntID(adjCol, id);
         landmarksStruct landmarksStruct;
-        spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(intID, intID, false, adjListCollection);
+        spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(intID, intID, false, adjCol);
         landmarksStruct.distanceVec = distanceToEverything.distanceVec;
         landmarksStruct.nodeID = id;    //is suppose to be id not intID
         resultVector.emplace_back(landmarksStruct);
     }
 
     return resultVector;
+}
+
+static void printVec(adjListCollection &adjCol,vector<pair<int, double>>const &input){
+    cout << "[";
+    for (auto i : input) {
+        cout << "dest: "<< adjCol.intIdToLongID.find(i.first)->second << " dist:" << i.second << ' ';
+    }
+    cout << "]";
 }
 
 adjListCollection landmarks::reverseAdjListCollection(adjListCollection &adjCol){
@@ -41,36 +49,36 @@ adjListCollection landmarks::reverseAdjListCollection(adjListCollection &adjCol)
             pair<int, double> temp = currentEdges[j];
             int newSource = temp.first;
             double newDist = temp.second;
-            reversedAdjCol.adjlst[newSource].emplace_back(make_pair(i, newDist));
+            adjacencyList::addEdge(reversedAdjCol,newSource,i,newDist);
         }
     }
     reversedAdjCol.idSoFar = adjCol.idSoFar;
     return reversedAdjCol;
 }
 
-vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &adjListCollection) {
-    struct adjListCollection reversedAdjListCollection = reverseAdjListCollection(adjListCollection);
+vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &adjCol) {
+    struct adjListCollection reversedAdjListCollection = reverseAdjListCollection(adjCol);
     vector<landmarksStruct> resultVector;
-    int highestNbr = adjListCollection.idSoFar;
-
+    int highestNbr = adjCol.idSoFar;
     int randomNode = rand() % highestNbr;
+
     const double INF = std::numeric_limits<double>::infinity();
-    //cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
+    //cout << "https://www.openstreetmap.org/node/" << adjCol.intIdToLongID[randomNode] << endl;
 
     //vector<vector<double>> markDistanceVectors;
     for (int i = 0; i < amount+1; ++i) {
-        //if(i!=0){cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << "#map=8/56.216/12.816"<< endl;}
+        //if(i==0){cout << "https://www.openstreetmap.org/node/" << adjCol.intIdToLongID[randomNode] << "#map=8/56.216/12.816"<< endl;}
         landmarksStruct landmarksStruct;
-        spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, adjListCollection);
+        spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, adjCol);
         spResultStruct distanceFromEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, reversedAdjListCollection);
         landmarksStruct.distanceVec = distanceToEverything.distanceVec;
         landmarksStruct.reversedDistanceVec = distanceFromEverything.distanceVec;
-        landmarksStruct.nodeID = adjListCollection.intIdToLongID[randomNode];    //is suppose to be id not intID
+        landmarksStruct.nodeID = adjCol.intIdToLongID[randomNode];    //is suppose to be id not intID
+
         //markDistanceVectors.emplace_back((landmarksStruct.distanceVec));
-
-        //cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << "#map=8/56.216/12.816"<< endl;
+        //cout << "https://www.openstreetmap.org/node/" << adjCol.intIdToLongID[randomNode] << "#map=8/56.216/12.816"<< endl;
         resultVector.emplace_back(landmarksStruct);
-
+        cout << "emplacing our struct " << endl;
 
         double longestDistToClosestMark = 0.0;
         for (int j = 0; j <= highestNbr; ++j) { //loops over all nodes
@@ -93,18 +101,19 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
             //if(j % 1000 == 0)
             //    cout << "last thing of the loop: " << j << endl;
         }
+        cout<<"weve found a new landmark"<<endl;
         //if(i==0) markDistanceVectors.pop_back();
     }
     resultVector.erase(resultVector.begin());
-    //cout<<"size of result vector: " << resultVector.size() << endl;
-    //for (landmarksStruct i:resultVector) {
-    //cout << "lmk: " << i.nodeID << endl;
-    //}
+    cout<<"size of result vector: " << resultVector.size() << endl;
+    for (landmarksStruct i:resultVector) {
+    cout << "lmk: " << i.nodeID << endl;
+    }
 
     //recast to long longs for calling initLandmarks
     //vector<long long> longIdsOfLandmarks;
     //for (int id:landmarkIDS) {
-    //    long long longID = adjacencyList::getLongID(adjListCollection,id);
+    //    long long longID = adjacencyList::getLongID(adjCol,id);
     //    longIdsOfLandmarks.push_back(longID);
     //}
     return resultVector;

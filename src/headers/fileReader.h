@@ -81,21 +81,29 @@ public:
         data.close();
         return 0;
     }
-    static void printVec(vector<string>const &input){
-        cout << "[";
-        for (string i : input) {
-            cout << i << ' ';
+
+    static vector<string> split (string s, string delimiter) {
+        size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+        string token;
+        vector<string> res;
+
+        while ((pos_end = s.find (delimiter, pos_start)) != string::npos) {
+            token = s.substr (pos_start, pos_end - pos_start);
+            pos_start = pos_end + delim_len;
+            res.push_back (token);
         }
-        cout << "]";
+
+        res.push_back (s.substr (pos_start));
+        return res;
     }
 
-    static int readAdjFile(const string &pathToData, adjListCollection &adjCol) {
+    static void readAdjFile(string pathToData, adjListCollection &adjCol) {
         //ios_base::sync_with_stdio(false);
         //cin.tie(NULL);
         string line;
         ifstream data(pathToData);
         if (!data.is_open()) {
-            cout << "Error opening file" << endl;
+            cout << "Error opening file"<< pathToData << endl;
         }
         getline(data, line);
         int nodes = stoi(line);
@@ -110,51 +118,25 @@ public:
             getline(data, line);
             adjacencyList::addyCoord(adjCol, source, stod(line));
         }
-        cout << "we here"<< endl;
         for (int j = 0; j < adjlines; ++j) {
-            if (j >107120){
-                cout<< "almost at the end of file "<< j << endl;
-            }
             getline(data, line);
-            if (j >107120){
-                cout << line <<endl;
-            }
-            if (line == "!"){break;}
-            istringstream buf(line);
-            istream_iterator<string> beg(buf), end;
-            vector<string> lineAsTokens(beg, end);
+            string delimiter = " ";
+            vector<string> lineAsTokens = split(line,delimiter);
+            long long id = stoll(lineAsTokens[0]);
             int src = adjacencyList::getIntID(adjCol, stoll(lineAsTokens[0]));
             int nodesConnectedTo = stoi(lineAsTokens[1]);
-            //remove the source and nodes connected to for easier looping
             lineAsTokens.erase(lineAsTokens.begin());
-            //if (j >35520){
-            //    cout<< "erased first "<< j << endl;
-            //}
             lineAsTokens.erase(lineAsTokens.begin());
-            //if (j >35520){
-            //    cout<< "erased secind string " << endl;
-            //    cout<< line<< endl;
-            //    printVec(lineAsTokens);
-            //    cout << nodesConnectedTo << endl;
-            //}
-            //cout << "found node: " << src << " cn to: " << nodesConnectedTo<< endl;
-            //cout << line<< endl;
-            for (int k = 0; k < nodesConnectedTo; ++k) {
-                int idxVal = k*2;
-                int dest = adjacencyList::getIntID(adjCol, stoll(lineAsTokens[idxVal]));
-                double distance = stod(lineAsTokens[idxVal + 1]);
-                adjacencyList::addEdge(adjCol, src, dest, distance);
-                //if (j >35520){cout << "added to list " << k<<endl;}
+            for (int i = 0; i < nodesConnectedTo; ++i) {
+                int indexVal= i*2;
+                long long iddest=stoll(lineAsTokens[indexVal]);
+                int dest = adjacencyList::getIntID(adjCol, stoll(lineAsTokens[indexVal]));
+                double dist = stod(lineAsTokens[indexVal+1]);
+                adjacencyList::addEdge(adjCol,src,dest,dist);
             }
-            //if (counter >35520){cout << "weve exited last loop " << j <<" guard " << adjlines<<endl;}
         }
-        cout << "Closing file" << endl;
         data.close();
-        return 0;
     }
 };
-
-
-
 
 #endif //FILEREADER

@@ -133,7 +133,6 @@ void testDijkstraToyExample() {
 
 void runMaltaTests(){
     adjListCollection malta = util::setUpDatastructure("malta","normal");
-
     //short distance downtown malta
     util::testDistancePrints("dijkstra",146885871, 1498913919,malta);
     util::testDistancePrints("astar",146885871, 1498913919,malta);
@@ -150,7 +149,6 @@ void runMaltaTests(){
 }
 void reducedMaltaTests(){
     adjListCollection malta = util::setUpDatastructure("malta","reduced");
-
     //short distance downtown malta
     util::testDistancePrints("dijkstra",146885871, 1498913919,malta);
     util::testDistancePrints("astar",146885871, 1498913919,malta);
@@ -162,8 +160,9 @@ void reducedMaltaTests(){
     //test that broke alt
     util::testDistancePrints("dijkstra",3094405033, 7401666051,malta);
     util::testDistancePrints("landmarks",3094405033, 7401666051,malta);
-
     adjacencyList::graphToFile(malta);
+    int intID = adjacencyList::getIntID(malta,150808519);
+    shortestPath::printVec(malta, malta.adjlst[intID]);
     cout<< "malta tests on reduced graph done"<< endl;
 }
 void runDenmarkTests(){
@@ -268,7 +267,7 @@ int main(){
     //testDijkstraToyExample();
     //landmarksEmptyListTest();
     //runMaltaTests();
-    reducedMaltaTests();
+    //reducedMaltaTests();
     //runDenmarkTests();
 
     return 0;

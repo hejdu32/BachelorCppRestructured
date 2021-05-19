@@ -11,9 +11,9 @@ using namespace std;
 class landmarks {
 public:
     //choose a fixed list of landmarks
-    static vector<landmarksStruct> initLandmarks(vector<long long> nodeIDs, adjListCollection &adjListCollection);
+    static vector<landmarksStruct> initLandmarks(vector<long long> nodeIDs, adjListCollection &adjCol);
     //choose landmarks based on the furthest distance from a random node and then all other landmarks.
-    static vector<landmarksStruct> initLandmarks(int amount, adjListCollection &adjListCollection);
+    static vector<landmarksStruct> initLandmarks(int amount, adjListCollection &adjCol);
     static spResultStruct ALTShortestPath(int source, int dest, adjListCollection &adjCol);
 
     static landmarksStruct choseLandmarks(int source, int dest, adjListCollection &collection);

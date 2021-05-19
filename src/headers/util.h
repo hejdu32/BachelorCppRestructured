@@ -26,7 +26,7 @@ public:
         string denmark = "C:/Users/a/IdeaProjects/BachelorProject/denmark";
         string method = "file";
         if (type == "reduced"){
-            //malta += "red";
+            malta += "red";
             denmark += "red";
             method = "reduced";
         }
