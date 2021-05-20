@@ -19,7 +19,7 @@ using std::chrono::seconds;
 
 void testAdjlistSimpleDijkstra(){
     adjListCollection adjCol;
-    shortestPath::createAdjacencyList("/home/a/CLionProjects/BachelorCppRestructured/src/resources/adjlist","file",adjCol);
+    shortestPath::createAdjacencyList("C:/Users/a/CLionProjects/BachelorCppRestructured/src/resources/adjlist","file",adjCol);
 
     spResultStruct result; vector<long long> idvec;
     int start = adjacencyList::getIntID(adjCol,1);
@@ -219,6 +219,10 @@ void runDenmarkTests(){
     util::testDistancePrints("dijkstra", smallTownJutland, midZealand, denmark);
     util::testDistancePrints("astar", smallTownJutland, midZealand, denmark);
     util::testDistancePrints("landmarks", smallTownJutland, midZealand, denmark);
+
+    util::testDistancePrints("dijkstra", 4558222609, 494075047, denmark);
+    util::testDistancePrints("astar", 4558222609, 494075047, denmark);
+    util::testDistancePrints("landmarks", 4558222609, 494075047, denmark);
 }
 
 void landmarksEmptyListTest(){
@@ -262,14 +266,16 @@ void formatPrinting(){
 
 int main(){
     cout << "Testing" << endl;
-    //formatPrinting();
-    //testAdjlistSimpleDijkstra();
-    //testToyExampleDatastructure();
-    //testDijkstraToyExample();
-    //landmarksEmptyListTest();
-    //runMaltaTests();
-    reducedMaltaTests();
-    //runDenmarkTests();
+    formatPrinting();
+    testAdjlistSimpleDijkstra();
+    testToyExampleDatastructure();
+    testDijkstraToyExample();
+    landmarksEmptyListTest();
+    runMaltaTests();
+
+    runDenmarkTests();
+
+    //reducedMaltaTests();
 
     return 0;
 }

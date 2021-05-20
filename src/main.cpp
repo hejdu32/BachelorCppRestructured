@@ -2,53 +2,46 @@
 #include "headers/shortestPath.h"
 #include <iostream>
 
+
+
 using namespace std;
 
 void sendResultToJava(const string& method, const int &from, const int &to, spResultStruct &result, adjListCollection &adjCol){
     vector<long long> idvec = adjacencyList::prevNodeToShortestPath(adjCol, result.prevNode,from,to);
-    //printing the shortest path
-    string listOfNodes = "path " + method +" " + to_string(result.distanceToDest);
-    for(long long nodeId: idvec) {
-        listOfNodes += " " + to_string(nodeId);
-    }
-    cout << listOfNodes << endl;
-    cout << flush;
-    vector<string> nodesConsideredAsStrings;
+
+    vector<long long> nodesConsidered;
     for (int i = 0; i < result.prevNode.size(); ++i) {
         if (result.prevNode[i] != -1){
-            nodesConsideredAsStrings.emplace_back(to_string(adjacencyList::getLongID(adjCol,i)));
+            nodesConsidered.emplace_back(adjacencyList::getLongID(adjCol,i));
         }
     }
 
-    //printing distance, amount of nodes considered and the chosen landmark if one was used
-    cout << "info " + to_string(result.distanceToDest) << " "<< to_string(nodesConsideredAsStrings.size());
+    ofstream resultFile;
+    resultFile.open ("result");
+    if (!resultFile.is_open()){
+        cout << "error opening file\n";
+        cout << flush;
+    }
+
+    string firstLine ="info "+ method + " " + to_string(result.distanceToDest) + " "+ to_string(nodesConsidered.size());
     if (method == "landmarks"){
-        cout << " " + to_string(result.chosenLandmark);
+        firstLine = firstLine + " " + to_string(result.chosenLandmark);
     }
-    cout << endl;
-    cout << flush;
+    resultFile << firstLine << "\n";
 
-    //printing a list of all nodes considered during the ssp problem
-    //cout << "size of nodescons: " << nodesConsideredAsStrings.size() << endl;
-    int nodesPerLine = 10000;
-    if(!nodesConsideredAsStrings.empty()){
-        unsigned int timesToLoop = (nodesConsideredAsStrings.size()/nodesPerLine);
-        for (int i = 0; i < timesToLoop+1; ++i) {
-            int indexStart = i*nodesPerLine;
-            int indexEnd = indexStart+nodesPerLine;
-            if (indexEnd> nodesConsideredAsStrings.size()){
-                indexEnd = (int)nodesConsideredAsStrings.size();
-            }
-            string listToSend =  "nodesConsidered";
-
-            for (int j = indexStart; j < indexEnd; ++j) {
-                listToSend += " " +nodesConsideredAsStrings[j];
-            }
-            cout<<listToSend<< endl;
-            cout << flush;
-        }
+    string path = "path";
+    for (long long id:idvec) {
+        path += " " + to_string(id);
     }
-    cout<< "nodesConsidered end" << endl;
+    resultFile << path << "\n";
+
+    string nodesCons = "nodesConsid";
+    for (long long idNodeConsid: nodesConsidered) {
+        nodesCons += " " + to_string(idNodeConsid);
+    }
+    resultFile << nodesCons << "\n";
+    resultFile.close();
+    cout<< "resInFile\n";
     cout << flush;
 }
 
@@ -63,7 +56,7 @@ void runAlgorithm(const string& method, const string &nodeIdFrom, const string &
 
 void communicateWithJava() {
     enum commands{
-        ERROR,
+        Error,
         makeAdjacencyList,
         runDijkstra,
         runAstar,
@@ -71,7 +64,7 @@ void communicateWithJava() {
     };
     map<string, commands> mapStringToEnum =
             {
-                    {"error", ERROR},
+                    {"error", Error},
                     {"makeAdjacencyList", makeAdjacencyList},
                     {"runDijkstra", runDijkstra},
                     {"runAstar", runAstar},
@@ -85,7 +78,7 @@ void communicateWithJava() {
         vector<string> lineAsTokens(beg, end);
         commands switchType = mapStringToEnum[lineAsTokens[0]]; // lineAsTokens[0]
         switch (switchType) {
-            case ERROR: {
+            case Error: {
                 cout << "Could not understand input: "<< line << endl;
                 cout << flush;
                 break;
