@@ -132,7 +132,7 @@ void testDijkstraToyExample() {
 }
 
 void runMaltaTests(){
-    adjListCollection malta = util::setUpDatastructure("malta","normal");
+    adjListCollection malta = util::setUpDatastructure("malta", "normal", "dijkstra");
 
     //short distance downtown malta
     util::testDistancePrints("dijkstra",146885871, 1498913919,malta);
@@ -149,7 +149,7 @@ void runMaltaTests(){
     cout<< "malta tests on normal graph done"<< endl;
 }
 void reducedMaltaTests(){
-    adjListCollection malta = util::setUpDatastructure("malta","reduced");
+    adjListCollection malta = util::setUpDatastructure("malta", "reduced", "dijkstra");
 
     //short distance downtown malta
     util::testDistancePrints("dijkstra",146885871, 1498913919,malta);
@@ -167,7 +167,7 @@ void reducedMaltaTests(){
     cout<< "malta tests on reduced graph done"<< endl;
 }
 void runDenmarkTests(){
-    adjListCollection denmark = util::setUpDatastructure("denmark","normal");
+    adjListCollection denmark = util::setUpDatastructure("denmark", "normal", "dijkstra");
     long long itbyen = 957178678;
     long long borglum = 860574684;
     long long RandersHospital = 696724340;
@@ -226,9 +226,9 @@ void runDenmarkTests(){
 }
 
 void landmarksEmptyListTest(){
-    adjListCollection malta = util::setUpDatastructure("malta","normal");
+    adjListCollection malta = util::setUpDatastructure("malta", "normal", "dijkstra");
     //vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
-    vector<landmarksStruct> notEmpty = landmarks::initLandmarks(8, malta);
+    vector<landmarksStruct> notEmpty = landmarks::initLandmarks(8, malta, std::string());
     assert(notEmpty.size()==8);
     landmarksStruct firstElem = notEmpty[0];
     assert(!firstElem.distanceVec.empty());

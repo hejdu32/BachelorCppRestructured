@@ -87,7 +87,7 @@ void communicateWithJava() {
                 cout << "Parsing file"<<endl;
                 cout << flush;
                 shortestPath::createAdjacencyList(lineAsTokens[1], "file", adjCol);
-                vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(12, adjCol);
+                vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(12, adjCol, std::string());
                 for (int i = 0; i <initedLandmarks.size(); ++i) {
                     adjacencyList::setLandmarkStructs(adjCol, initedLandmarks[i]);
                 }

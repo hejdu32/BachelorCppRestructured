@@ -5,8 +5,10 @@
 #include "../headers/landmarks.h"
 #include "../headers/dijkstra.h"
 #include <queue>
+#include <utility>
 
 using namespace std;
+
 
 struct comparator{
     constexpr bool operator()(
@@ -48,7 +50,8 @@ adjListCollection landmarks::reverseAdjListCollection(adjListCollection &adjCol)
     return reversedAdjCol;
 }
 
-vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &adjListCollection) {
+vector<landmarksStruct>
+landmarks::initLandmarks(int amount, adjListCollection &adjListCollection, string landmarkSelection) {
     struct adjListCollection reversedAdjListCollection = reverseAdjListCollection(adjListCollection);
     vector<landmarksStruct> resultVector;
     int highestNbr = adjListCollection.idSoFar;
@@ -56,10 +59,10 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
     int randomNode = rand() % highestNbr;
     const double INF = std::numeric_limits<double>::infinity();
     //cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
-
-    //vector<vector<double>> markDistanceVectors;
+    vector<vector<double>> markDistanceVectors;
     for (int i = 0; i < amount+1; ++i) {
-        //if(i!=0){cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << "#map=8/56.216/12.816"<< endl;}
+
+        if(i!=0){cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;}
         landmarksStruct landmarksStruct;
         spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, adjListCollection);
         spResultStruct distanceFromEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, reversedAdjListCollection);
@@ -69,6 +72,21 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
         //markDistanceVectors.emplace_back((landmarksStruct.distanceVec));
 
         //cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << "#map=8/56.216/12.816"<< endl;
+        if(landmarkSelection == "euclidDistance"){
+            vector<double> euclidDistVector;
+            euclidDistVector.resize(highestNbr,0);
+            double sourceX = adjListCollection.xCoord[randomNode];
+            double sourceY = adjListCollection.yCoord[randomNode];
+            for (int j = 0; j < highestNbr; ++j) {
+                //if(j % 1000 == 0)
+                //    cout << "euclidloop: " << j << endl;
+                double targetX = adjListCollection.xCoord[j];
+                double targetY = adjListCollection.yCoord[j];
+                double euclidDistToJ = adjacencyList::euclidDistance(sourceX, sourceY, targetX, targetY);
+                euclidDistVector[j]=euclidDistToJ;
+            }
+            markDistanceVectors.emplace_back(euclidDistVector);
+        }
         resultVector.emplace_back(landmarksStruct);
 
 
@@ -79,11 +97,22 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
             double closestMark = INF;
             //for (vector<double> distVec : markDistanceVectors){
             for (int k = 0; k < resultVector.size(); ++k) {
-                double distToCandidate = resultVector[k].distanceVec[j];
+                double distToCandidate;
+                double distToCandidateDijkstra;
+                if(landmarkSelection == "euclidDistance"){
+                    distToCandidate = markDistanceVectors[k][j];
+                    distToCandidateDijkstra = resultVector[k].distanceVec[j];
+                }
+                else if(landmarkSelection == "dijkstraDistance"){
+                    distToCandidate = resultVector[k].distanceVec[j];
+                }
+                else {
+                    cout << "Unknown landmarkSelection provided: " << landmarkSelection << endl;
+                }
                 //if(j % 1000 == 0)
                 //    cout << "looping over landmarks: " << j << endl;
                 //double distToCandidate = distVec[j];
-                if (distToCandidate != INF && distToCandidate < closestMark)
+                if (distToCandidate != INF && distToCandidateDijkstra != INF && distToCandidate < closestMark)
                     closestMark = distToCandidate;
             }
             if (closestMark != INF && closestMark > longestDistToClosestMark) {
@@ -213,7 +242,7 @@ double landmarks::calcHeuristicDistance(int source, int target, landmarksStruct 
     if (isLowerBFromInfinite){
         if (isLowerBToInfinite){
             //this should only happen if the we have unconnected graphs
-            //cout << "both lower bounds are infinity something went wrong" << endl;
+            cout << "both lower bounds are infinity something went wrong" << endl;
         }
         return toLandmark;
     }
@@ -222,5 +251,9 @@ double landmarks::calcHeuristicDistance(int source, int target, landmarksStruct 
     }
     double largestLowerbound = max(toLandmark, fromLandmark);
     return largestLowerbound;
+
 }
+
+
+
 

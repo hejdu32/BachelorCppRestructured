@@ -20,17 +20,17 @@ using std::chrono::seconds;
 
 class util{
 public:
-    static adjListCollection setUpDatastructure(const string& country,const string& type){
+    static adjListCollection setUpDatastructure(const string &country, const string &type, string landmarkSelection) {
         adjListCollection adjCol;
-        string malta = "C:/Users/a/IdeaProjects/BachelorProject/malta";
-        string denmark = "C:/Users/a/IdeaProjects/BachelorProject/denmark";
+        string malta = "/home/simon/BachelorCppRestructured/resources/malta";
+        string denmark = "/home/simon/BachelorCppRestructured/resources/denmark";
 
         if(country== "malta"){
             cout << "parsing " << country << endl;
             auto t1 = high_resolution_clock::now();
             shortestPath::createAdjacencyList(malta, "file", adjCol);
             //vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
-            vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(8, adjCol);
+            vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(8, adjCol, landmarkSelection);
             for (int i = 0; i <initedLandmarks.size(); ++i) {
                 adjacencyList::setLandmarkStructs(adjCol, initedLandmarks[i]);
             }
@@ -43,7 +43,7 @@ public:
             auto t1 = high_resolution_clock::now();
             shortestPath::createAdjacencyList(denmark, "file", adjCol);
             //vector<long long> landmarksIDs = {2753462644,5745423643,57054823,2159452194,1177521825,489401874,283198526,1818976308,5098316959,971808896,1507951792,1116342996}; //hardcoded landmarks for denmark
-            vector<landmarksStruct> initedLandmarks = landmarks::initLandmarks(10, adjCol);
+            vector<landmarksStruct> initedLandmarks = landmarks::initLandmarks(10, adjCol, std::string());
             for (int i = 0; i <initedLandmarks.size(); ++i) {
                 adjacencyList::setLandmarkStructs(adjCol, initedLandmarks[i]);
             }
@@ -108,8 +108,8 @@ public:
         cout << strToPrint << endl;
     }
 
-    static void randomPointsComparrison(const string& country, int amountOfTests, int seed){
-        adjListCollection countryCol = setUpDatastructure(country,"normal");
+    static void randomPointsComparrisonAll(const string& country, int amountOfTests, int seed){
+        adjListCollection countryCol = setUpDatastructure(country, "normal", "dijkstra");
         int highestNbr = countryCol.idSoFar;
         //srand(seed);
         vector<int> ids(amountOfTests,0); int size = ids.size();
@@ -181,6 +181,84 @@ public:
         cout<< std::setprecision(3) << "avg a*   time: " << totalAstarTime/amountOfTests << "msec " << "avg nodesEval: " << astarNodesConsidered <<" worst case time: " << worstAstarTime << "msec"<< endl;
         cout<< std::setprecision(3) << "avg ALT  time: " << totalALTTime/amountOfTests << "msec " << "avg nodesEval: " << landmarksNodesConsidered <<" worst case time: " << worstALTTime << "msec"<< endl;
     }
+
+    static void randomPointsComparrisonSingle(const string& country, int amountOfTests, int seed, const string& algorithm, string landmarkSelection){
+        adjListCollection countryCol = setUpDatastructure(country, "normal", std::move(landmarkSelection));
+        int highestNbr = countryCol.idSoFar;
+        //srand(seed);
+        vector<int> ids(amountOfTests,0); int size = ids.size();
+        for (int i = 0; i < amountOfTests; ++i) {
+            ids[i] = rand() % highestNbr;
+        }
+        long long dijkNodesConsidered=0;
+        long long astarNodesConsidered=0;
+        long long landmarksNodesConsidered=0;
+
+        double totalDijkstraTime=0;
+        double worstDijkstraTime=0;
+
+        double totalAstarTime=0;
+        double worstAstarTime=0;
+
+        double totalALTTime=0;
+        double worstALTTime=0;
+
+        cout << "Testing "<< amountOfTests << " points in " <<  country<< endl;
+        //choosing from and to as i and i+1, in case of i=vector size to is i[0]
+        for (int i = 0; i < size; i++) {
+            int from = ids[i];
+            int to;
+            if(i == size-1){
+                to = ids[0];
+            }else{
+                to = ids[i+1];
+            }
+            if(i % 100 == 0 && i != 0){
+                cout << i << " comparisons have been tested" << endl;
+            }
+
+            if(algorithm == "dijkstra"){
+                //DIJKSTRA
+                pair<spResultStruct,double> dijkstraResult = testDistance("dijkstra", from, to, countryCol);
+                totalDijkstraTime+=dijkstraResult.second;
+                if (dijkstraResult.second > worstDijkstraTime) worstDijkstraTime = dijkstraResult.second;
+                dijkNodesConsidered += calcNodesConsidered(dijkstraResult.first.prevNode);
+            }
+            else if(algorithm == "astar") {
+                //ASTAR
+                pair<spResultStruct,double> astarResult = testDistance("astar", from, to, countryCol);
+                totalAstarTime+=astarResult.second;
+                if (astarResult.second > worstAstarTime) worstAstarTime = astarResult.second;
+                astarNodesConsidered += calcNodesConsidered(astarResult.first.prevNode);
+
+            }
+            else if(algorithm == "landmarks") {
+                //LANDMARKS
+                pair<spResultStruct,double> landmarksResult = testDistance("landmarks", from, to, countryCol);
+                testDistancePrints("landmarks", from, to, countryCol);
+                totalALTTime+=landmarksResult.second;
+                if (landmarksResult.second > worstALTTime) worstALTTime = landmarksResult.second;
+                landmarksNodesConsidered += calcNodesConsidered(landmarksResult.first.prevNode);
+
+            }
+            else {
+                cout << "Wrong input to algorithm field" << endl;
+            }
+        }
+        cout << std::fixed;
+        if(algorithm == "dijkstra"){
+            dijkNodesConsidered = dijkNodesConsidered/amountOfTests;
+            cout<< std::setprecision(3) << "avg dijk time: " << totalDijkstraTime/amountOfTests << "msec " << "avg nodesEval: " << dijkNodesConsidered <<" worst case time: " << worstDijkstraTime << "msec"<< endl;
+        }
+        else if(algorithm == "astar") {
+            astarNodesConsidered = astarNodesConsidered/amountOfTests;
+            cout<< std::setprecision(3) << "avg a*   time: " << totalAstarTime/amountOfTests << "msec " << "avg nodesEval: " << astarNodesConsidered <<" worst case time: " << worstAstarTime << "msec"<< endl;
+        }
+        else if (algorithm == "landmarks"){
+            landmarksNodesConsidered = landmarksNodesConsidered/amountOfTests;
+            cout<< std::setprecision(3) << "avg ALT  time: " << totalALTTime/amountOfTests << "msec " << "avg nodesEval: " << landmarksNodesConsidered <<" worst case time: " << worstALTTime << "msec"<< endl;
+        }
+        }
 
 };
 #endif //BACHELORCPPCMAKE_UTIL_H

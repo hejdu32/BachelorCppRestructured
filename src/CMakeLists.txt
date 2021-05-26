@@ -13,10 +13,12 @@ set(SOURCES
         implementation/landmarks.cpp
         headers/fileReader.h
         headers/shortestPath.h
+        headers/util.h
         implementation/customNode.cpp
         implementation/customWay.cpp
         implementation/nodesAndWaysWrapper.cpp)
 
-add_executable(BachelorCppCmake main.cpp ${SOURCES} headers/util.h)
+add_executable(BachelorCppCmake main.cpp ${SOURCES})
 add_executable(Tests tests.cpp ${SOURCES})
 add_executable(stressTest stressTest.cpp ${SOURCES})
+add_executable(testsForAnalysis testsForAnalysis.cpp ${SOURCES})
