@@ -146,7 +146,8 @@ using namespace std;
         //astar heurisctic algorithms
 
         static double distanceCalc(double srcX, double srcY, double destX, double destY, int speed){
-            return sqrt(pow(srcX - destX,2.0)+pow(srcY - destY,2.0))*pow(speed,-1);
+            //calculates distance, and compenstates from meters to kilometers
+            return sqrt(pow(srcX - destX,2.0)+pow(srcY - destY,2.0))*pow(1000,-1)*pow(speed,-1);
         }
 
         static double getxCoord(adjListCollection &collection, int value){return collection.xCoord[value];}

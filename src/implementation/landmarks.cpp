@@ -51,7 +51,7 @@ adjListCollection landmarks::reverseAdjListCollection(adjListCollection &adjCol)
 }
 
 vector<landmarksStruct>
-landmarks::initLandmarks(int amount, adjListCollection &adjListCollection, string landmarkSelection) {
+landmarks::initLandmarks(int amount, adjListCollection &adjListCollection, const string& landmarkSelection) {
     struct adjListCollection reversedAdjListCollection = reverseAdjListCollection(adjListCollection);
     vector<landmarksStruct> resultVector;
     int highestNbr = adjListCollection.idSoFar;
@@ -97,7 +97,7 @@ landmarks::initLandmarks(int amount, adjListCollection &adjListCollection, strin
             double closestMark = INF;
             //for (vector<double> distVec : markDistanceVectors){
             for (int k = 0; k < resultVector.size(); ++k) {
-                double distToCandidate;
+                double distToCandidate =0;
                 double distToCandidateDijkstra;
                 if(landmarkSelection == "euclidDistance"){
                     distToCandidate = markDistanceVectors[k][j];
@@ -242,7 +242,7 @@ double landmarks::calcHeuristicDistance(int source, int target, landmarksStruct 
     if (isLowerBFromInfinite){
         if (isLowerBToInfinite){
             //this should only happen if the we have unconnected graphs
-            cout << "both lower bounds are infinity something went wrong" << endl;
+            //cout << "both lower bounds are infinity something went wrong" << endl;
         }
         return toLandmark;
     }

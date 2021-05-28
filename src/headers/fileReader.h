@@ -68,8 +68,7 @@ public:
                 double srcY = adjacencyList::getyCoord(adjCol, firstNode);
                 double destX = adjacencyList::getxCoord(adjCol, secondNode);
                 double destY = adjacencyList::getyCoord(adjCol, secondNode);
-                double weight = adjacencyList::distanceCalc(srcX, srcY, destX, destY,
-                                                            maxSpeed); //adjacencyList::distanceCalc(srcX, srcY, destX, destY,maxSpeed);
+                double weight = adjacencyList::distanceCalc(srcX, srcY, destX, destY,maxSpeed); //adjacencyList::distanceCalc(srcX, srcY, destX, destY,maxSpeed);
                 if (isOneway) {
                     adjacencyList::addEdge(adjCol, firstNode, secondNode, weight);
                 } else {

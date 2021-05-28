@@ -15,7 +15,7 @@ public:
 
     //choose landmarks based on the furthest distance from a random node and then all other landmarks.
     static vector<landmarksStruct>
-    initLandmarks(int amount, adjListCollection &adjListCollection, string landmarkSelection);
+    initLandmarks(int amount, adjListCollection &adjListCollection, const string& landmarkSelection);
 
     static spResultStruct ALTShortestPath(int source, int dest, adjListCollection &adjCol);
 

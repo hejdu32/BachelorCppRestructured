@@ -21,10 +21,10 @@ using std::chrono::seconds;
 
 class util{
 public:
-    static adjListCollection setUpDatastructure(const string &country, const string &type, string landmarkSelection) {
+    static adjListCollection setUpDatastructure(const string &country, const string &type, const string& landmarkSelection) {
         adjListCollection adjCol;
-        string malta = "/home/simon/BachelorCppRestructured/resources/malta";
-        string denmark = "/home/simon/BachelorCppRestructured/resources/denmark";
+        string malta = "C:/Users/a/IdeaProjects/BachelorProject/malta";
+        string denmark = "C:/Users/a/IdeaProjects/BachelorProject/denmark";
 
         if(country== "malta"){
             cout << "parsing " << country << endl;
@@ -110,9 +110,19 @@ public:
     }
 
     static void randomPointsComparrisonAll(const string& country, int amountOfTests, int seed){
-        adjListCollection countryCol = setUpDatastructure(country, "normal", "dijkstra");
+        adjListCollection countryCol = setUpDatastructure(country, "normal", "dijkstraDistance");
+        const double INF = std::numeric_limits<double>::infinity();
+        cout<<"amount of nodes: " << countryCol.landmarksStructs[0].distanceVec.size() << endl;
+        for (const landmarksStruct& lmk:countryCol.landmarksStructs) {
+            int infDistNodes=0;
+            for (double dist:lmk.distanceVec) {
+                if (dist==INF)
+                    infDistNodes+=1;
+            }
+            cout<< "landmark: " << lmk.nodeID << " infNodes " << infDistNodes<< endl;
+        }
         int highestNbr = countryCol.idSoFar;
-        //srand(seed);
+        srand(seed);
         vector<int> ids(amountOfTests,0); int size = ids.size();
         for (int i = 0; i < amountOfTests; ++i) {
             ids[i] = rand() % highestNbr;
@@ -260,8 +270,8 @@ public:
         }
         }
 
-    static void randomPointsComparrisonSingleToFile(const string& country, int amountOfTests, int seed, const string& algorithm, string landmarkSelection){
-        adjListCollection countryCol = setUpDatastructure(country, "normal", std::move(landmarkSelection));
+    static void randomPointsComparrisonSingleToFile(const string& country, int amountOfTests, int seed, const string& algorithm, const string& landmarkSelection){
+        adjListCollection countryCol = setUpDatastructure(country, "normal", landmarkSelection);
         int highestNbr = countryCol.idSoFar;
         srand(seed);
         ofstream myfile;

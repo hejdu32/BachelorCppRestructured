@@ -15,8 +15,8 @@ void randomPointsLandmarks(){
     util::randomPointsComparrisonSingle("malta", 1000, 1337, "landmarks", "euclidDistance");
 }
 
-void writeRandomPointsToFile(const string& country, int amountOfTests, int seed, const string& algorithm, string landmarkSelection){
-    util::randomPointsComparrisonSingleToFile(country, amountOfTests, seed, algorithm, std::move(landmarkSelection));
+void writeRandomPointsToFile(const string& country, int amountOfTests, int seed, const string& algorithm, const string& landmarkSelection){
+    util::randomPointsComparrisonSingleToFile(country, amountOfTests, seed, algorithm, landmarkSelection);
 }
 
 int main(){
