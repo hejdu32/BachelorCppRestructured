@@ -235,7 +235,6 @@ public:
             else if(algorithm == "landmarks") {
                 //LANDMARKS
                 pair<spResultStruct,double> landmarksResult = testDistance("landmarks", from, to, countryCol);
-                testDistancePrints("landmarks", from, to, countryCol);
                 totalALTTime+=landmarksResult.second;
                 if (landmarksResult.second > worstALTTime) worstALTTime = landmarksResult.second;
                 landmarksNodesConsidered += calcNodesConsidered(landmarksResult.first.prevNode);
@@ -259,6 +258,64 @@ public:
             cout<< std::setprecision(3) << "avg ALT  time: " << totalALTTime/amountOfTests << "msec " << "avg nodesEval: " << landmarksNodesConsidered <<" worst case time: " << worstALTTime << "msec"<< endl;
         }
         }
+
+    static void randomPointsComparrisonSingleToFile(const string& country, int amountOfTests, int seed, const string& algorithm, string landmarkSelection){
+        adjListCollection countryCol = setUpDatastructure(country, "normal", std::move(landmarkSelection));
+        int highestNbr = countryCol.idSoFar;
+        srand(seed);
+        ofstream myfile;
+        myfile.open(country + "_" + algorithm);
+        vector<int> ids(amountOfTests,0); int size = ids.size();
+        for (int i = 0; i < amountOfTests; ++i) {
+            ids[i] = rand() % highestNbr;
+        }
+        cout << "Testing "<< amountOfTests << " points in " <<  country<< endl;
+        //choosing from and to as i and i+1, in case of i=vector size to is i[0]
+        for (int i = 0; i < size; i++) {
+            int from = ids[i];
+            int to;
+            if(i == size-1){
+                to = ids[0];
+            }else{
+                to = ids[i+1];
+            }
+
+            if(algorithm == "dijkstra"){
+                //DIJKSTRA
+                pair<spResultStruct,double> dijkstraResult = testDistance("dijkstra", from, to, countryCol);
+                double dijkstraTime = dijkstraResult.second;
+                int dijkstraNodesConsidered = calcNodesConsidered(dijkstraResult.first.prevNode);
+                double dijkstraDistance = dijkstraResult.first.distanceToDest;
+                string dataTobeWrittenToFile = to_string(dijkstraTime) + ":" + to_string(dijkstraNodesConsidered) + ":" + to_string(dijkstraDistance);
+                myfile << dataTobeWrittenToFile << "\n";
+            }
+            else if(algorithm == "astar") {
+                //ASTAR
+                pair<spResultStruct,double> astarResult = testDistance("astar", from, to, countryCol);
+                double astarTime = astarResult.second;
+                int astarNodesConsidered = calcNodesConsidered(astarResult.first.prevNode);
+                double astarDistance = astarResult.first.distanceToDest;
+                string dataTobeWrittenToFile = to_string(astarTime) + ":" + to_string(astarNodesConsidered) + ":" + to_string(astarDistance);
+                myfile << dataTobeWrittenToFile << "\n";
+            }
+            else if(algorithm == "landmarks") {
+                //LANDMARKS
+                pair<spResultStruct,double> landmarksResult = testDistance("landmarks", from, to, countryCol);
+                double landmarksTime = landmarksResult.second;
+                int landmarksNodesConsidered = calcNodesConsidered(landmarksResult.first.prevNode);
+                double landmarksDistance = landmarksResult.first.distanceToDest;
+                string dataTobeWrittenToFile = to_string(landmarksTime) + ":" + to_string(landmarksNodesConsidered) + ":" + to_string(landmarksDistance);
+                myfile << dataTobeWrittenToFile << "\n";
+            }
+            else {
+                cout << "Wrong input to algorithm field" << endl;
+            }
+        }
+        myfile.close();
+        cout << "File with country: " << country << " and algorithm: " << algorithm << endl;
+    }
+
+
 
 };
 #endif //BACHELORCPPCMAKE_UTIL_H
