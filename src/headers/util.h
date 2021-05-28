@@ -11,6 +11,7 @@
 #include <chrono>
 #include <utility>
 #include <iomanip>
+#include <algorithm>
 
 using std::chrono::high_resolution_clock;
 using std::chrono::duration_cast;
@@ -43,7 +44,7 @@ public:
             auto t1 = high_resolution_clock::now();
             shortestPath::createAdjacencyList(denmark, "file", adjCol);
             //vector<long long> landmarksIDs = {2753462644,5745423643,57054823,2159452194,1177521825,489401874,283198526,1818976308,5098316959,971808896,1507951792,1116342996}; //hardcoded landmarks for denmark
-            vector<landmarksStruct> initedLandmarks = landmarks::initLandmarks(10, adjCol, std::string());
+            vector<landmarksStruct> initedLandmarks = landmarks::initLandmarks(10, adjCol, landmarkSelection);
             for (int i = 0; i <initedLandmarks.size(); ++i) {
                 adjacencyList::setLandmarkStructs(adjCol, initedLandmarks[i]);
             }
@@ -286,7 +287,8 @@ public:
                 double dijkstraTime = dijkstraResult.second;
                 int dijkstraNodesConsidered = calcNodesConsidered(dijkstraResult.first.prevNode);
                 double dijkstraDistance = dijkstraResult.first.distanceToDest;
-                string dataTobeWrittenToFile = to_string(dijkstraTime) + ":" + to_string(dijkstraNodesConsidered) + ":" + to_string(dijkstraDistance);
+                string dataTobeWrittenToFile = to_string(dijkstraTime) + ":" + to_string(dijkstraNodesConsidered) + ":" + to_string(dijkstraDistance) + ":" + to_string(adjacencyList::getLongID(countryCol, from)) + ":" + to_string(adjacencyList::getLongID(countryCol, to));
+                std::replace(dataTobeWrittenToFile.begin(), dataTobeWrittenToFile.end(), '.', ',');
                 myfile << dataTobeWrittenToFile << "\n";
             }
             else if(algorithm == "astar") {
@@ -295,7 +297,8 @@ public:
                 double astarTime = astarResult.second;
                 int astarNodesConsidered = calcNodesConsidered(astarResult.first.prevNode);
                 double astarDistance = astarResult.first.distanceToDest;
-                string dataTobeWrittenToFile = to_string(astarTime) + ":" + to_string(astarNodesConsidered) + ":" + to_string(astarDistance);
+                string dataTobeWrittenToFile = to_string(astarTime) + ":" + to_string(astarNodesConsidered) + ":" + to_string(astarDistance)  + ":" + to_string(adjacencyList::getLongID(countryCol, from)) + ":" + to_string(adjacencyList::getLongID(countryCol, to));;
+                std::replace(dataTobeWrittenToFile.begin(), dataTobeWrittenToFile.end(), '.', ',');
                 myfile << dataTobeWrittenToFile << "\n";
             }
             else if(algorithm == "landmarks") {
@@ -304,7 +307,8 @@ public:
                 double landmarksTime = landmarksResult.second;
                 int landmarksNodesConsidered = calcNodesConsidered(landmarksResult.first.prevNode);
                 double landmarksDistance = landmarksResult.first.distanceToDest;
-                string dataTobeWrittenToFile = to_string(landmarksTime) + ":" + to_string(landmarksNodesConsidered) + ":" + to_string(landmarksDistance);
+                string dataTobeWrittenToFile = to_string(landmarksTime) + ":" + to_string(landmarksNodesConsidered) + ":" + to_string(landmarksDistance) + ":" + to_string(adjacencyList::getLongID(countryCol, from)) + ":" + to_string(adjacencyList::getLongID(countryCol, to)) + ":" + to_string(landmarksResult.first.chosenLandmark);
+                std::replace(dataTobeWrittenToFile.begin(), dataTobeWrittenToFile.end(), '.', ',');
                 myfile << dataTobeWrittenToFile << "\n";
             }
             else {
