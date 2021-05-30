@@ -141,85 +141,57 @@ landmarks::initLandmarks(int amount, adjListCollection &adjListCollection, const
 
 
 spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollection &adjCol) {
-    landmarksStruct bestForward = choseLandmarks(source, dest, adjCol);
-    //cout << "chosen landmark: "<< bestForward.nodeID << endl;
+    //Choose which landmark is best for this problem
+    landmarksStruct landmark = choseLandmarks(source, dest, adjCol);
     const double INF = std::numeric_limits<double>::infinity();
-    int sizeOfGraph = adjCol.idSoFar;
-    //initialize distance from source to everything to infinity
-    //distance from source to source to 0
+    int sizeOfGraph = adjCol.idSoFar; //Amount of nodes in graph
+    //initialize distance from source to everything to infinity, and source to 0
     vector<double> distance(sizeOfGraph, INF);
     distance[source] = 0;
     //has the node been seen vector
     vector<bool> nodeSeen(sizeOfGraph, false);
-    nodeSeen[source] = true;
-    //path from source to destination
+    //The pi array containing the path from source to destination
     vector<int> prevNode(sizeOfGraph, -1);
-    //prevNode[source] = -1;
     //heap of nodes to evaluate
     priority_queue<pair<int, double>, vector<pair<int, double>>, comparator> minHeap;
 
     minHeap.push(make_pair(source, 0.0));
-
-    int counter = 0;
     while (!minHeap.empty()){
         //pop the top element
         pair<int,double> head = minHeap.top();
         minHeap.pop();
         int headId = head.first;
 
-        //counter ++;
-        //if (counter%100000==0 && counter != 0){
-        //    //cout << "rebuilding beep boop optimzing beep boop" << endl;
-        //    bestForward = choseLandmarks(headId, dest, adjCol);
-        //    priority_queue<pair<int, double>, vector<pair<int, double>>, comparator> heapRebuild;
-        //    for (int i = 0; i < distance.size(); ++i) {
-        //        if (distance[i] != INF && !nodeSeen[i]){
-        //            double heuristIntermediate = calcHeuristicDistance(i, dest, bestForward);
-        //            heapRebuild.push(make_pair(i, distance[i] + heuristIntermediate));
-        //            minHeap = heapRebuild;
-        //        }
-        //    }
-        //}
-
-        //Have we reached destination check
-        if (headId==dest){
-            //we have arrived at destination and we are done
-            //cout << "we have hit destination \n";
+        if (headId==dest){ //Early stopping check
             break;
         }
-        //mark head as it has been seen and cant be considered again
-        nodeSeen[headId] = true;
-        //add new nodes to queue
+
+        nodeSeen[headId] = true; //mark head as considered
         auto connectedNodes = adjCol.adjlst[headId];
-        for(auto const &i: connectedNodes){
+        for(auto const &i: connectedNodes){ //Check adjacent nodes
             int node = i.first;
             double weight = i.second;
-            double heuristIntermediate = calcHeuristicDistance(node, dest, bestForward);
-            //relaxation step, in astar we add the heuristic weight in to consideration
-            if(!nodeSeen[node] && (distance[headId] + weight + heuristIntermediate) < distance[node] + heuristIntermediate){
-                //update the distance to the node and add it to the queue
+            double heuristIntermediate = calcHeuristicDistance(node, dest, landmark);
+            //relaxation step, in ALT we add the heuristic weight in to consideration
+            if(!nodeSeen[node] && (distance[headId] + weight) < distance[node]){
                 distance[node] = distance[headId]+weight;
-                prevNode[node] = headId; //remember the node before for finding the shortest path to destination
+                prevNode[node] = headId; //Update the previous node in the path
                 //add the heuristic to the weight so we sort based on it.
-
-                minHeap.push(make_pair(node, distance[node] + heuristIntermediate));//
+                minHeap.push(make_pair(node, distance[node] + heuristIntermediate));
             }
         }
 
     }
-    //cout << "astar nodes considered: " << nodesConsidered(nodeSeen) << endl;
-    spResultStruct result={distance[dest], distance, prevNode, bestForward.nodeID};
-
+    spResultStruct result = {distance[dest], distance, prevNode, landmark.nodeID};
     return result;
 }
 
 landmarksStruct landmarks::choseLandmarks(int source, int dest, adjListCollection &collection) {
     int bestBounding;
     double bestBound = 0;
-
+    //Iterate over all landmarks and choose the one with the best bound
     for(int i = 0; i < collection.landmarksStructs.size(); i++) {
         double lowerBound = calcHeuristicDistance(source, dest,collection.landmarksStructs[i]);
-        //cout << "landmark: " << collection.landmarksStructs[i].nodeID << " lowerBound " << lowerBound << endl;
         if(bestBound == 0 || lowerBound > bestBound) {
             bestBounding = i;
             bestBound = lowerBound;
@@ -229,20 +201,21 @@ landmarksStruct landmarks::choseLandmarks(int source, int dest, adjListCollectio
 }
 
 double landmarks::calcHeuristicDistance(int source, int target, landmarksStruct &currLandmark) {
+    //From source/Target to landmark
     double distFromSourceToLandmark = currLandmark.reversedDistanceVec[source];
     double distFromTargetToLandmark = currLandmark.reversedDistanceVec[target];
     double toLandmark = distFromSourceToLandmark - distFromTargetToLandmark;
-
+    //From landmark to source/Target
     double distFromLandmarkToSource = currLandmark.distanceVec[source];
     double distFromLandmarkToTarget = currLandmark.distanceVec[target];
     double fromLandmark = distFromLandmarkToTarget - distFromLandmarkToSource;
 
+    //handle the case where either source or target is not in the same graph as the landmark
     bool isLowerBFromInfinite =  !isfinite(fromLandmark);
     bool isLowerBToInfinite = !isfinite(toLandmark);
     if (isLowerBFromInfinite){
         if (isLowerBToInfinite){
             //this should only happen if the we have unconnected graphs
-            //cout << "both lower bounds are infinity something went wrong" << endl;
         }
         return toLandmark;
     }

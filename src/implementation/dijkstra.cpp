@@ -46,15 +46,13 @@ void printRoute(vector<int> const &prevPath, int source, int dest){
 
 spResultStruct dijkstra::djikstraShortestPath(int source, int dest, bool earlyStopping, adjListCollection &adjCol) {
     const double INF = std::numeric_limits<double>::infinity();
-    int sizeOfGraph = adjCol.idSoFar;
-    //initialize distance from source to everything to infinity
-    //distance from source to source to 0
+    int sizeOfGraph = adjCol.idSoFar; //Amount of nodes in graph
+    //initialize distance from source to everything to infinity, and source to 0
     vector<double> distance(sizeOfGraph,INF);
     distance[source] = 0;
-    //has the node been seen vector
+    //has the node been seen vector,
     vector<bool> nodeSeen(sizeOfGraph,false);
-    nodeSeen[source] = true;
-    //path from source to destination
+    //The pi array containing the path from source to destination
     vector<int> prevNode(sizeOfGraph,-1);
     //heap of nodes to evaluate
     priority_queue<pair<int,double>, vector<pair<int,double>>, comparator> minHeap;
@@ -66,21 +64,17 @@ spResultStruct dijkstra::djikstraShortestPath(int source, int dest, bool earlySt
         minHeap.pop();
         int headId = head.first;
 
-        //Have we reached destination check
-        if (earlyStopping && headId==dest){
-            //we have arrived at destination and we are done
-            //cout << "we have hit destination \n";
+        if (earlyStopping && headId==dest){ //Early stopping check
             break;
         }
 
-        //add new nodes to queue
+        nodeSeen[headId] = true; //mark head as considered
         auto connectedNodes = adjCol.adjlst[headId];
-        for(auto i: connectedNodes){
+        for(auto i: connectedNodes){ //Check adjacent nodes
             int node = i.first;
             double weight = i.second;
             double newDistance = distance[headId]+weight;
             double oldDistnace = distance[node];
-
             //relaxation step
             if(!nodeSeen[node] && newDistance < oldDistnace){
                 //update the distance to the node and add it to the queue
@@ -89,8 +83,6 @@ spResultStruct dijkstra::djikstraShortestPath(int source, int dest, bool earlySt
                 minHeap.push(make_pair(node,distance[node]));
             }
         }
-        //mark head as it has been seen and cant be considered again
-        nodeSeen[headId] = true;
     }
    spResultStruct result={distance[dest], distance, prevNode};
 
