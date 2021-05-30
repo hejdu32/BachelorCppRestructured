@@ -49,7 +49,7 @@ public:
 
                 int source;
                 int dest;
-                double weight;
+                float weight;
                 for (auto &value: lineAsTokens) {
                     char firstChar = value[0];
                     if (firstChar == '#') {

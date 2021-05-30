@@ -12,6 +12,7 @@
 #include <utility>
 #include <iomanip>
 #include <algorithm>
+#include <typeinfo>
 
 using std::chrono::high_resolution_clock;
 using std::chrono::duration_cast;
@@ -32,8 +33,8 @@ public:
             shortestPath::createAdjacencyList(malta, "file", adjCol);
             //vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
             vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(8, adjCol, landmarkSelection);
-            for (int i = 0; i <initedLandmarks.size(); ++i) {
-                adjacencyList::setLandmarkStructs(adjCol, initedLandmarks[i]);
+            for (auto & initedLandmark : initedLandmarks) {
+                adjacencyList::setLandmarkStructs(adjCol, initedLandmark);
             }
             //adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
             auto t2 = high_resolution_clock::now();
@@ -45,8 +46,8 @@ public:
             shortestPath::createAdjacencyList(denmark, "file", adjCol);
             //vector<long long> landmarksIDs = {2753462644,5745423643,57054823,2159452194,1177521825,489401874,283198526,1818976308,5098316959,971808896,1507951792,1116342996}; //hardcoded landmarks for denmark
             vector<landmarksStruct> initedLandmarks = landmarks::initLandmarks(10, adjCol, landmarkSelection);
-            for (int i = 0; i <initedLandmarks.size(); ++i) {
-                adjacencyList::setLandmarkStructs(adjCol, initedLandmarks[i]);
+            for (auto & initedLandmark : initedLandmarks) {
+                adjacencyList::setLandmarkStructs(adjCol, initedLandmark);
             }
             auto t2 = high_resolution_clock::now();
             duration<double, milli> ms_double = t2 - t1;
@@ -60,8 +61,8 @@ public:
 
     static int calcNodesConsidered(vector<int> &prevNode){
         int counterVisited = 0;
-        for (int i = 0; i < prevNode.size(); ++i) {
-            if (prevNode[i] != -1){
+        for (int i : prevNode) {
+            if (i != -1){
                 counterVisited++;
             }
         }
@@ -103,19 +104,23 @@ public:
         long long dest = adjacencyList::getLongID(adjCol,to);
         string strToPrint = "Disagreement " + method + " from: " + to_string(source) + " to: " + to_string(dest);
         if(method == "landmarks") {
-            strToPrint+= " landmark: "+to_string(wrongStruct.chosenLandmark);
+            strToPrint+= " lmk: "+to_string(wrongStruct.chosenLandmark);
         }
+        cout.precision(17);
+        cout << std::fixed << "dijk val: "<< typeid(dijkstraStruct.distanceToDest).name() << endl;
+        cout << std::fixed << "other val: "<< typeid(wrongStruct.distanceToDest).name() << endl;
         strToPrint += " dijkstra dist: " + to_string(dijkstraStruct.distanceToDest) + " " + method + " dist: "+ to_string(wrongStruct.distanceToDest);
-        cout << strToPrint << endl;
+        cout << std::fixed;
+        cout<< std::setprecision(10) << strToPrint << endl;
     }
 
     static void randomPointsComparrisonAll(const string& country, int amountOfTests, int seed){
         adjListCollection countryCol = setUpDatastructure(country, "normal", "dijkstraDistance");
-        const double INF = std::numeric_limits<double>::infinity();
+        const float INF = std::numeric_limits<float>::infinity();
         cout<<"amount of nodes: " << countryCol.landmarksStructs[0].distanceVec.size() << endl;
         for (const landmarksStruct& lmk:countryCol.landmarksStructs) {
             int infDistNodes=0;
-            for (double dist:lmk.distanceVec) {
+            for (float dist:lmk.distanceVec) {
                 if (dist==INF)
                     infDistNodes+=1;
             }
@@ -176,6 +181,11 @@ public:
                 printDisagreement("astar", from, to, dijkstraResult.first, astarResult.first, countryCol);
             }
             if (dijkstraResult.first.distanceToDest != landmarksResult.first.distanceToDest){
+                cout.precision(17);
+                cout << std::fixed << "dijk val: "<< typeid(dijkstraResult.first.distanceToDest).name() << ", " << dijkstraResult.first.distanceToDest << endl;
+                cout << std::fixed << "lmk val:  "<< typeid(landmarksResult.first.distanceToDest).name() << ", " << landmarksResult.first.distanceToDest << endl;
+                cout << "dijkstraResult.first.distanceToDest != landmarksResult.first.distanceToDest " << (dijkstraResult.first.distanceToDest != landmarksResult.first.distanceToDest) << endl;
+                cout << "0.168957 != 0.168957 " << (0.168957 != 0.168957) << endl;
                 landmarksFails++;
                 printDisagreement("landmarks", from, to, dijkstraResult.first, landmarksResult.first, countryCol);
             }

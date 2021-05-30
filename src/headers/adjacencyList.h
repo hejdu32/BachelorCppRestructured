@@ -16,22 +16,22 @@
 
 using namespace std;
     struct spResultStruct {
-        double distanceToDest;
-        vector<double> distanceVec;
+        float distanceToDest;
+        vector<float> distanceVec;
         vector<int> prevNode;
         long long chosenLandmark;
     };
     struct landmarksStruct {
         long long nodeID;
-        vector<double> distanceVec;
-        vector<double> reversedDistanceVec;
+        vector<float> distanceVec;
+        vector<float> reversedDistanceVec;
     };
     struct adjListCollection {
-        vector<vector<pair<int, double>>> adjlst{};
+        vector<vector<pair<int, float>>> adjlst{};
         map<long long, int> longIdToIntID{};
         map<int, long long> intIdToLongID{};
-        vector<double> xCoord;
-        vector<double> yCoord;
+        vector<float> xCoord;
+        vector<float> yCoord;
         vector<landmarksStruct> landmarksStructs{};
         int idSoFar = 0;
     };
@@ -54,26 +54,21 @@ using namespace std;
         }
 
 
-        static void addEdge(adjListCollection &collection, int source, int dest, double weight) {
-            //cout << "sour " << source << " arrsize " << collection.adjlst.size() << "\n";
+        static void addEdge(adjListCollection &collection, int source, int dest, float weight) {
             if (collection.adjlst.empty() || collection.adjlst.size() - 1 < source) {
-                vector<pair<int, double>> secondVector{};
+                vector<pair<int, float>> secondVector{};
                 collection.adjlst.resize(source + 1, secondVector);
             }
             if (collection.adjlst.size() > source) {
                 if (collection.adjlst[source].empty()) {
-                    vector<pair<int, double>> secondVector{make_pair(dest, weight)};
+                    vector<pair<int, float>> secondVector{make_pair(dest, weight)};
                     collection.adjlst[source] = secondVector;
-                    //cout << "first elem of vec is " << dest << "\n";
                 } else {
                     collection.adjlst[source].emplace_back(dest, weight);
-                    //cout << "new edge " << dest << "\n";
                 }
             }
         }
 
-        // Print adjacency list representaion ot graph
-        //this has partly been yoinked
         static void printGraph(adjListCollection &collection) {
             cout << "size of adjlist " << collection.adjlst.size() << endl;
             for (int s = 0; s < collection.adjlst.size(); s++) {
@@ -118,14 +113,14 @@ using namespace std;
             return spVectorLongs;
         }
 
-        static void addxCoord(adjListCollection &collection, int node, double xCoord) {
+        static void addxCoord(adjListCollection &collection, int node, float xCoord) {
             if (node+1 > collection.xCoord.size()){
                 collection.xCoord.resize(node+1);
             }
             collection.xCoord[node] = xCoord;
         }
 
-        static void addyCoord(adjListCollection &collection, int node, double yCoord){
+        static void addyCoord(adjListCollection &collection, int node, float yCoord){
             if (node+1 > collection.yCoord.size()){
                 collection.yCoord.resize(node+1);
             }
@@ -133,25 +128,25 @@ using namespace std;
         }
 
         //astar heuristic algorithms
-        static double euclidDistance(double srcX, double srcY, double destX, double destY){
+        static float euclidDistance(float srcX, float srcY, float destX, float destY){
             return sqrt(pow(srcX - destX,2.0)+pow(srcY - destY,2.0));
         }
-        static double manhatDistance(double srcX, double srcY, double destX, double destY, int speed){
-            return double(abs(srcX-destX)+abs(srcY-destY)* pow(speed,-1));
+        static float manhatDistance(float srcX, float srcY, float destX, float destY, int speed){
+            return float(abs(srcX-destX)+abs(srcY-destY)* pow(speed,-1));
         }
 
-        static double chebyDistance(double srcX, double srcY, double destX, double destY, int speed){
-            return double(max(abs(srcX-destX),abs(srcY-destY))*pow(speed,-1));
+        static float chebyDistance(float srcX, float srcY, float destX, float destY, int speed){
+            return float(max(abs(srcX-destX),abs(srcY-destY))*pow(1000,-1)*pow(speed,-1));
         }
         //astar heurisctic algorithms
 
-        static double distanceCalc(double srcX, double srcY, double destX, double destY, int speed){
+        static float distanceCalc(float srcX, float srcY, float destX, float destY, int speed){
             //calculates distance, and compenstates from meters to kilometers
-            return sqrt(pow(srcX - destX,2.0)+pow(srcY - destY,2.0))*pow(1000,-1)*pow(speed,-1);
+            return sqrt(pow(srcX - destX,2.0)+pow(srcY - destY,2.0))*pow((speed*1000),-1);
         }
 
-        static double getxCoord(adjListCollection &collection, int value){return collection.xCoord[value];}
-        static double getyCoord(adjListCollection &collection, int value){return collection.yCoord[value];}
+        static float getxCoord(adjListCollection &collection, int value){return collection.xCoord[value];}
+        static float getyCoord(adjListCollection &collection, int value){return collection.yCoord[value];}
 
         static void setLandmarkStructs(adjListCollection &collection, landmarksStruct &landmark){
             collection.landmarksStructs.emplace_back(move(landmark));

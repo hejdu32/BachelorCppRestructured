@@ -46,9 +46,9 @@ public:
             long long sourceID = stoll(line);
             int source = adjacencyList::insertInMaps(adjCol, sourceID);
             getline(data, line);
-            adjacencyList::addxCoord(adjCol, source, stod(line));
+            adjacencyList::addxCoord(adjCol, source, stof(line));
             getline(data, line);
-            adjacencyList::addyCoord(adjCol, source, stod(line));
+            adjacencyList::addyCoord(adjCol, source, stof(line));
         }
         for (int i = 0; i < ways; ++i) {
             getline(data, line);
@@ -64,11 +64,11 @@ public:
             for (int j = 2; j < lineAsTokens.size() - 1; ++j) {
                 int firstNode = adjacencyList::getIntID(adjCol, stoll(lineAsTokens[j]));
                 int secondNode = adjacencyList::getIntID(adjCol, stoll(lineAsTokens[j + 1]));
-                double srcX = adjacencyList::getxCoord(adjCol, firstNode);
-                double srcY = adjacencyList::getyCoord(adjCol, firstNode);
-                double destX = adjacencyList::getxCoord(adjCol, secondNode);
-                double destY = adjacencyList::getyCoord(adjCol, secondNode);
-                double weight = adjacencyList::distanceCalc(srcX, srcY, destX, destY,maxSpeed); //adjacencyList::distanceCalc(srcX, srcY, destX, destY,maxSpeed);
+                float srcX = adjacencyList::getxCoord(adjCol, firstNode);
+                float srcY = adjacencyList::getyCoord(adjCol, firstNode);
+                float destX = adjacencyList::getxCoord(adjCol, secondNode);
+                float destY = adjacencyList::getyCoord(adjCol, secondNode);
+                float weight = adjacencyList::distanceCalc(srcX, srcY, destX, destY,maxSpeed); //adjacencyList::distanceCalc(srcX, srcY, destX, destY,maxSpeed);
                 if (isOneway) {
                     adjacencyList::addEdge(adjCol, firstNode, secondNode, weight);
                 } else {
@@ -105,9 +105,9 @@ public:
             long long sourceID = stoll(line);
             int source = adjacencyList::insertInMaps(adjCol, sourceID);
             getline(data, line);
-            adjacencyList::addxCoord(adjCol, source, stod(line));
+            adjacencyList::addxCoord(adjCol, source, stof(line));
             getline(data, line);
-            adjacencyList::addyCoord(adjCol, source, stod(line));
+            adjacencyList::addyCoord(adjCol, source, stof(line));
         }
         cout << "we here"<< endl;
         for (int j = 0; j < adjlines; ++j) {
@@ -141,7 +141,7 @@ public:
             for (int k = 0; k < nodesConnectedTo; ++k) {
                 int idxVal = k*2;
                 int dest = adjacencyList::getIntID(adjCol, stoll(lineAsTokens[idxVal]));
-                double distance = stod(lineAsTokens[idxVal + 1]);
+                float distance = stof(lineAsTokens[idxVal + 1]);
                 adjacencyList::addEdge(adjCol, src, dest, distance);
                 //if (j >35520){cout << "added to list " << k<<endl;}
             }

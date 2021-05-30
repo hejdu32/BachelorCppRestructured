@@ -21,7 +21,7 @@ public:
 
     static landmarksStruct choseLandmarks(int source, int dest, adjListCollection &collection);
 
-    static double calcHeuristicDistance(int start, int dest, landmarksStruct &currLandmark);
+    static float calcHeuristicDistance(int start, int dest, landmarksStruct &currLandmark);
 
     static adjListCollection reverseAdjListCollection(adjListCollection &adjCol);
 };

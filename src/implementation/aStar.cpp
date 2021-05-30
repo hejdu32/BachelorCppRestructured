@@ -11,49 +11,40 @@ using namespace std;
 
 struct comparator{
     constexpr bool operator()(
-            pair<int, double> const& a,
-            pair<int, double> const& b)
+            pair<int, float> const& a,
+            pair<int, float> const& b)
     const noexcept
     {
         return a.second > b.second;
     }
 };
 
-int nodesConsidered(vector<bool> &nodesSeen){
-    int nodes = 0;
-    for (auto b:nodesSeen) {
-        if(b){nodes++;}
-    }
-    return nodes;
-}
 
-
-double calcHeuristicDistance(double fdestX, double fdestY, double nodeX, double nodeY, int speed){
+float calcHeuristicDistance(float fdestX, float fdestY, float nodeX, float nodeY, int speed){
     return adjacencyList::distanceCalc(fdestX, fdestY, nodeX, nodeY,speed);
 }
 
-
 spResultStruct aStar::aStarShortestPath(int source, int dest, adjListCollection &adjCol) {
-    const double INF = std::numeric_limits<double>::infinity();
+    const float INF = std::numeric_limits<float>::infinity();
     int speed=130;
     int sizeOfGraph = adjCol.idSoFar; //Amount of nodes in graph
     //initialize distance from source to everything to infinity, and source to 0
-    vector<double> distance(sizeOfGraph,INF);
+    vector<float> distance(sizeOfGraph,INF);
     distance[source] = 0;
     //has the node been seen vector
     vector<bool> nodeSeen(sizeOfGraph,false);
     //The pi array containing the path from source to destination
     vector<int> prevNode(sizeOfGraph,-1);
     //heap of nodes to evaluate
-    priority_queue<pair<int,double>, vector<pair<int,double>>, comparator> minHeap;
+    priority_queue<pair<int,float>, vector<pair<int,float>>, comparator> minHeap;
     //save source coordiantes for later use, fdest denotes final destination
-    double fdestX = adjacencyList::getxCoord(adjCol, dest);
-    double fdestY = adjacencyList::getyCoord(adjCol, dest);
+    float fdestX = adjacencyList::getxCoord(adjCol, dest);
+    float fdestY = adjacencyList::getyCoord(adjCol, dest);
 
     minHeap.push(make_pair(source,0.0+ calcHeuristicDistance(fdestX, fdestY, adjacencyList::getxCoord(adjCol, source), adjacencyList::getyCoord(adjCol, source),speed)));
     while (!minHeap.empty()){
         //pop the top element
-        pair<int,double> head = minHeap.top();
+        pair<int,float> head = minHeap.top();
         minHeap.pop();
         int headId = head.first;
 
@@ -65,10 +56,10 @@ spResultStruct aStar::aStarShortestPath(int source, int dest, adjListCollection 
         auto connectedNodes = adjCol.adjlst[headId];
         for(auto i: connectedNodes){ //Check adjacent nodes
             int node = i.first;
-            double weight = i.second;
-            double nodeX = adjacencyList::getxCoord(adjCol, node);  double nodeY = adjacencyList::getyCoord(adjCol, node);
-            double heuristIntermediate = calcHeuristicDistance(fdestX, fdestY, nodeX, nodeY, speed);
-            double newPotentialDistance = distance[headId]+weight;
+            float weight = i.second;
+            float nodeX = adjacencyList::getxCoord(adjCol, node);  float nodeY = adjacencyList::getyCoord(adjCol, node);
+            float heuristIntermediate = calcHeuristicDistance(fdestX, fdestY, nodeX, nodeY, speed);
+            float newPotentialDistance = distance[headId]+weight;
             //relaxation step, in astar we add the heuristic weight in to consideration
             if(!nodeSeen[node] && newPotentialDistance < distance[node]){
                 //update the distance to the node and add it to the queue
