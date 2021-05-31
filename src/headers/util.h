@@ -106,12 +106,9 @@ public:
         if(method == "landmarks") {
             strToPrint+= " lmk: "+to_string(wrongStruct.chosenLandmark);
         }
-        cout.precision(17);
-        cout << std::fixed << "dijk val: "<< typeid(dijkstraStruct.distanceToDest).name() << endl;
-        cout << std::fixed << "other val: "<< typeid(wrongStruct.distanceToDest).name() << endl;
         strToPrint += " dijkstra dist: " + to_string(dijkstraStruct.distanceToDest) + " " + method + " dist: "+ to_string(wrongStruct.distanceToDest);
-        cout << std::fixed;
-        cout<< std::setprecision(10) << strToPrint << endl;
+        cout.precision(17);
+        cout<< std::fixed << strToPrint << endl;
     }
 
     static void randomPointsComparrisonAll(const string& country, int amountOfTests, int seed){
@@ -134,9 +131,17 @@ public:
         }
         int astarFails = 0;
         int landmarksFails = 0;
-        long long dijkNodesConsidered=0;
-        long long astarNodesConsidered=0;
-        long long landmarksNodesConsidered=0;
+        double dijkNodesConsidered=0;
+        double dijkNodesInSSP =0;
+        double dijkConsidDivPath = 0;
+
+        double astarNodesConsidered=0;
+        double astarNodesInSSP =0;
+        double astarConsidDivPath = 0;
+
+        double landmarksNodesConsidered=0;
+        double landmarksNodesInSSP =0;
+        double landmarksConsidDivPath = 0;
 
         double totalDijkstraTime=0;
         double worstDijkstraTime=0;
@@ -165,42 +170,52 @@ public:
             totalDijkstraTime+=dijkstraResult.second;
             if (dijkstraResult.second > worstDijkstraTime) worstDijkstraTime = dijkstraResult.second;
             dijkNodesConsidered += calcNodesConsidered(dijkstraResult.first.prevNode);
+            //dijkNodesInSSP = adjacencyList::prevNodeToShortestPath(countryCol,dijkstraResult.first.prevNode,from,to).size();
+            //dijkConsidDivPath += dijkNodesConsidered/dijkNodesInSSP;
+            //cout << "dijk: " << dijkNodesConsidered << "/" << dijkNodesInSSP << "="<<dijkConsidDivPath << endl;
+
             //ASTAR
             pair<spResultStruct,double> astarResult = testDistance("astar", from, to, countryCol);
             totalAstarTime+=astarResult.second;
             if (astarResult.second > worstAstarTime) worstAstarTime = astarResult.second;
             astarNodesConsidered += calcNodesConsidered(astarResult.first.prevNode);
+            //astarNodesInSSP = adjacencyList::prevNodeToShortestPath(countryCol,astarResult.first.prevNode,from,to).size();
+            //astarConsidDivPath += astarNodesConsidered/astarNodesInSSP;
+
             //LANDMARKS
             pair<spResultStruct,double> landmarksResult = testDistance("landmarks", from, to, countryCol);
             totalALTTime+=landmarksResult.second;
             if (landmarksResult.second > worstALTTime) worstALTTime = landmarksResult.second;
             landmarksNodesConsidered += calcNodesConsidered(landmarksResult.first.prevNode);
+            //landmarksNodesInSSP = adjacencyList::prevNodeToShortestPath(countryCol,landmarksResult.first.prevNode,from,to).size();
+            //landmarksConsidDivPath += landmarksNodesConsidered/landmarksNodesInSSP;
+            //cout << "ALT: " << landmarksNodesConsidered << "/" << landmarksNodesInSSP << "="<<landmarksConsidDivPath << endl;
 
             if (dijkstraResult.first.distanceToDest != astarResult.first.distanceToDest){
                 astarFails++;
                 printDisagreement("astar", from, to, dijkstraResult.first, astarResult.first, countryCol);
             }
             if (dijkstraResult.first.distanceToDest != landmarksResult.first.distanceToDest){
-                cout.precision(17);
-                cout << std::fixed << "dijk val: "<< typeid(dijkstraResult.first.distanceToDest).name() << ", " << dijkstraResult.first.distanceToDest << endl;
-                cout << std::fixed << "lmk val:  "<< typeid(landmarksResult.first.distanceToDest).name() << ", " << landmarksResult.first.distanceToDest << endl;
-                cout << "dijkstraResult.first.distanceToDest != landmarksResult.first.distanceToDest " << (dijkstraResult.first.distanceToDest != landmarksResult.first.distanceToDest) << endl;
-                cout << "0.168957 != 0.168957 " << (0.168957 != 0.168957) << endl;
                 landmarksFails++;
                 printDisagreement("landmarks", from, to, dijkstraResult.first, landmarksResult.first, countryCol);
             }
+
+
         }
 
         dijkNodesConsidered = dijkNodesConsidered/amountOfTests;
+        dijkConsidDivPath = dijkConsidDivPath/amountOfTests;
         astarNodesConsidered = astarNodesConsidered/amountOfTests;
+        astarConsidDivPath = astarConsidDivPath/amountOfTests;
         landmarksNodesConsidered = landmarksNodesConsidered/amountOfTests;
+        landmarksConsidDivPath = landmarksConsidDivPath/amountOfTests;
 
         cout << "Finished " << amountOfTests<< " tests on " << country << endl;
         cout << "astar fails: " << astarFails << " landmark fails: " << landmarksFails << endl;
         cout << std::fixed;
-        cout<< std::setprecision(3) << "avg dijk time: " << totalDijkstraTime/amountOfTests << "msec " << "avg nodesEval: " << dijkNodesConsidered <<" worst case time: " << worstDijkstraTime << "msec"<< endl;
-        cout<< std::setprecision(3) << "avg a*   time: " << totalAstarTime/amountOfTests << "msec " << "avg nodesEval: " << astarNodesConsidered <<" worst case time: " << worstAstarTime << "msec"<< endl;
-        cout<< std::setprecision(3) << "avg ALT  time: " << totalALTTime/amountOfTests << "msec " << "avg nodesEval: " << landmarksNodesConsidered <<" worst case time: " << worstALTTime << "msec"<< endl;
+        cout<< std::setprecision(3) << "avg dijk time: " << totalDijkstraTime/amountOfTests << "msec " << " nodesConsid/Path: "<< dijkConsidDivPath << " avg nodesEval: " << dijkNodesConsidered <<" worst case time: " << worstDijkstraTime << "msec"<< endl;
+        cout<< std::setprecision(3) << "avg a*   time: " << totalAstarTime/amountOfTests << "msec " << " nodesConsid/Path: "<< astarConsidDivPath<< " avg nodesEval: " << astarNodesConsidered <<" worst case time: " << worstAstarTime << "msec"<< endl;
+        cout<< std::setprecision(3) << "avg ALT  time: " << totalALTTime/amountOfTests << "msec " << " nodesConsid/Path: "<< landmarksConsidDivPath<< " avg nodesEval: " << landmarksNodesConsidered <<" worst case time: " << worstALTTime << "msec"<< endl;
     }
 
     static void randomPointsComparrisonSingle(const string& country, int amountOfTests, int seed, const string& algorithm, string landmarkSelection){
