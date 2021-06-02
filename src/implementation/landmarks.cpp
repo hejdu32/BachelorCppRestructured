@@ -182,6 +182,8 @@ landmarksStruct landmarks::choseLandmarks(int source, int dest, adjListCollectio
     return collection.landmarksStructs[bestBounding];
 }
 
+
+
 float landmarks::calcHeuristicDistance(int source, int target, landmarksStruct &currLandmark) {
     //From source/Target to landmark
     float distFromSourceToLandmark = currLandmark.reversedDistanceVec[source];
@@ -193,20 +195,51 @@ float landmarks::calcHeuristicDistance(int source, int target, landmarksStruct &
     float fromLandmark = distFromLandmarkToTarget - distFromLandmarkToSource;
 
     //handle the case where either source or target is not in the same graph as the landmark
-    bool isLowerBFromInfinite =  !isfinite(fromLandmark);
+    bool isLowerBFromInfinite = !isfinite(fromLandmark);
     bool isLowerBToInfinite = !isfinite(toLandmark);
-    if (isLowerBFromInfinite){
-        if (isLowerBToInfinite){
+    if (isLowerBFromInfinite) {
+        if (isLowerBToInfinite) {
             //this should only happen if the we have unconnected graphs
         }
         return toLandmark;
     }
-    if (isLowerBToInfinite){
+    if (isLowerBToInfinite) {
         return fromLandmark;
     }
     float largestLowerbound = max(toLandmark, fromLandmark);
     return largestLowerbound;
 
+}
+    string landmarks::calcHeuristicDistanceWithReturn(int source, int target, landmarksStruct &currLandmark) {
+        //From source/Target to landmark
+        float distFromSourceToLandmark = currLandmark.reversedDistanceVec[source];
+        float distFromTargetToLandmark = currLandmark.reversedDistanceVec[target];
+        float toLandmark = distFromSourceToLandmark - distFromTargetToLandmark;
+        //From landmark to source/Target
+        float distFromLandmarkToSource = currLandmark.distanceVec[source];
+        float distFromLandmarkToTarget = currLandmark.distanceVec[target];
+        float fromLandmark = distFromLandmarkToTarget - distFromLandmarkToSource;
+
+        //handle the case where either source or target is not in the same graph as the landmark
+        bool isLowerBFromInfinite =  !isfinite(fromLandmark);
+        bool isLowerBToInfinite = !isfinite(toLandmark);
+        if (isLowerBFromInfinite){
+            if (isLowerBToInfinite){
+                //this should only happen if the we have unconnected graphs
+            }
+            return "toLandmark";
+        }
+        if (isLowerBToInfinite){
+            return "fromLandmark";
+        }
+        float largestLowerbound = max(toLandmark, fromLandmark);
+        if(toLandmark > fromLandmark)
+        {
+            return "toLandmark";
+        }
+        else {
+            return "fromLandmark";
+        }
 }
 
 
