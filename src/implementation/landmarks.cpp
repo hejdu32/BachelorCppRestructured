@@ -191,7 +191,7 @@ spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollectio
         }
 
     }
-    spResultStruct result = {distance[dest], distance, prevNode, landmark.nodeID};
+    spResultStruct result = {distance[dest], distance, prevNode, nodeSeen,landmark.nodeID};
     //cout << endl;
     return result;
 }

@@ -447,8 +447,9 @@ public:
                 int numberOfNodesInShortestPath = adjacencyList::prevNodeToShortestPath(countryCol, landmarksResult.first.prevNode, from, to).size();
                 double landmarksTime = landmarksResult.second;
                 int landmarksNodesConsidered = calcNodesConsidered(landmarksResult.first.prevNode);
+                int landmarksEdgesConsidered = countNumberOfEdgesConsidered(countryCol, landmarksResult.first);
                 double landmarksDistance = landmarksResult.first.distanceToDest;
-                string dataTobeWrittenToFile = to_string(landmarksTime) + ":" + to_string(landmarksNodesConsidered) + ":" + to_string(landmarksDistance) + ":" + to_string(adjacencyList::getLongID(countryCol, from)) + ":" + to_string(adjacencyList::getLongID(countryCol, to)) + ":" + to_string(landmarksResult.first.chosenLandmark) + ":" + landmarkFromOrTo + ":" + to_string(numberOfNodesInShortestPath);
+                string dataTobeWrittenToFile = to_string(landmarksTime) + ":" + to_string(landmarksNodesConsidered) + ":" + to_string(landmarksDistance) + ":" + to_string(adjacencyList::getLongID(countryCol, from)) + ":" + to_string(adjacencyList::getLongID(countryCol, to)) + ":" + to_string(landmarksResult.first.chosenLandmark) + ":" + landmarkFromOrTo + ":" + to_string(numberOfNodesInShortestPath) + ":" + to_string(landmarksEdgesConsidered);
                 std::replace(dataTobeWrittenToFile.begin(), dataTobeWrittenToFile.end(), '.', ',');
                 myfile << dataTobeWrittenToFile << "\n";
             }
@@ -458,6 +459,16 @@ public:
         }
         myfile.close();
         cout << "File with country: " << country << " and algorithm: " << algorithm << endl;
+    }
+
+    static int countNumberOfEdgesConsidered(adjListCollection &adjCol, spResultStruct &resultStruct){
+        int edgesConsidered = 0;
+        for(int i = 0; i < resultStruct.nodeSeen.size(); i++){
+            if(resultStruct.nodeSeen[i]){
+                edgesConsidered += adjCol.adjlst[i].size();
+            }
+        }
+        return edgesConsidered;
     }
 
 

@@ -20,9 +20,9 @@ void writeRandomPointsToFile(const string& country, int amountOfTests, int seed,
 }
 
 int main(){
-    //writeRandomPointsToFile("denmark", 10000, 1337, "landmarks", "dijkstraDistance");
-    writeRandomPointsToFile("denmark", 10000, 1337, "dijkstra", "dijkstraDistance");
-    writeRandomPointsToFile("denmark", 10000, 1337, "astar", "dijkstraDistance");
+    writeRandomPointsToFile("denmark", 1000, 1337, "landmarks", "dijkstraDistance");
+    //writeRandomPointsToFile("denmark", 10000, 1337, "dijkstra", "dijkstraDistance");
+    //writeRandomPointsToFile("denmark", 10000, 1337, "astar", "dijkstraDistance");
 
 }
 

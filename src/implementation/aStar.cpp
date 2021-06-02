@@ -71,7 +71,7 @@ spResultStruct aStar::aStarShortestPath(int source, int dest, adjListCollection 
         }
 
     }
-    spResultStruct result = {distance[dest], distance, prevNode};
+    spResultStruct result = {distance[dest], distance, prevNode, nodeSeen};
     return result;
 }
 
