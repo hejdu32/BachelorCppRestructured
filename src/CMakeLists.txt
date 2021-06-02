@@ -14,9 +14,7 @@ set(SOURCES
         headers/fileReader.h
         headers/shortestPath.h
         headers/util.h
-        implementation/customNode.cpp
-        implementation/customWay.cpp
-        implementation/nodesAndWaysWrapper.cpp)
+        )
 
 add_executable(BachelorCppCmake main.cpp ${SOURCES})
 add_executable(Tests tests.cpp ${SOURCES})

@@ -5,6 +5,8 @@
 #include "headers/util.h"
 
 int main(){
-    util::randomPointsComparrisonAll("malta", 1000, 1337);//rand()
+    //util::randomPointsComparrisonAll("denmark", 1000, 81236123);//rand()
+
+    util::amountOfLandmarksTest("denmark", 1000, 20, 123456);//rand()
     return 0;
 }

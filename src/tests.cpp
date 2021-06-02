@@ -132,7 +132,17 @@ void testDijkstraToyExample() {
 }
 
 void runMaltaTests(){
-    adjListCollection malta = util::setUpDatastructure("malta", "normal", "dijkstra");
+    adjListCollection malta = util::setUpDatastructure("malta", "normal", "dijkstraDistance");
+
+    int edges=0;
+    int maximumSeenNumEdges =0;
+    for (const vector<pair<int,float>>& vec: malta.adjlst) {
+        edges += vec.size();
+        if (vec.size()>maximumSeenNumEdges){
+            maximumSeenNumEdges = vec.size();
+        }
+    }
+    cout << "Number of edges: "<<edges<<" maximum amount of edges: " << maximumSeenNumEdges << endl;
 
     //short distance downtown malta
     util::testDistancePrints("dijkstra",146885871, 1498913919,malta);
@@ -149,7 +159,7 @@ void runMaltaTests(){
     cout<< "malta tests on normal graph done"<< endl;
 }
 void reducedMaltaTests(){
-    adjListCollection malta = util::setUpDatastructure("malta", "reduced", "dijkstra");
+    adjListCollection malta = util::setUpDatastructure("malta", "reduced", "dijkstraDistance");
 
     //short distance downtown malta
     util::testDistancePrints("dijkstra",146885871, 1498913919,malta);
@@ -167,7 +177,7 @@ void reducedMaltaTests(){
     cout<< "malta tests on reduced graph done"<< endl;
 }
 void runDenmarkTests(){
-    adjListCollection denmark = util::setUpDatastructure("denmark", "normal", "dijkstra");
+    adjListCollection denmark = util::setUpDatastructure("denmark", "normal", "dijkstraDistance");
     long long itbyen = 957178678;
     long long borglum = 860574684;
     long long RandersHospital = 696724340;
@@ -181,7 +191,17 @@ void runDenmarkTests(){
     long long northernZealand = 1305304467; //nord sjælland
     long long smallTownJutland = 8111797406;
     long long midZealand = 5335212690;
+    long long bornholm = 1516634128; //bornholm
 
+    int edges=0;
+    int maximumSeenNumEdges =0;
+    for (const vector<pair<int,float>>& vec: denmark.adjlst) {
+        edges += vec.size();
+        if (vec.size()>maximumSeenNumEdges){
+            maximumSeenNumEdges = vec.size();
+        }
+    }
+    cout << "Number of edges: "<<edges<<" maximum amount of edges: " << maximumSeenNumEdges << endl;
 
     //århus to århus
     util::testDistancePrints("dijkstra",itbyen, borglum,denmark);
@@ -223,12 +243,18 @@ void runDenmarkTests(){
     util::testDistancePrints("dijkstra", 4558222609, 494075047, denmark);
     util::testDistancePrints("astar", 4558222609, 494075047, denmark);
     util::testDistancePrints("landmarks", 4558222609, 494075047, denmark);
+
+    //skagen to bornholm
+    util::testDistancePrints("dijkstra", skagen, bornholm, denmark);
+    util::testDistancePrints("astar", skagen, bornholm, denmark);
+    util::testDistancePrints("landmarks", skagen, bornholm, denmark);
 }
 
 void landmarksEmptyListTest(){
-    adjListCollection malta = util::setUpDatastructure("malta", "normal", "dijkstra");
+    adjListCollection malta = util::setUpDatastructure("malta", "normal", "dijkstraDistance");
+    //malta = shortestPath::createAdjacencyList(malta, "file", malta);
     //vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
-    vector<landmarksStruct> notEmpty = landmarks::initLandmarks(8, malta, std::string());
+    vector<landmarksStruct> notEmpty = landmarks::initLandmarks(8, malta, "dijkstraDistance");
     assert(notEmpty.size()==8);
     landmarksStruct firstElem = notEmpty[0];
     assert(!firstElem.distanceVec.empty());
@@ -266,11 +292,12 @@ void formatPrinting(){
 
 int main(){
     cout << "Testing" << endl;
-    formatPrinting();
-    testAdjlistSimpleDijkstra();
-    testToyExampleDatastructure();
-    testDijkstraToyExample();
-    landmarksEmptyListTest();
+    //formatPrinting();
+    //testAdjlistSimpleDijkstra();
+    //testToyExampleDatastructure();
+    //testDijkstraToyExample();
+    //landmarksEmptyListTest();
+
     runMaltaTests();
 
     runDenmarkTests();
