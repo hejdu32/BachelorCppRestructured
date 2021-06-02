@@ -60,8 +60,7 @@ spResultStruct dijkstra::djikstraShortestPath(int source, int dest, bool earlySt
         }
     }
    spResultStruct result={distance[dest], distance, prevNode};
-
-    return result;
+   return result;
 }
 
 void toyExampleConverter(vector<int> const &prevPath, int source, int dest){

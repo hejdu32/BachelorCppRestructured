@@ -26,6 +26,7 @@ public:
         adjListCollection adjCol;
         string malta = "C:/Users/a/IdeaProjects/BachelorProject/malta";
         string denmark = "C:/Users/a/IdeaProjects/BachelorProject/denmark";
+        //string malta = "C:/Users/a/IdeaProjects/BachelorProject/czech-republic"; //czech
 
         if(country== "malta"){
             cout << "parsing " << country << endl;
@@ -36,7 +37,6 @@ public:
             for (auto & initedLandmark : initedLandmarks) {
                 adjacencyList::setLandmarkStructs(adjCol, initedLandmark);
             }
-            //adjacencyList::setLandmarkStructs(adjCol, initedLandmarks);
             auto t2 = high_resolution_clock::now();
             duration<double, milli> ms_double = t2 - t1;
             cout << "time: "<< (ms_double.count()/1000) << "seconds"<<endl;
@@ -44,8 +44,7 @@ public:
             cout << "parsing " << country << endl;
             auto t1 = high_resolution_clock::now();
             shortestPath::createAdjacencyList(denmark, "file", adjCol);
-            //vector<long long> landmarksIDs = {2753462644,5745423643,57054823,2159452194,1177521825,489401874,283198526,1818976308,5098316959,971808896,1507951792,1116342996}; //hardcoded landmarks for denmark
-            vector<landmarksStruct> initedLandmarks = landmarks::initLandmarks(10, adjCol, landmarkSelection);
+            vector<landmarksStruct> initedLandmarks = landmarks::initLandmarks(20, adjCol, landmarkSelection);
             for (auto & initedLandmark : initedLandmarks) {
                 adjacencyList::setLandmarkStructs(adjCol, initedLandmark);
             }
@@ -113,16 +112,19 @@ public:
 
     static void randomPointsComparrisonAll(const string& country, int amountOfTests, int seed){
         adjListCollection countryCol = setUpDatastructure(country, "normal", "dijkstraDistance");
-        const float INF = std::numeric_limits<float>::infinity();
+        //const float INF = std::numeric_limits<float>::infinity();
         cout<<"amount of nodes: " << countryCol.landmarksStructs[0].distanceVec.size() << endl;
+
         for (const landmarksStruct& lmk:countryCol.landmarksStructs) {
-            int infDistNodes=0;
-            for (float dist:lmk.distanceVec) {
-                if (dist==INF)
-                    infDistNodes+=1;
-            }
-            cout<< "landmark: " << lmk.nodeID << " infNodes " << infDistNodes<< endl;
+            //int infDistNodes=0;
+            //for (float dist:lmk.distanceVec) {
+            //    if (dist==INF)
+            //        infDistNodes+=1;
+            //}
+            cout << "https://www.openstreetmap.org/node/" << lmk.nodeID << "#map=8/56.216/12.816" << endl;
+            //cout<< "landmark: " << lmk.nodeID << " infNodes " << infDistNodes<< endl;
         }
+
         int highestNbr = countryCol.idSoFar;
         srand(seed);
         vector<int> ids(amountOfTests,0); int size = ids.size();
@@ -170,8 +172,7 @@ public:
             totalDijkstraTime+=dijkstraResult.second;
             if (dijkstraResult.second > worstDijkstraTime) worstDijkstraTime = dijkstraResult.second;
             dijkNodesConsidered += calcNodesConsidered(dijkstraResult.first.prevNode);
-            //dijkNodesInSSP = adjacencyList::prevNodeToShortestPath(countryCol,dijkstraResult.first.prevNode,from,to).size();
-            //dijkConsidDivPath += dijkNodesConsidered/dijkNodesInSSP;
+            dijkNodesInSSP += adjacencyList::prevNodeToShortestPath(countryCol,dijkstraResult.first.prevNode,from,to).size();
             //cout << "dijk: " << dijkNodesConsidered << "/" << dijkNodesInSSP << "="<<dijkConsidDivPath << endl;
 
             //ASTAR
@@ -179,16 +180,17 @@ public:
             totalAstarTime+=astarResult.second;
             if (astarResult.second > worstAstarTime) worstAstarTime = astarResult.second;
             astarNodesConsidered += calcNodesConsidered(astarResult.first.prevNode);
-            //astarNodesInSSP = adjacencyList::prevNodeToShortestPath(countryCol,astarResult.first.prevNode,from,to).size();
-            //astarConsidDivPath += astarNodesConsidered/astarNodesInSSP;
+            astarNodesInSSP += adjacencyList::prevNodeToShortestPath(countryCol,astarResult.first.prevNode,from,to).size();
+
 
             //LANDMARKS
             pair<spResultStruct,double> landmarksResult = testDistance("landmarks", from, to, countryCol);
             totalALTTime+=landmarksResult.second;
             if (landmarksResult.second > worstALTTime) worstALTTime = landmarksResult.second;
             landmarksNodesConsidered += calcNodesConsidered(landmarksResult.first.prevNode);
-            //landmarksNodesInSSP = adjacencyList::prevNodeToShortestPath(countryCol,landmarksResult.first.prevNode,from,to).size();
-            //landmarksConsidDivPath += landmarksNodesConsidered/landmarksNodesInSSP;
+            landmarksNodesInSSP += adjacencyList::prevNodeToShortestPath(countryCol,landmarksResult.first.prevNode,from,to).size();
+
+
             //cout << "ALT: " << landmarksNodesConsidered << "/" << landmarksNodesInSSP << "="<<landmarksConsidDivPath << endl;
 
             if (dijkstraResult.first.distanceToDest != astarResult.first.distanceToDest){
@@ -202,13 +204,15 @@ public:
 
 
         }
-
+        dijkConsidDivPath = dijkNodesConsidered/dijkNodesInSSP;
         dijkNodesConsidered = dijkNodesConsidered/amountOfTests;
-        dijkConsidDivPath = dijkConsidDivPath/amountOfTests;
+
+        astarConsidDivPath = astarNodesConsidered/astarNodesInSSP;
         astarNodesConsidered = astarNodesConsidered/amountOfTests;
-        astarConsidDivPath = astarConsidDivPath/amountOfTests;
+
+        landmarksConsidDivPath = landmarksNodesConsidered/landmarksNodesInSSP;
         landmarksNodesConsidered = landmarksNodesConsidered/amountOfTests;
-        landmarksConsidDivPath = landmarksConsidDivPath/amountOfTests;
+
 
         cout << "Finished " << amountOfTests<< " tests on " << country << endl;
         cout << "astar fails: " << astarFails << " landmark fails: " << landmarksFails << endl;
@@ -217,6 +221,101 @@ public:
         cout<< std::setprecision(3) << "avg a*   time: " << totalAstarTime/amountOfTests << "msec " << " nodesConsid/Path: "<< astarConsidDivPath<< " avg nodesEval: " << astarNodesConsidered <<" worst case time: " << worstAstarTime << "msec"<< endl;
         cout<< std::setprecision(3) << "avg ALT  time: " << totalALTTime/amountOfTests << "msec " << " nodesConsid/Path: "<< landmarksConsidDivPath<< " avg nodesEval: " << landmarksNodesConsidered <<" worst case time: " << worstALTTime << "msec"<< endl;
     }
+
+    static void amountOfLandmarksTest(const string& country, int amountOfTests, int landmarkAmount, int seed){
+        adjListCollection countryCol = setUpDatastructure(country, "normal", "dijkstraDistance");
+        vector<string> dataToFile;
+        int highestNbr = countryCol.idSoFar;
+        srand(seed);
+        vector<int> ids(amountOfTests,0); int size = ids.size();
+        for (int j = 0; j < amountOfTests; ++j) {
+            ids[j] = rand() % highestNbr;
+        }
+
+        for (int i = landmarkAmount; i > 0; --i) {
+            countryCol.landmarksStructs.resize(i);
+            cout << i << " landmarks: " << endl;
+            for (const landmarksStruct& lmk:countryCol.landmarksStructs) {
+                cout << "https://www.openstreetmap.org/node/" << lmk.nodeID << "#map=8/56.216/12.816" << endl;
+                //cout<< "landmark: " << lmk.nodeID << " infNodes " << infDistNodes<< endl;
+            }
+
+
+            int landmarksFails = 0;
+            double dijkNodesConsidered=0;
+            double dijkNodesInSSP =0;
+            double dijkConsidDivPath = 0;
+
+            double landmarksNodesConsidered=0;
+            double landmarksNodesInSSP =0;
+            double landmarksConsidDivPath = 0;
+
+            double totalDijkstraTime=0;
+            double worstDijkstraTime=0;
+
+            double totalALTTime=0;
+            double worstALTTime=0;
+            for (int k = 0; k < size; k++) {
+                int from = ids[k];
+                int to;
+                if (k == size - 1) {
+                    to = ids[0];
+                } else {
+                    to = ids[k + 1];
+                }
+                if (k % 10 == 0 && k != 0) {
+                    cout << k << " comparisons have been tested" << endl;
+                }
+                //DIJKSTRA
+                pair<spResultStruct, double> dijkstraResult = testDistance("dijkstra", from, to, countryCol);
+                totalDijkstraTime += dijkstraResult.second;
+                if (dijkstraResult.second > worstDijkstraTime) worstDijkstraTime = dijkstraResult.second;
+                dijkNodesConsidered += calcNodesConsidered(dijkstraResult.first.prevNode);
+                dijkNodesInSSP += adjacencyList::prevNodeToShortestPath(countryCol, dijkstraResult.first.prevNode, from,
+                                                                        to).size();
+                //LANDMARKS
+                pair<spResultStruct,double> landmarksResult = testDistance("landmarks", from, to, countryCol);
+                totalALTTime+=landmarksResult.second;
+                if (landmarksResult.second > worstALTTime) worstALTTime = landmarksResult.second;
+                landmarksNodesConsidered += calcNodesConsidered(landmarksResult.first.prevNode);
+                landmarksNodesInSSP += adjacencyList::prevNodeToShortestPath(countryCol,landmarksResult.first.prevNode,from,to).size();
+
+                if (dijkstraResult.first.distanceToDest != landmarksResult.first.distanceToDest){
+                    landmarksFails++;
+                    printDisagreement("landmarks", from, to, dijkstraResult.first, landmarksResult.first, countryCol);
+                }
+            }
+            dijkConsidDivPath = dijkNodesConsidered/dijkNodesInSSP;
+            dijkNodesConsidered = dijkNodesConsidered/amountOfTests;
+
+
+            landmarksConsidDivPath = landmarksNodesConsidered/landmarksNodesInSSP;
+            landmarksNodesConsidered = landmarksNodesConsidered/amountOfTests;
+            landmarksNodesInSSP = landmarksNodesInSSP/amountOfTests;
+            //datalayout: landmarkAmount, average running time, average nodes considered,  average nodes in path, landmarks
+            string values = to_string(i)+":"+ to_string(totalDijkstraTime/amountOfTests)+":"+ to_string(landmarksNodesConsidered)+":"+to_string(landmarksNodesInSSP);
+            for (const landmarksStruct& landmarker:countryCol.landmarksStructs) {
+                values.append(":"+to_string(landmarker.nodeID));
+            }
+            std::replace(values.begin(), values.end(), '.', ',');
+            dataToFile.emplace_back(values);
+
+            cout << "Finished " << amountOfTests<< " tests on " << country << endl;
+            cout << "landmark fails: " << landmarksFails << endl;
+            cout << std::fixed;
+            cout<< std::setprecision(3) << "avg dijk time: " << totalDijkstraTime/amountOfTests << "msec " << " nodesConsid/Path: "<< dijkConsidDivPath << " avg nodesEval: " << dijkNodesConsidered <<" worst case time: " << worstDijkstraTime << "msec"<< endl;
+            cout<< std::setprecision(3) << "avg ALT  time: " << totalALTTime/amountOfTests << "msec " << " nodesConsid/Path: "<< landmarksConsidDivPath<< " avg nodesEval: " << landmarksNodesConsidered <<" worst case time: " << worstALTTime << "msec"<< endl;
+        }
+
+        reverse(dataToFile.begin(),dataToFile.end());
+
+        ofstream myfile;
+        myfile.open(country+"LandmarkAmount"+ to_string(landmarkAmount));
+        for (const string& line:dataToFile) {
+            cout << line << "\n";
+            myfile << line << "\n";
+        }
+        }
 
     static void randomPointsComparrisonSingle(const string& country, int amountOfTests, int seed, const string& algorithm, string landmarkSelection){
         adjListCollection countryCol = setUpDatastructure(country, "normal", std::move(landmarkSelection));

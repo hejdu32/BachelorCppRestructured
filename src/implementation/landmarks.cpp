@@ -61,7 +61,7 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
     vector<vector<float>> markDistanceVectors;
     for (int i = 0; i < amount+1; ++i) {
 
-        if(i!=0){cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;}
+        if(i!=0){cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << "#map=8/56.216/12.816" << endl;}
         landmarksStruct landmarksStruct;
         spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, adjListCollection);
         spResultStruct distanceFromEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, reversedAdjListCollection);
@@ -121,6 +121,21 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
     return resultVector;
 }
 
+priority_queue<pair<int, float>, vector<pair<int, float>>, comparator> replaceHeap(landmarksStruct &landmark,vector<float> &distance, vector<bool> &nodeSeen, int dest, priority_queue<pair<int, float>, vector<pair<int, float>>, comparator> &minHeap){
+    priority_queue<pair<int, float>, vector<pair<int, float>>, comparator> newHeap;
+    while (!minHeap.empty()){
+        pair<int,float> head = minHeap.top();
+        minHeap.pop();
+        int nodeID = head.first;
+        if (!nodeSeen[nodeID]){
+        float newHeuristIntermediate = landmarks::calcHeuristicDistance(nodeID, dest, landmark);
+        float distanceToNode = distance[nodeID];
+        newHeap.push(make_pair(nodeID,distanceToNode+newHeuristIntermediate));
+        }
+    }
+    return newHeap;
+}
+
 
 spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollection &adjCol) {
     //Choose which landmark is best for this problem
@@ -138,6 +153,8 @@ spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollectio
     priority_queue<pair<int, float>, vector<pair<int, float>>, comparator> minHeap;
 
     minHeap.push(make_pair(source, 0.0));
+    //int counter = 0;
+    //cout << "old lmk: " << landmark.nodeID;
     while (!minHeap.empty()){
         //pop the top element
         pair<int,float> head = minHeap.top();
@@ -147,6 +164,16 @@ spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollectio
         if (headId==dest){ //Early stopping check
             break;
         }
+
+        //counter++;
+        //if (counter % 100000 == 0){
+        //    long long oldLmk = landmark.nodeID;
+        //    landmark = choseLandmarks(headId,dest,adjCol);
+        //    if (landmark.nodeID != oldLmk){
+        //        cout << " new landmark: " <<landmark.nodeID;
+        //        minHeap = replaceHeap(landmark, distance, nodeSeen, dest, minHeap);
+        //    }
+        //}
 
         nodeSeen[headId] = true; //mark head as considered
         auto connectedNodes = adjCol.adjlst[headId];
@@ -165,6 +192,7 @@ spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollectio
 
     }
     spResultStruct result = {distance[dest], distance, prevNode, landmark.nodeID};
+    //cout << endl;
     return result;
 }
 
@@ -206,7 +234,6 @@ float landmarks::calcHeuristicDistance(int source, int target, landmarksStruct &
     }
     float largestLowerbound = max(toLandmark, fromLandmark);
     return largestLowerbound;
-
 }
 
 
