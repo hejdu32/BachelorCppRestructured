@@ -213,7 +213,6 @@ public:
         landmarksConsidDivPath = landmarksNodesConsidered/landmarksNodesInSSP;
         landmarksNodesConsidered = landmarksNodesConsidered/amountOfTests;
 
-
         cout << "Finished " << amountOfTests<< " tests on " << country << endl;
         cout << "astar fails: " << astarFails << " landmark fails: " << landmarksFails << endl;
         cout << std::fixed;
@@ -292,7 +291,7 @@ public:
             landmarksConsidDivPath = landmarksNodesConsidered/landmarksNodesInSSP;
             landmarksNodesConsidered = landmarksNodesConsidered/amountOfTests;
             landmarksNodesInSSP = landmarksNodesInSSP/amountOfTests;
-            //datalayout: landmarkAmount, average running time, average nodes considered,  average nodes in path, landmarks
+            //datalayout: landmarkAmount, average running time, average nodes considered,  average nodes in path, landmarks....
             string values = to_string(i)+":"+ to_string(totalDijkstraTime/amountOfTests)+":"+ to_string(landmarksNodesConsidered)+":"+to_string(landmarksNodesInSSP);
             for (const landmarksStruct& landmarker:countryCol.landmarksStructs) {
                 values.append(":"+to_string(landmarker.nodeID));
@@ -414,6 +413,63 @@ public:
             }else{
                 to = ids[i+1];
             }
+
+            if(algorithm == "dijkstra"){
+                //DIJKSTRA
+                pair<spResultStruct,double> dijkstraResult = testDistance("dijkstra", from, to, countryCol);
+                double dijkstraTime = dijkstraResult.second;
+                int dijkstraNodesConsidered = calcNodesConsidered(dijkstraResult.first.prevNode);
+                double dijkstraDistance = dijkstraResult.first.distanceToDest;
+                string dataTobeWrittenToFile = to_string(dijkstraTime) + ":" + to_string(dijkstraNodesConsidered) + ":" + to_string(dijkstraDistance) + ":" + to_string(adjacencyList::getLongID(countryCol, from)) + ":" + to_string(adjacencyList::getLongID(countryCol, to));
+                std::replace(dataTobeWrittenToFile.begin(), dataTobeWrittenToFile.end(), '.', ',');
+                myfile << dataTobeWrittenToFile << "\n";
+            }
+            else if(algorithm == "astar") {
+                //ASTAR
+                pair<spResultStruct,double> astarResult = testDistance("astar", from, to, countryCol);
+                double astarTime = astarResult.second;
+                int astarNodesConsidered = calcNodesConsidered(astarResult.first.prevNode);
+                double astarDistance = astarResult.first.distanceToDest;
+                string dataTobeWrittenToFile = to_string(astarTime) + ":" + to_string(astarNodesConsidered) + ":" + to_string(astarDistance)  + ":" + to_string(adjacencyList::getLongID(countryCol, from)) + ":" + to_string(adjacencyList::getLongID(countryCol, to));;
+                std::replace(dataTobeWrittenToFile.begin(), dataTobeWrittenToFile.end(), '.', ',');
+                myfile << dataTobeWrittenToFile << "\n";
+            }
+            else if(algorithm == "landmarks") {
+                //LANDMARKS
+                pair<spResultStruct,double> landmarksResult = testDistance("landmarks", from, to, countryCol);
+                double landmarksTime = landmarksResult.second;
+                int landmarksNodesConsidered = calcNodesConsidered(landmarksResult.first.prevNode);
+                double landmarksDistance = landmarksResult.first.distanceToDest;
+                string dataTobeWrittenToFile = to_string(landmarksTime) + ":" + to_string(landmarksNodesConsidered) + ":" + to_string(landmarksDistance) + ":" + to_string(adjacencyList::getLongID(countryCol, from)) + ":" + to_string(adjacencyList::getLongID(countryCol, to)) + ":" + to_string(landmarksResult.first.chosenLandmark);
+                std::replace(dataTobeWrittenToFile.begin(), dataTobeWrittenToFile.end(), '.', ',');
+                myfile << dataTobeWrittenToFile << "\n";
+            }
+            else {
+                cout << "Wrong input to algorithm field" << endl;
+            }
+        }
+        myfile.close();
+        cout << "File with country: " << country << " and algorithm: " << algorithm << endl;
+    }
+
+
+    static void specialPointsComparrisonSingleToFile(const string& country,const string& identifier, int seed, const string& algorithm, const string& landmarkSelection,const vector<long long>& testPoints){
+        adjListCollection countryCol = setUpDatastructure(country, "normal", landmarkSelection);
+        srand(seed);
+        ofstream myfile;
+        myfile.open("special "+ identifier+" "+country + "_" + algorithm);
+        vector<int> ids;
+        for (long long memeid: testPoints) {
+            ids.emplace_back(adjacencyList::getIntID(countryCol,memeid));
+        }
+        int size = ids.size();
+
+        cout << "Testing "<< size/2 << " points in " <<  country<< endl;
+        //choosing from and to as i and i+1, in case of i=vector size to is i[0]
+        for (int i = 0; i < size; i+=2) {
+            int from = ids[i];
+            int to = ids[i + 1];
+
 
             if(algorithm == "dijkstra"){
                 //DIJKSTRA
