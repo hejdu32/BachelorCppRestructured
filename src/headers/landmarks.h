@@ -24,5 +24,7 @@ public:
     static float calcHeuristicDistance(int start, int dest, landmarksStruct &currLandmark);
 
     static adjListCollection reverseAdjListCollection(adjListCollection &adjCol);
+
+    static string calcHeuristicDistanceWithReturn(int source, int target, landmarksStruct &currLandmark);
 };
 #endif //BACHELORCPPCMAKE_LANDMARKS_H

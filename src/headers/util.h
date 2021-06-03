@@ -24,9 +24,8 @@ class util{
 public:
     static adjListCollection setUpDatastructure(const string &country, const string &type, const string& landmarkSelection) {
         adjListCollection adjCol;
-        string malta = "C:/Users/a/IdeaProjects/BachelorProject/malta";
-        string denmark = "C:/Users/a/IdeaProjects/BachelorProject/denmark";
-        //string malta = "C:/Users/a/IdeaProjects/BachelorProject/czech-republic"; //czech
+        string malta = "/home/simon/BachelorCppRestructured/resources/malta";
+        string denmark = "/home/simon/BachelorCppRestructured/resources/denmark";
 
         if(country== "malta"){
             cout << "parsing " << country << endl;
@@ -319,7 +318,7 @@ public:
     static void randomPointsComparrisonSingle(const string& country, int amountOfTests, int seed, const string& algorithm, string landmarkSelection){
         adjListCollection countryCol = setUpDatastructure(country, "normal", std::move(landmarkSelection));
         int highestNbr = countryCol.idSoFar;
-        //srand(seed);
+        srand(seed);
         vector<int> ids(amountOfTests,0); int size = ids.size();
         for (int i = 0; i < amountOfTests; ++i) {
             ids[i] = rand() % highestNbr;
@@ -413,34 +412,43 @@ public:
             }else{
                 to = ids[i+1];
             }
+            if(i % 100 == 0) {
+                cout << i << " tests written to file" << endl;
+            }
 
             if(algorithm == "dijkstra"){
                 //DIJKSTRA
                 pair<spResultStruct,double> dijkstraResult = testDistance("dijkstra", from, to, countryCol);
+                int numberOfNodesInShortestPath = adjacencyList::prevNodeToShortestPath(countryCol, dijkstraResult.first.prevNode, from, to).size();
                 double dijkstraTime = dijkstraResult.second;
                 int dijkstraNodesConsidered = calcNodesConsidered(dijkstraResult.first.prevNode);
                 double dijkstraDistance = dijkstraResult.first.distanceToDest;
-                string dataTobeWrittenToFile = to_string(dijkstraTime) + ":" + to_string(dijkstraNodesConsidered) + ":" + to_string(dijkstraDistance) + ":" + to_string(adjacencyList::getLongID(countryCol, from)) + ":" + to_string(adjacencyList::getLongID(countryCol, to));
+                string dataTobeWrittenToFile = to_string(dijkstraTime) + ":" + to_string(dijkstraNodesConsidered) + ":" + to_string(dijkstraDistance) + ":" + to_string(adjacencyList::getLongID(countryCol, from)) + ":" + to_string(adjacencyList::getLongID(countryCol, to)) + ":" + to_string(numberOfNodesInShortestPath);
                 std::replace(dataTobeWrittenToFile.begin(), dataTobeWrittenToFile.end(), '.', ',');
                 myfile << dataTobeWrittenToFile << "\n";
             }
             else if(algorithm == "astar") {
                 //ASTAR
                 pair<spResultStruct,double> astarResult = testDistance("astar", from, to, countryCol);
+                int numberOfNodesInShortestPath = adjacencyList::prevNodeToShortestPath(countryCol, astarResult.first.prevNode, from, to).size();
                 double astarTime = astarResult.second;
                 int astarNodesConsidered = calcNodesConsidered(astarResult.first.prevNode);
                 double astarDistance = astarResult.first.distanceToDest;
-                string dataTobeWrittenToFile = to_string(astarTime) + ":" + to_string(astarNodesConsidered) + ":" + to_string(astarDistance)  + ":" + to_string(adjacencyList::getLongID(countryCol, from)) + ":" + to_string(adjacencyList::getLongID(countryCol, to));;
+                string dataTobeWrittenToFile = to_string(astarTime) + ":" + to_string(astarNodesConsidered) + ":" + to_string(astarDistance)  + ":" + to_string(adjacencyList::getLongID(countryCol, from)) + ":" + to_string(adjacencyList::getLongID(countryCol, to)) + ":" + to_string(numberOfNodesInShortestPath);
                 std::replace(dataTobeWrittenToFile.begin(), dataTobeWrittenToFile.end(), '.', ',');
                 myfile << dataTobeWrittenToFile << "\n";
             }
             else if(algorithm == "landmarks") {
                 //LANDMARKS
                 pair<spResultStruct,double> landmarksResult = testDistance("landmarks", from, to, countryCol);
+                landmarksStruct landmark = landmarks::choseLandmarks(from, to, countryCol);
+                string landmarkFromOrTo = landmarks::calcHeuristicDistanceWithReturn(from, to, landmark);
+                int numberOfNodesInShortestPath = adjacencyList::prevNodeToShortestPath(countryCol, landmarksResult.first.prevNode, from, to).size();
                 double landmarksTime = landmarksResult.second;
                 int landmarksNodesConsidered = calcNodesConsidered(landmarksResult.first.prevNode);
+                int landmarksEdgesConsidered = countNumberOfEdgesConsidered(countryCol, landmarksResult.first);
                 double landmarksDistance = landmarksResult.first.distanceToDest;
-                string dataTobeWrittenToFile = to_string(landmarksTime) + ":" + to_string(landmarksNodesConsidered) + ":" + to_string(landmarksDistance) + ":" + to_string(adjacencyList::getLongID(countryCol, from)) + ":" + to_string(adjacencyList::getLongID(countryCol, to)) + ":" + to_string(landmarksResult.first.chosenLandmark);
+                string dataTobeWrittenToFile = to_string(landmarksTime) + ":" + to_string(landmarksNodesConsidered) + ":" + to_string(landmarksDistance) + ":" + to_string(adjacencyList::getLongID(countryCol, from)) + ":" + to_string(adjacencyList::getLongID(countryCol, to)) + ":" + to_string(landmarksResult.first.chosenLandmark) + ":" + landmarkFromOrTo + ":" + to_string(numberOfNodesInShortestPath) + ":" + to_string(landmarksEdgesConsidered);
                 std::replace(dataTobeWrittenToFile.begin(), dataTobeWrittenToFile.end(), '.', ',');
                 myfile << dataTobeWrittenToFile << "\n";
             }
@@ -450,6 +458,16 @@ public:
         }
         myfile.close();
         cout << "File with country: " << country << " and algorithm: " << algorithm << endl;
+    }
+
+    static int countNumberOfEdgesConsidered(adjListCollection &adjCol, spResultStruct &resultStruct){
+        int edgesConsidered = 0;
+        for(int i = 0; i < resultStruct.nodeSeen.size(); i++){
+            if(resultStruct.nodeSeen[i]){
+                edgesConsidered += adjCol.adjlst[i].size();
+            }
+        }
+        return edgesConsidered;
     }
 
 

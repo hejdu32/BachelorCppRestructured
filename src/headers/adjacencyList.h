@@ -19,6 +19,7 @@ using namespace std;
         float distanceToDest;
         vector<float> distanceVec;
         vector<int> prevNode;
+        vector<bool> nodeSeen;
         long long chosenLandmark;
     };
     struct landmarksStruct {

@@ -59,7 +59,7 @@ spResultStruct dijkstra::djikstraShortestPath(int source, int dest, bool earlySt
             }
         }
     }
-   spResultStruct result={distance[dest], distance, prevNode};
+   spResultStruct result={distance[dest], distance, prevNode, nodeSeen};
    return result;
 }
 
