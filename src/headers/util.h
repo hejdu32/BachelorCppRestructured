@@ -24,8 +24,8 @@ class util{
 public:
     static adjListCollection setUpDatastructure(const string &country, const string &type, const string& landmarkSelection) {
         adjListCollection adjCol;
-        string malta = "/home/simon/BachelorCppRestructured/resources/malta";
-        string denmark = "/home/simon/BachelorCppRestructured/resources/denmark";
+        string malta = "C:/Users/a/IdeaProjects/BachelorProject/malta";
+        string denmark = "C:/Users/a/IdeaProjects/BachelorProject/denmark";
 
         if(country== "malta"){
             cout << "parsing " << country << endl;
@@ -487,7 +487,6 @@ public:
         for (int i = 0; i < size; i+=2) {
             int from = ids[i];
             int to = ids[i + 1];
-
 
             if(algorithm == "dijkstra"){
                 //DIJKSTRA

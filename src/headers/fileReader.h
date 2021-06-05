@@ -56,10 +56,6 @@ public:
             istream_iterator<string> beg(buf), end;
             vector<string> lineAsTokens(beg, end);
             int maxSpeed = stoi(lineAsTokens[0]);
-            //Specifically ferryways have a speed of 68
-            //if (maxSpeed == 68) {
-            //    maxSpeed = std::numeric_limits<int>::infinity();
-            //}
             int isOneway = stoi(lineAsTokens[1]);
             for (int j = 2; j < lineAsTokens.size() - 1; ++j) {
                 int firstNode = adjacencyList::getIntID(adjCol, stoll(lineAsTokens[j]));
@@ -87,7 +83,7 @@ public:
         }
         cout << "]";
     }
-
+    //deprecated method used for reading the reduced adjlist
     static int readAdjFile(const string &pathToData, adjListCollection &adjCol) {
         //ios_base::sync_with_stdio(false);
         //cin.tie(NULL);
@@ -126,18 +122,7 @@ public:
             int nodesConnectedTo = stoi(lineAsTokens[1]);
             //remove the source and nodes connected to for easier looping
             lineAsTokens.erase(lineAsTokens.begin());
-            //if (j >35520){
-            //    cout<< "erased first "<< j << endl;
-            //}
             lineAsTokens.erase(lineAsTokens.begin());
-            //if (j >35520){
-            //    cout<< "erased secind string " << endl;
-            //    cout<< line<< endl;
-            //    printVec(lineAsTokens);
-            //    cout << nodesConnectedTo << endl;
-            //}
-            //cout << "found node: " << src << " cn to: " << nodesConnectedTo<< endl;
-            //cout << line<< endl;
             for (int k = 0; k < nodesConnectedTo; ++k) {
                 int idxVal = k*2;
                 int dest = adjacencyList::getIntID(adjCol, stoll(lineAsTokens[idxVal]));

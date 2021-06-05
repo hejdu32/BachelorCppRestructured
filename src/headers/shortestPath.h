@@ -79,16 +79,5 @@ public:
         cout << "]";
     }
 
-    static vector<int> findPath(vector<int> prevNode, int source, int destination){
-        int temdest = destination;
-        vector<int> shortestPath;
-        while (temdest != source && prevNode[temdest] != -1){
-            shortestPath.push_back(temdest);
-            temdest = prevNode[temdest];
-        }
-        shortestPath.push_back(source);
-        reverse(shortestPath.begin(),shortestPath.end());
-        return shortestPath;
-    }
 };
 #endif //SHORTESTPATH

@@ -27,7 +27,7 @@ vector<landmarksStruct> landmarks::initLandmarks(vector<long long> nodeIDs, adjL
         landmarksStruct landmarksStruct;
         spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(intID, intID, false, adjListCollection);
         landmarksStruct.distanceVec = distanceToEverything.distanceVec;
-        landmarksStruct.nodeID = id;    //is suppose to be id not intID
+        landmarksStruct.nodeID = id;
         resultVector.emplace_back(landmarksStruct);
     }
 
@@ -57,11 +57,9 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
 
     int randomNode = rand() % highestNbr;
     const float INF = std::numeric_limits<float>::infinity();
-    //cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << endl;
     vector<vector<float>> markDistanceVectors;
     for (int i = 0; i < amount+1; ++i) {
 
-        if(i!=0){cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << "#map=8/56.216/12.816" << endl;}
         landmarksStruct landmarksStruct;
         spResultStruct distanceToEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, adjListCollection);
         spResultStruct distanceFromEverything = dijkstra::djikstraShortestPath(randomNode, randomNode, false, reversedAdjListCollection);
@@ -70,7 +68,6 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
         landmarksStruct.nodeID = adjListCollection.intIdToLongID[randomNode];    //is suppose to be id not intID
         //markDistanceVectors.emplace_back((landmarksStruct.distanceVec));
 
-        //cout << "https://www.openstreetmap.org/node/" << adjListCollection.intIdToLongID[randomNode] << "#map=8/56.216/12.816"<< endl;
         if(landmarkSelection == "euclidDistance"){
             vector<float> euclidDistVector;
             euclidDistVector.resize(highestNbr,0);
@@ -164,17 +161,6 @@ spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollectio
         if (headId==dest){ //Early stopping check
             break;
         }
-
-        //counter++;
-        //if (counter % 100000 == 0){
-        //    long long oldLmk = landmark.nodeID;
-        //    landmark = choseLandmarks(headId,dest,adjCol);
-        //    if (landmark.nodeID != oldLmk){
-        //        cout << " new landmark: " <<landmark.nodeID;
-        //        minHeap = replaceHeap(landmark, distance, nodeSeen, dest, minHeap);
-        //    }
-        //}
-
         nodeSeen[headId] = true; //mark head as considered
         auto connectedNodes = adjCol.adjlst[headId];
         for(auto const &i: connectedNodes){ //Check adjacent nodes
@@ -237,7 +223,7 @@ float landmarks::calcHeuristicDistance(int source, int target, landmarksStruct &
     float largestLowerbound = max(toLandmark, fromLandmark);
     return largestLowerbound;
 }
-    string landmarks::calcHeuristicDistanceWithReturn(int source, int target, landmarksStruct &currLandmark) {
+string landmarks::calcHeuristicDistanceWithReturn(int source, int target, landmarksStruct &currLandmark) {
         //From source/Target to landmark
         float distFromSourceToLandmark = currLandmark.reversedDistanceVec[source];
         float distFromTargetToLandmark = currLandmark.reversedDistanceVec[target];
