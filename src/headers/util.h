@@ -43,7 +43,7 @@ public:
             cout << "parsing " << country << endl;
             auto t1 = high_resolution_clock::now();
             shortestPath::createAdjacencyList(denmark, "file", adjCol);
-            vector<landmarksStruct> initedLandmarks = landmarks::initLandmarks(20, adjCol, landmarkSelection);
+            vector<landmarksStruct> initedLandmarks = landmarks::initLandmarks(12, adjCol, landmarkSelection);
             for (auto & initedLandmark : initedLandmarks) {
                 adjacencyList::setLandmarkStructs(adjCol, initedLandmark);
             }
@@ -111,15 +111,15 @@ public:
 
     static void randomPointsComparrisonAll(const string& country, int amountOfTests, int seed){
         adjListCollection countryCol = setUpDatastructure(country, "normal", "dijkstraDistance");
-        //const float INF = std::numeric_limits<float>::infinity();
+        const float INF = std::numeric_limits<float>::infinity();
         cout<<"amount of nodes: " << countryCol.landmarksStructs[0].distanceVec.size() << endl;
 
         for (const landmarksStruct& lmk:countryCol.landmarksStructs) {
-            //int infDistNodes=0;
-            //for (float dist:lmk.distanceVec) {
-            //    if (dist==INF)
-            //        infDistNodes+=1;
-            //}
+            int infDistNodes=0;
+            for (float dist:lmk.distanceVec) {
+                if (dist==INF)
+                    infDistNodes+=1;
+            }
             cout << "https://www.openstreetmap.org/node/" << lmk.nodeID << "#map=8/56.216/12.816" << endl;
             //cout<< "landmark: " << lmk.nodeID << " infNodes " << infDistNodes<< endl;
         }

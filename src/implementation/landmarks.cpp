@@ -55,9 +55,12 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
     vector<landmarksStruct> resultVector;
     int highestNbr = adjListCollection.idSoFar;
 
-    int randomNode = rand() % highestNbr;
+    int randomNode = chooseRandomLandmark(adjListCollection);
     const float INF = std::numeric_limits<float>::infinity();
-    vector<vector<float>> markDistanceVectors;
+    vector<vector<float>> lmkDistanceVectors;
+
+
+
     for (int i = 0; i < amount+1; ++i) {
 
         landmarksStruct landmarksStruct;
@@ -66,45 +69,19 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
         landmarksStruct.distanceVec = distanceToEverything.distanceVec;
         landmarksStruct.reversedDistanceVec = distanceFromEverything.distanceVec;
         landmarksStruct.nodeID = adjListCollection.intIdToLongID[randomNode];    //is suppose to be id not intID
-        //markDistanceVectors.emplace_back((landmarksStruct.distanceVec));
 
-        if(landmarkSelection == "euclidDistance"){
-            vector<float> euclidDistVector;
-            euclidDistVector.resize(highestNbr,0);
-            float sourceX = adjListCollection.xCoord[randomNode];
-            float sourceY = adjListCollection.yCoord[randomNode];
-            for (int j = 0; j < highestNbr; ++j) {
-                //if(j % 1000 == 0)
-                //    cout << "euclidloop: " << j << endl;
-                float targetX = adjListCollection.xCoord[j];
-                float targetY = adjListCollection.yCoord[j];
-                float euclidDistToJ = adjacencyList::euclidDistance(sourceX, sourceY, targetX, targetY);
-                euclidDistVector[j]=euclidDistToJ;
-            }
-            markDistanceVectors.emplace_back(euclidDistVector);
-        }
         resultVector.emplace_back(landmarksStruct);
 
 
         float longestDistToClosestMark = 0.0;
         for (int j = 0; j <= highestNbr; ++j) { //loops over all nodes
             float closestMark = INF;
-            //for (vector<double> distVec : markDistanceVectors){
             for (int k = 0; k < resultVector.size(); ++k) {
                 float distToCandidate =0;
-                float distToCandidateDijkstra;
-                if(landmarkSelection == "euclidDistance"){
-                    distToCandidate = markDistanceVectors[k][j];
-                    distToCandidateDijkstra = resultVector[k].distanceVec[j];
-                }
-                else if(landmarkSelection == "dijkstraDistance"){
-                    distToCandidate = resultVector[k].distanceVec[j];
-                }
-                else {
-                    cout << "Unknown landmarkSelection provided: " << landmarkSelection << endl;
-                }
-                //double distToCandidate = distVec[j];
-                if (distToCandidate != INF && distToCandidateDijkstra != INF && distToCandidate < closestMark)
+
+                distToCandidate = resultVector[k].distanceVec[j];
+
+                if (distToCandidate != INF  && distToCandidate < closestMark)
                     closestMark = distToCandidate;
             }
             if (closestMark != INF && closestMark > longestDistToClosestMark) {
@@ -112,7 +89,7 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
                 randomNode = j;
             }
         }
-        //if(i==0) markDistanceVectors.pop_back();
+
     }
     resultVector.erase(resultVector.begin());
     return resultVector;
@@ -253,6 +230,28 @@ string landmarks::calcHeuristicDistanceWithReturn(int source, int target, landma
         else {
             return "fromLandmark";
         }
+}
+
+int landmarks::chooseRandomLandmark(adjListCollection &collection) {
+    int randomNode = rand() % collection.idSoFar;
+    //check if the chosen random initial landmark is connected to more than 50% of the graph
+    while(true){
+        spResultStruct intialLmk = dijkstra::djikstraShortestPath(randomNode, randomNode, false, collection);
+        int nodesConnectedToLmk=0;
+        for (int predNode:intialLmk.prevNode) {
+            if (predNode!=-1){
+                nodesConnectedToLmk++;
+            }
+        }
+        if (nodesConnectedToLmk > collection.idSoFar/2 ){
+            break;
+        }else{
+            cout<< "random landmark " << randomNode << " is bad \n";
+            randomNode = rand() % collection.idSoFar;
+            cout << "rechosing landmark as " << randomNode <<endl;
+        }
+    }
+    return  randomNode;
 }
 
 

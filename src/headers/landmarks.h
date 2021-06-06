@@ -26,5 +26,7 @@ public:
     static adjListCollection reverseAdjListCollection(adjListCollection &adjCol);
 
     static string calcHeuristicDistanceWithReturn(int source, int target, landmarksStruct &currLandmark);
+
+    static int chooseRandomLandmark(adjListCollection &collection);
 };
 #endif //BACHELORCPPCMAKE_LANDMARKS_H
