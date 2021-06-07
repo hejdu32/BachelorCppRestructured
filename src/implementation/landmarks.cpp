@@ -10,7 +10,7 @@
 using namespace std;
 
 
-struct comparator{
+struct comparator{ //comparator used in the priority queue for landmarks
     constexpr bool operator()(
             pair<int, float> const& a,
             pair<int, float> const& b)
@@ -19,7 +19,7 @@ struct comparator{
         return a.second > b.second;
     }
 };
-
+//method used to a user specified list of landmarks
 vector<landmarksStruct> landmarks::initLandmarks(vector<long long> nodeIDs, adjListCollection &adjListCollection) {
     vector<landmarksStruct> resultVector;
     for (auto id:nodeIDs) {
@@ -33,7 +33,7 @@ vector<landmarksStruct> landmarks::initLandmarks(vector<long long> nodeIDs, adjL
 
     return resultVector;
 }
-
+//This method takes an adjaceny list collection and returns a reverse version of it
 adjListCollection landmarks::reverseAdjListCollection(adjListCollection &adjCol){
     adjListCollection reversedAdjCol;
     reversedAdjCol.adjlst.resize(adjCol.idSoFar, vector<pair<int, float>>{});
@@ -49,8 +49,8 @@ adjListCollection landmarks::reverseAdjListCollection(adjListCollection &adjCol)
     reversedAdjCol.idSoFar = adjCol.idSoFar;
     return reversedAdjCol;
 }
-
-vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &adjListCollection, const string& landmarkSelection) {
+//This method selects the user specified amount of landmarks based on dijkstra distance.
+vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &adjListCollection) {
     struct adjListCollection reversedAdjListCollection = reverseAdjListCollection(adjListCollection);
     vector<landmarksStruct> resultVector;
     int highestNbr = adjListCollection.idSoFar;
@@ -58,7 +58,6 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
     int randomNode = chooseRandomLandmark(adjListCollection);
     const float INF = std::numeric_limits<float>::infinity();
     vector<vector<float>> lmkDistanceVectors;
-
 
 
     for (int i = 0; i < amount+1; ++i) {
@@ -95,44 +94,27 @@ vector<landmarksStruct> landmarks::initLandmarks(int amount, adjListCollection &
     return resultVector;
 }
 
-priority_queue<pair<int, float>, vector<pair<int, float>>, comparator> replaceHeap(landmarksStruct &landmark,vector<float> &distance, vector<bool> &nodeSeen, int dest, priority_queue<pair<int, float>, vector<pair<int, float>>, comparator> &minHeap){
-    priority_queue<pair<int, float>, vector<pair<int, float>>, comparator> newHeap;
-    while (!minHeap.empty()){
-        pair<int,float> head = minHeap.top();
-        minHeap.pop();
-        int nodeID = head.first;
-        if (!nodeSeen[nodeID]){
-        float newHeuristIntermediate = landmarks::calcHeuristicDistance(nodeID, dest, landmark);
-        float distanceToNode = distance[nodeID];
-        newHeap.push(make_pair(nodeID,distanceToNode+newHeuristIntermediate));
-        }
-    }
-    return newHeap;
-}
 
-
+//the ALT shortest path methods, the prerequsites to running this method is that the adjListCollection contains landmarks.
+//thus the user has run initLandmarks before running this method.
 spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollection &adjCol) {
-    //Choose which landmark is best for this problem
-    landmarksStruct landmark = choseLandmarks(source, dest, adjCol);
+    landmarksStruct landmark = choseLandmarks(source, dest, adjCol); //Choose which landmark is best for this problem
     const float INF = std::numeric_limits<float>::infinity();
     int sizeOfGraph = adjCol.idSoFar; //Amount of nodes in graph
-    //initialize distance from source to everything to infinity, and source to 0
-    vector<float> distance(sizeOfGraph, INF);
+
+    vector<float> distance(sizeOfGraph, INF); //initialize distance from source to everything to infinity, and source to 0
     distance[source] = 0;
-    //has the node been seen vector
-    vector<bool> nodeSeen(sizeOfGraph, false);
-    //The pi array containing the path from source to destination
-    vector<int> prevNode(sizeOfGraph, -1);
-    //heap of nodes to evaluate
-    priority_queue<pair<int, float>, vector<pair<int, float>>, comparator> minHeap;
+
+    vector<bool> nodeSeen(sizeOfGraph, false); //has the node been seen vector
+
+    vector<int> prevNode(sizeOfGraph, -1); //The pi array containing the path from source to destination
+
+    priority_queue<pair<int, float>, vector<pair<int, float>>, comparator> minHeap; //heap of nodes to evaluate
 
     minHeap.push(make_pair(source, 0.0));
-    //int counter = 0;
-    //cout << "old lmk: " << landmark.nodeID;
     while (!minHeap.empty()){
-        //pop the top element
         pair<int,float> head = minHeap.top();
-        minHeap.pop();
+        minHeap.pop(); //pop the top element
         int headId = head.first;
 
         if (headId==dest){ //Early stopping check
@@ -155,10 +137,9 @@ spResultStruct landmarks::ALTShortestPath(int source, int dest, adjListCollectio
 
     }
     spResultStruct result = {distance[dest], distance, prevNode, nodeSeen,landmark.nodeID};
-    //cout << endl;
     return result;
 }
-
+//given two points iterate over all landmarks and select the best bounding landmark.
 landmarksStruct landmarks::choseLandmarks(int source, int dest, adjListCollection &collection) {
     int bestBounding;
     float bestBound = 0;
@@ -174,7 +155,7 @@ landmarksStruct landmarks::choseLandmarks(int source, int dest, adjListCollectio
 }
 
 
-
+//returns the largest lowerbound of a specific landmark on a source and target node.
 float landmarks::calcHeuristicDistance(int source, int target, landmarksStruct &currLandmark) {
     //From source/Target to landmark
     float distFromSourceToLandmark = currLandmark.reversedDistanceVec[source];
@@ -200,6 +181,7 @@ float landmarks::calcHeuristicDistance(int source, int target, landmarksStruct &
     float largestLowerbound = max(toLandmark, fromLandmark);
     return largestLowerbound;
 }
+//method used for testing that returns the wheter the landmark used during runtime of a problem was a from or to landmark
 string landmarks::calcHeuristicDistanceWithReturn(int source, int target, landmarksStruct &currLandmark) {
         //From source/Target to landmark
         float distFromSourceToLandmark = currLandmark.reversedDistanceVec[source];
@@ -231,7 +213,7 @@ string landmarks::calcHeuristicDistanceWithReturn(int source, int target, landma
             return "fromLandmark";
         }
 }
-
+//Helper method for initLandmarks, this method picks a random node in the graph and tests wheter it is connected to 50% of the graph, if not repick.
 int landmarks::chooseRandomLandmark(adjListCollection &collection) {
     int randomNode = rand() % collection.idSoFar;
     //check if the chosen random initial landmark is connected to more than 50% of the graph

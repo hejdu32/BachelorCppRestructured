@@ -15,30 +15,34 @@
 
 
 using namespace std;
+    //the struct returned by a shortest path algorithm
     struct spResultStruct {
-        float distanceToDest;
-        vector<float> distanceVec;
-        vector<int> prevNode;
-        vector<bool> nodeSeen;
-        long long chosenLandmark;
+        float distanceToDest;       //the distance from source to target
+        vector<float> distanceVec;  //the vector of all distances calcualted during runtime
+        vector<int> prevNode;       //the pi vector containing the predecessor of any evaluated node
+        vector<bool> nodeSeen;      //the boolean vector describing every node that has been seen
+        long long chosenLandmark;   // if a landmark was used during runtime, this is the chosen landmark
     };
+    //the struct of a calculated landmark
     struct landmarksStruct {
-        long long nodeID;
-        vector<float> distanceVec;
-        vector<float> reversedDistanceVec;
+        long long nodeID;                   //the node id of the landmark
+        vector<float> distanceVec;          //the distance vector from the landmark to everynode
+        vector<float> reversedDistanceVec;  //the distance vector from every node to landmark
     };
+    //the adjacency list collection contains the adjacenylist, the maps of every node, the corresponding long id, their coordinates and the calcualted landmarks
     struct adjListCollection {
-        vector<vector<pair<int, float>>> adjlst{};
-        map<long long, int> longIdToIntID{};
-        map<int, long long> intIdToLongID{};
-        vector<float> xCoord;
-        vector<float> yCoord;
-        vector<landmarksStruct> landmarksStructs{};
-        int idSoFar = 0;
+        vector<vector<pair<int, float>>> adjlst{};  //the adjacency list
+        map<long long, int> longIdToIntID{};        //map from long long ids to internal int ids
+        map<int, long long> intIdToLongID{};        //map from internal int ids to long long ids
+        vector<float> xCoord;                       //x-coordinates for every node
+        vector<float> yCoord;                       //y-coordinates for every node
+        vector<landmarksStruct> landmarksStructs{}; //collection of all landmark calcualted during setup
+        int idSoFar = 0;                            //counter used for generating unique int ids for every node, this is also an indicator of the amount of nodes stored in the graph
     };
 
     class adjacencyList {
     public:
+        //inserts node into the maps of the adjListCollection
         static int insertInMaps(adjListCollection &collection, long long id) {
             //if the key doesnt already exsist
             int newId;
@@ -53,8 +57,7 @@ using namespace std;
             }
             return newId;
         }
-
-
+        //adds and edge from a source to a target node with a specified weight to the adjacencylist
         static void addEdge(adjListCollection &collection, int source, int dest, float weight) {
             if (collection.adjlst.empty() || collection.adjlst.size() - 1 < source) {
                 vector<pair<int, float>> secondVector{};
@@ -69,22 +72,11 @@ using namespace std;
                 }
             }
         }
-
-        static void printGraph(adjListCollection &collection) {
-            cout << "size of adjlist " << collection.adjlst.size() << endl;
-            for (int s = 0; s < collection.adjlst.size(); s++) {
-                cout << "Node " << adjacencyList::getLongID(collection,s);
-                for (auto &pair: collection.adjlst[s]) {
-                    cout << " dest: " << adjacencyList::getLongID(collection,pair.first) << " weight: " << pair.second;
-                }
-                cout << endl;
-            }
-        }
-
+        //test method used to print the read adjacency list to file
         static void graphToFile(adjListCollection &collection) {
             cout << "making file "<< endl;
             ofstream myfile;
-            myfile.open ("abcd");
+            myfile.open ("testgraph");
             myfile  << "size of adjlist " << collection.adjlst.size() << "\n";
             for (int s = 0; s < collection.adjlst.size(); s++) {
                 myfile << "Node " << adjacencyList::getLongID(collection,s);
@@ -96,7 +88,8 @@ using namespace std;
             myfile.close();
             cout << "file done"<< endl;
         }
-
+        //given a target and source node reads though the prevnode vector and calculates the nodes in the shortest path from source to target
+        //these are then returned as long long ids
         static vector<long long> prevNodeToShortestPath(adjListCollection &collection, vector<int> prevNode, int source, int destination) {
             int temdest = destination;
             vector<int> shortestPath;
@@ -113,14 +106,14 @@ using namespace std;
             }
             return spVectorLongs;
         }
-
+        //adds a x-coordinate for a node
         static void addxCoord(adjListCollection &collection, int node, float xCoord) {
             if (node+1 > collection.xCoord.size()){
                 collection.xCoord.resize(node+1);
             }
             collection.xCoord[node] = xCoord;
         }
-
+        //adds a y-coordinate for a node
         static void addyCoord(adjListCollection &collection, int node, float yCoord){
             if (node+1 > collection.yCoord.size()){
                 collection.yCoord.resize(node+1);
@@ -128,19 +121,8 @@ using namespace std;
             collection.yCoord[node] = yCoord;
         }
 
-        //astar heuristic algorithms
-        static float euclidDistance(float srcX, float srcY, float destX, float destY){
-            return sqrt(pow(srcX - destX,2.0)+pow(srcY - destY,2.0));
-        }
-        static float manhatDistance(float srcX, float srcY, float destX, float destY, int speed){
-            return float(abs(srcX-destX)+abs(srcY-destY)* pow(speed,-1));
-        }
-
-        static float chebyDistance(float srcX, float srcY, float destX, float destY, int speed){
-            return float(max(abs(srcX-destX),abs(srcY-destY))*pow(1000,-1)*pow(speed,-1));
-        }
-        //astar heurisctic algorithms
-
+        //distance calculation for two nodes given their coordiantes and a speed between them
+        //notice the euclid distnace calculated is divided by 1000 to convert to kilometers from meters
         static float distanceCalc(float srcX, float srcY, float destX, float destY, int speed){
             //calculates distance, and compenstates from meters to kilometers
             return sqrt(pow(srcX - destX,2.0)+pow(srcY - destY,2.0))*pow((speed*1000),-1);

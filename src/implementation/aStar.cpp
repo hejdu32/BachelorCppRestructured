@@ -28,24 +28,24 @@ spResultStruct aStar::aStarShortestPath(int source, int dest, adjListCollection 
     const float INF = std::numeric_limits<float>::infinity();
     int speed=130;
     int sizeOfGraph = adjCol.idSoFar; //Amount of nodes in graph
-    //initialize distance from source to everything to infinity, and source to 0
-    vector<float> distance(sizeOfGraph,INF);
+
+    vector<float> distance(sizeOfGraph,INF); //initialize distance from source to everything to infinity, and source to 0
     distance[source] = 0;
-    //has the node been seen vector
-    vector<bool> nodeSeen(sizeOfGraph,false);
-    //The pi array containing the path from source to destination
-    vector<int> prevNode(sizeOfGraph,-1);
-    //heap of nodes to evaluate
-    priority_queue<pair<int,float>, vector<pair<int,float>>, comparator> minHeap;
-    //save source coordiantes for later use, fdest denotes final destination
+
+    vector<bool> nodeSeen(sizeOfGraph,false); //has the node been seen vector
+
+    vector<int> prevNode(sizeOfGraph,-1); //The pi array containing the path from source to destination
+
+    priority_queue<pair<int,float>, vector<pair<int,float>>, comparator> minHeap; //heap of nodes to evaluate
+    //save source coordinates for later use, fdest denotes final destination
     float fdestX = adjacencyList::getxCoord(adjCol, dest);
     float fdestY = adjacencyList::getyCoord(adjCol, dest);
 
     minHeap.push(make_pair(source,0.0+ calcHeuristicDistance(fdestX, fdestY, adjacencyList::getxCoord(adjCol, source), adjacencyList::getyCoord(adjCol, source),speed)));
     while (!minHeap.empty()){
-        //pop the top element
+
         pair<int,float> head = minHeap.top();
-        minHeap.pop();
+        minHeap.pop(); //pop the top element
         int headId = head.first;
 
         if (headId==dest){ //Early stopping check

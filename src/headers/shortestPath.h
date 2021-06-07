@@ -17,6 +17,7 @@ static map<std::string, int> spmap={{"dijkstra", 0},{"astar", 1},{"landmarks", 2
 
 class shortestPath {
 public:
+    //wrapper method used for easy calling a shortest path problem with the desired algorithm as argument using spmap
     static spResultStruct chooseAlgo(int method, int source, int dest, adjListCollection &adjListCollection) {
         //dijkstra=0,astar=1 ect
         switch (method) {
@@ -34,11 +35,11 @@ public:
     }
     //creates the adjacency list from either file or from java
     static int createAdjacencyList(string path, const string& method, adjListCollection &adjCol) {
-        if (method == "file") {
+        if (method == "file") {//reads a non reduced file from Java with all ways and nodes
             fileReader::readEntireOsm(std::move(path), adjCol);
-        }else if (method == "reduced") {
+        }else if (method == "reduced") {//reads a reduced adjaceny list created by Java
             fileReader::readAdjFile(path, adjCol);
-        } else if (method == "java") {
+        } else if (method == "java") {  //deprecated method used for reading the parsed OSM data from Java
             string line;
             bool reading = true;
             while (reading) {
@@ -69,14 +70,6 @@ public:
             }
         }
         return 0;
-    }
-    //pretty printing of a vector
-    static void printVec(vector<long long>const &input){
-        cout << "[";
-        for (long long i : input) {
-            cout << i << ' ';
-        }
-        cout << "]";
     }
 
 };

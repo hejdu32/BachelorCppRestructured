@@ -19,9 +19,10 @@ using std::chrono::duration_cast;
 using std::chrono::duration;
 using std::chrono::milliseconds;
 using std::chrono::seconds;
-
+//this util class is used for easier testing
 class util{
 public:
+    //setup the entire data structure
     static adjListCollection setUpDatastructure(const string &country, const string &type, const string& landmarkSelection) {
         adjListCollection adjCol;
         string malta = "C:/Users/a/IdeaProjects/BachelorProject/malta";
@@ -32,7 +33,7 @@ public:
             auto t1 = high_resolution_clock::now();
             shortestPath::createAdjacencyList(malta, "file", adjCol);
             //vector<long long> landmarksIDs = {322591088, 259252468, 6158438720, 330038011, 5584771074, 6285925457, 4160003077, 963497183}; //hardcoded landmarks for malta
-            vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(8, adjCol, landmarkSelection);
+            vector <landmarksStruct> initedLandmarks = landmarks::initLandmarks(8, adjCol);
             for (auto & initedLandmark : initedLandmarks) {
                 adjacencyList::setLandmarkStructs(adjCol, initedLandmark);
             }
@@ -43,7 +44,7 @@ public:
             cout << "parsing " << country << endl;
             auto t1 = high_resolution_clock::now();
             shortestPath::createAdjacencyList(denmark, "file", adjCol);
-            vector<landmarksStruct> initedLandmarks = landmarks::initLandmarks(12, adjCol, landmarkSelection);
+            vector<landmarksStruct> initedLandmarks = landmarks::initLandmarks(12, adjCol);
             for (auto & initedLandmark : initedLandmarks) {
                 adjacencyList::setLandmarkStructs(adjCol, initedLandmark);
             }
@@ -56,7 +57,7 @@ public:
         cout << "\n";
         return adjCol;
     }
-
+    //loops over the prevNode vector and counts everynode that has a predecessor
     static int calcNodesConsidered(vector<int> &prevNode){
         int counterVisited = 0;
         for (int i : prevNode) {
@@ -66,6 +67,8 @@ public:
         }
         return counterVisited;
     }
+    //method used to visually evaluate a certain SSP for a method.
+    //methods include Dijksta, A* and ALT(called landmarks)
     static void testDistancePrints(const string& method, long long source, long long target, adjListCollection &adjCol){
         int from = adjacencyList::getIntID(adjCol,source);
         int to = adjacencyList::getIntID(adjCol,target);
@@ -85,7 +88,7 @@ public:
         cout << "\n";
 
     }
-
+    //runs the shortest path problem with a chosen method and records how lon it took
     static pair<spResultStruct, double> testDistance(const string& method, int source, int target, adjListCollection &adjCol){
         auto timerStart = high_resolution_clock::now();
 
@@ -96,7 +99,7 @@ public:
         double timeInSecs=timeDiff.count();
         return make_pair(res,timeInSecs);
     }
-
+    //mehtod used for printing results, if A* or landmarks disagrees with Dijkstra in path length
     static void printDisagreement(const string& method, int from, int to, spResultStruct &dijkstraStruct, spResultStruct &wrongStruct, adjListCollection &adjCol){
         long long source = adjacencyList::getLongID(adjCol,from);
         long long dest = adjacencyList::getLongID(adjCol,to);
@@ -108,7 +111,8 @@ public:
         cout.precision(17);
         cout<< std::fixed << strToPrint << endl;
     }
-
+    //runs amountOfTests on all our algorithms and compares their result to Dijksta, once this is done return statistics for the given run
+    //the seed is used to generate the same tests across multiple runs
     static void randomPointsComparrisonAll(const string& country, int amountOfTests, int seed){
         adjListCollection countryCol = setUpDatastructure(country, "normal", "dijkstraDistance");
         const float INF = std::numeric_limits<float>::infinity();
@@ -219,7 +223,7 @@ public:
         cout<< std::setprecision(3) << "avg a*   time: " << totalAstarTime/amountOfTests << "msec " << " nodesConsid/Path: "<< astarConsidDivPath<< " avg nodesEval: " << astarNodesConsidered <<" worst case time: " << worstAstarTime << "msec"<< endl;
         cout<< std::setprecision(3) << "avg ALT  time: " << totalALTTime/amountOfTests << "msec " << " nodesConsid/Path: "<< landmarksConsidDivPath<< " avg nodesEval: " << landmarksNodesConsidered <<" worst case time: " << worstALTTime << "msec"<< endl;
     }
-
+    //Tests the performance of the ALT algorithm with varying amounts of landmarks
     static void amountOfLandmarksTest(const string& country, int amountOfTests, int landmarkAmount, int seed){
         adjListCollection countryCol = setUpDatastructure(country, "normal", "dijkstraDistance");
         vector<string> dataToFile;
@@ -314,7 +318,8 @@ public:
             myfile << line << "\n";
         }
         }
-
+    //Runs amountOfTests on a single algorithm and returns statistics on the given algorithm
+    //the seed is used to generate the same tests across multiple runs
     static void randomPointsComparrisonSingle(const string& country, int amountOfTests, int seed, const string& algorithm, string landmarkSelection){
         adjListCollection countryCol = setUpDatastructure(country, "normal", std::move(landmarkSelection));
         int highestNbr = countryCol.idSoFar;
@@ -391,7 +396,8 @@ public:
             cout<< std::setprecision(3) << "avg ALT  time: " << totalALTTime/amountOfTests << "msec " << "avg nodesEval: " << landmarksNodesConsidered <<" worst case time: " << worstALTTime << "msec"<< endl;
         }
         }
-
+    //Tests a single shortest path algorithm and writes information about each problem to a file for statistics
+    //the seed is used to generate the same tests across multiple runs
     static void randomPointsComparrisonSingleToFile(const string& country, int amountOfTests, int seed, const string& algorithm, const string& landmarkSelection){
         adjListCollection countryCol = setUpDatastructure(country, "normal", landmarkSelection);
         int highestNbr = countryCol.idSoFar;
@@ -470,7 +476,7 @@ public:
         return edgesConsidered;
     }
 
-
+    //Special tests method, used for testing from and to landmarks described in the report
     static void specialPointsComparrisonSingleToFile(const string& country,const string& identifier, int seed, const string& algorithm, const string& landmarkSelection,const vector<long long>& testPoints){
         adjListCollection countryCol = setUpDatastructure(country, "normal", landmarkSelection);
         srand(seed);

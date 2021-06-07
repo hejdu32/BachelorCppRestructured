@@ -18,25 +18,26 @@ struct comparator{
         return a.second > b.second;
     }
 };
-
+//dijksta shortest path between a source and target node.
+//if dijksta is called with earlyStopping=false, it will flood fill the entire graph
 spResultStruct dijkstra::djikstraShortestPath(int source, int dest, bool earlyStopping, adjListCollection &adjCol) {
     const float INF = std::numeric_limits<float>::infinity();
     int sizeOfGraph = adjCol.idSoFar; //Amount of nodes in graph
     //initialize distance from source to everything to infinity, and source to 0
     vector<float> distance(sizeOfGraph,INF);
     distance[source] = 0;
-    //has the node been seen vector,
-    vector<bool> nodeSeen(sizeOfGraph,false);
-    //The pi array containing the path from source to destination
-    vector<int> prevNode(sizeOfGraph,-1);
-    //heap of nodes to evaluate
-    priority_queue<pair<int,float>, vector<pair<int,float>>, comparator> minHeap;
+
+    vector<bool> nodeSeen(sizeOfGraph,false); //has the node been seen vector,
+
+    vector<int> prevNode(sizeOfGraph,-1); //The pi array containing the path from source to destination
+
+    priority_queue<pair<int,float>, vector<pair<int,float>>, comparator> minHeap; //heap of nodes to evaluate
 
     minHeap.push(make_pair(source,0.0));
     while (!minHeap.empty()){
-        //pop the top element
+
         pair<int,float> head = minHeap.top();
-        minHeap.pop();
+        minHeap.pop(); //pop the top element
         int headId = head.first;
 
         if (earlyStopping && headId==dest){ //Early stopping check

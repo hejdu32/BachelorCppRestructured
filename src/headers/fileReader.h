@@ -20,6 +20,7 @@ using namespace std;
 
 class fileReader {
 private:
+    //pretty printing method
     static void printStrVec(const vector<string> &input) {
         cout << "[";
         for (string i : input) {
@@ -29,9 +30,8 @@ private:
     }
 
 public:
+    //reads the parsed file from Java containing nodes, and ways and adds these to the adjListCollection
     static int readEntireOsm(const string &pathToData, adjListCollection &adjCol) {
-        //ios_base::sync_with_stdio(false);
-        //cin.tie(NULL);
         string line;
         ifstream data(pathToData);
         if (!data.is_open()) {
@@ -128,9 +128,7 @@ public:
                 int dest = adjacencyList::getIntID(adjCol, stoll(lineAsTokens[idxVal]));
                 float distance = stof(lineAsTokens[idxVal + 1]);
                 adjacencyList::addEdge(adjCol, src, dest, distance);
-                //if (j >35520){cout << "added to list " << k<<endl;}
             }
-            //if (counter >35520){cout << "weve exited last loop " << j <<" guard " << adjlines<<endl;}
         }
         cout << "Closing file" << endl;
         data.close();
